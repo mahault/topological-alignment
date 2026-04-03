@@ -19,6 +19,7 @@
 \usepackage{xcolor}
 \usepackage{enumitem}
 \usepackage{microtype}
+\usepackage[section]{placeins}
 
 % ===== Theorem environments =====
 \newtheorem{claim}{Claim}[section]
@@ -100,7 +101,7 @@ We validate the framework through three experiments (\Cref{sec:experiments}): a 
 
 \Cref{fig:framework_overview} illustrates the core intuition: two attractor basins on a belief landscape connected by a surprise geodesic, with the ridge between them encoding the cost of transitioning from one worldview to another.
 
-\begin{figure}[t]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.85\textwidth]{fig_framework_overview.pdf}
   \caption{Schematic of the belief landscape. Two attractor basins (representing distinct worldviews or agent types) are separated by a ridge encoding the cognitive, affective, and social cost of belief change. The surprise geodesic traces the most likely transition path between basins, the trajectory that deviates least from the free energy gradient. Basin depth corresponds to belief rigidity; ridge height corresponds to the difficulty of alignment.}
@@ -412,7 +413,7 @@ where $\pi_i$ is the agent's prior precision, $\sigma_i^{-2}$ is the observation
 
 For hypothesis H1, we run 10{,}000 time steps, apply Takens embedding ($\tau = 10$, $d_e = 10$) to each agent's belief trajectory, and compute persistent homology via Vietoris--Rips filtration. We compare the resulting persistence diagrams to ground-truth attractor properties, testing whether $H_0$ barcodes correctly identify basins and whether within-group bottleneck distances are significantly smaller than between-group distances.
 
-\begin{figure}[t]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=\textwidth]{fig_exp1_combined.pdf}
   \caption{Experiment~1 results. (a)~Belief volatility (rolling mean of step-to-step belief change $\|\Delta\phi\|$) over time. Rigid agents show low volatility consistent with a deep attractor basin; Flexible agents show high volatility consistent with a shallow basin; Mixed agents are intermediate. The precision perturbation at $t = 5000$ (reducing $\pi_i$ by a factor of four for Group~R) visibly increases their volatility, demonstrating that interventions on precision bend belief geodesics (H4). (b)~$H_0$ persistence barcodes: Rigid agents show long-persisting features reflecting structured, slowly converging trajectories with coherent attractor dynamics. Flexible agents show shorter bars reflecting rapid, noise-dominated dynamics consistent with a shallow basin. (c)~RDS misalignment distance and KL divergence between groups (both normalized). The two metrics give different rank orderings, reflecting the structural information captured by the Koopman-based comparison. (d)~Geometric empowerment by group, confirming that rigid agents inhabit low-empowerment regions while flexible agents retain capacity for belief revision.}
@@ -430,7 +431,7 @@ To test whether curvature dynamics predict cooperative synchronization (H3), we 
 
 We compute the phase-locking value (PLV) between all inter-brain oscillator pairs in non-overlapping 2-second windows, yielding a time-varying interaction graph. Forman--Ricci curvature is computed on this graph at each window, producing a curvature time series. A 3-block smoothing kernel removes high-frequency noise while preserving the coupling-related signal.
 
-\begin{figure}[t]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=\textwidth]{fig_exp2_curvature.pdf}
   \caption{Forman--Ricci curvature dynamics on the inter-brain interaction graph. The top panel shows the raw and smoothed curvature time series. The middle panel shows the ground-truth coupling strength oscillating between synchronized and independent phases. The bottom panel shows a normalized overlay confirming strong co-variation ($r = 0.81$). Curvature leads coupling by approximately 10 seconds, confirming that topological changes in the interaction graph predict synchronization dynamics rather than merely reflecting them.}
@@ -446,7 +447,7 @@ To test whether persistent homology distinguishes structurally different online 
 
 Each community generates 1{,}000 opinion vectors in $\R^{50}$ with type-specific generative parameters. We embed these via PCA to 10 dimensions, compute persistent homology on each community's point cloud, and estimate pairwise distances using three metrics: the RDS distance (via Koopman operators estimated from weekly snapshots), KL divergence (between fitted Gaussian distributions), and embedding distance (centroid-to-centroid Euclidean).
 
-\begin{figure}[t]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=\textwidth]{fig_exp3_distances.pdf}
   \caption{Pairwise distance matrices between 10 synthetic communities, computed using three metrics: RDS distance (left), KL divergence (center), and embedding distance (right). All matrices are normalized to $[0,1]$ for comparison. KL divergence shows the clearest block structure discriminating community types, while RDS distance captures subtler dynamical differences between communities of the same type. Echo chambers (communities 0--2) cluster tightly in all metrics.}
@@ -455,7 +456,7 @@ Each community generates 1{,}000 opinion vectors in $\R^{50}$ with type-specific
 
 The persistence analysis reveals clear topological signatures (\Cref{fig:exp3_persistence}): echo chambers have mean persistence of 2.9, reflecting their tightly clustered structure, while diverse communities show mean persistence of 8.4 and polarized communities show mean persistence of 6.0. The number of persistent $H_0$ components (surviving above threshold) also discriminates: echo chambers have fewer persistent components, consistent with a single dominant attractor, while diverse communities have more, consistent with multi-modal opinion landscapes.
 
-\begin{figure}[t]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=\textwidth]{fig_exp3_persistence.pdf}
   \caption{$H_0$ persistence barcodes for one representative community of each structural type (top 40 features by persistence, computed via Vietoris--Rips filtration on 500 subsampled embeddings). Echo chambers show short bars (low persistence), reflecting tight clustering around a single attractor. Diverse communities show long bars (high persistence), consistent with a broad, multi-modal opinion landscape. Polarized communities show intermediate persistence. Dashed lines indicate mean persistence. The qualitative ordering (Echo $<$ Polarized $<$ Diverse) is consistent across all communities of each type.}
