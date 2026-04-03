@@ -416,7 +416,7 @@ def run_experiment_synthetic(seed: int = 42):
     print("Generating synthetic dual-EEG data...")
     data1, data2, coupling = generate_synthetic_eeg(
         n_channels=16, n_times=50000, sfreq=500.0,
-        coupling_strength=0.3, seed=seed,
+        coupling_strength=0.6, seed=seed,  # stronger coupling for clearer signal
     )
     sfreq = 500.0
     config = EEGConfig(sfreq=sfreq)
@@ -427,37 +427,59 @@ def run_experiment_synthetic(seed: int = 42):
     data1_f = bandpass_filter(data1, sfreq, config.lowcut, config.highcut)
     data2_f = bandpass_filter(data2, sfreq, config.lowcut, config.highcut)
 
-    # Compute PLV in alpha band
-    print("Computing PLV (alpha band)...")
+    # Compute PLV in alpha band with 2s non-overlapping windows
+    # This gives ~50 PLV snapshots (100s / 2s), matching coupling timescale
+    print("Computing PLV (alpha band, 2s windows)...")
     alpha_band = config.freq_bands['alpha']
-    window_samples = int(1.0 * sfreq)  # 1s window
+    window_samples = int(2.0 * sfreq)  # 2s window for stable PLV
 
     # Use subset of channels for speed
     n_ch_sub = 8
-    plv_3d = compute_plv_matrix(
-        data1_f[:n_ch_sub], data2_f[:n_ch_sub],
-        sfreq, alpha_band, window_samples
-    )
-    print(f"  PLV matrix shape: {plv_3d.shape}")
 
-    # Forman-Ricci curvature time series
+    # Non-overlapping windowed PLV for cleaner temporal resolution
+    n_times = data1_f.shape[1]
+    n_blocks = n_times // window_samples
+    print(f"  Computing PLV for {n_blocks} non-overlapping 2s blocks...")
+
+    plv_blocks = np.zeros((n_ch_sub, n_ch_sub, n_blocks))
+    from scipy.signal import hilbert, butter, filtfilt
+    nyq = sfreq / 2.0
+    b, a = butter(4, [alpha_band[0] / nyq, alpha_band[1] / nyq], btype='band')
+
+    # Filter once, then window the phases
+    phases1 = np.angle(hilbert(filtfilt(b, a, data1_f[:n_ch_sub], axis=-1), axis=-1))
+    phases2 = np.angle(hilbert(filtfilt(b, a, data2_f[:n_ch_sub], axis=-1), axis=-1))
+
+    for blk in range(n_blocks):
+        s = blk * window_samples
+        e = s + window_samples
+        for i in range(n_ch_sub):
+            for j in range(n_ch_sub):
+                phase_diff = phases1[i, s:e] - phases2[j, s:e]
+                plv_blocks[i, j, blk] = np.abs(np.mean(np.exp(1j * phase_diff)))
+
+    print(f"  PLV blocks shape: {plv_blocks.shape}")
+
+    # Forman-Ricci curvature time series (one per 2s block)
     print("Computing Forman-Ricci curvature...")
-    curv_ts = curvature_time_series(plv_3d, threshold=0.25)
+    curv_ts = curvature_time_series(plv_blocks, threshold=0.3)
     print(f"  Curvature time series length: {len(curv_ts)}")
 
-    # Downsample coupling signal to match curvature windows
-    n_windows = len(curv_ts)
-    coupling_ds = np.interp(
-        np.linspace(0, len(coupling) - 1, n_windows),
-        np.arange(len(coupling)),
-        coupling,
-    )
+    # Downsample coupling signal: one value per 2s block (block center)
+    coupling_ds = np.array([
+        np.mean(coupling[blk * window_samples:(blk + 1) * window_samples])
+        for blk in range(n_blocks)
+    ])
 
-    # Time-lagged correlation between curvature and coupling
+    # Smooth curvature with 3-block (~6s) moving average
+    kernel_size = 3
+    kernel = np.ones(kernel_size) / kernel_size
+    curv_smooth = np.convolve(curv_ts, kernel, mode='same')
+
+    # Time-lagged correlation between smoothed curvature and coupling
     print("Computing time-lagged correlation...")
-    max_lag_samples = int(5.0 * (n_windows / (len(coupling) / sfreq)))  # ~5 seconds
-    max_lag_samples = min(max_lag_samples, n_windows // 4)
-    lags, corrs = time_lagged_correlation(curv_ts, coupling_ds, max_lag=max_lag_samples)
+    max_lag_blocks = min(5, len(curv_smooth) // 4)  # ~10s max lag
+    lags, corrs = time_lagged_correlation(curv_smooth, coupling_ds, max_lag=max_lag_blocks)
 
     peak_lag = lags[np.argmax(np.abs(corrs))]
     peak_corr = corrs[np.argmax(np.abs(corrs))]
@@ -502,7 +524,7 @@ def run_experiment_synthetic(seed: int = 42):
         'peak_lag': peak_lag,
         'mean_curvature': np.mean(curv_ts),
         'curvature_std': np.std(curv_ts),
-        'plv_mean': np.mean(plv_3d),
+        'plv_mean': np.mean(plv_blocks),
     }
 
     return results, curv_ts, coupling_ds

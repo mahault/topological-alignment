@@ -87,12 +87,16 @@ def embed_texts(texts: list[str], model_name: str = 'all-mpnet-base-v2',
 
 
 def reduce_dimensions(embeddings: np.ndarray, n_components: int = 50) -> np.ndarray:
-    """Reduce embedding dimensionality via PCA."""
-    from sklearn.decomposition import PCA
-    pca = PCA(n_components=min(n_components, embeddings.shape[1], embeddings.shape[0]))
-    reduced = pca.fit_transform(embeddings)
-    explained = np.sum(pca.explained_variance_ratio_)
-    print(f"  PCA: {pca.n_components_} components, {explained:.1%} variance explained")
+    """Reduce embedding dimensionality via PCA (numpy-only)."""
+    n = min(n_components, embeddings.shape[1], embeddings.shape[0] - 1)
+    mean = np.mean(embeddings, axis=0)
+    centered = embeddings - mean
+    # Economy SVD
+    U, S, Vt = np.linalg.svd(centered, full_matrices=False)
+    reduced = centered @ Vt[:n].T
+    total_var = np.sum(S ** 2)
+    explained = np.sum(S[:n] ** 2) / total_var if total_var > 0 else 0
+    print(f"  PCA: {n} components, {explained:.1%} variance explained")
     return reduced
 
 
@@ -143,24 +147,39 @@ def subreddit_persistence(embeddings: np.ndarray, n_subsample: int = 5000,
                                max_edge=max_edge, n_subsample=min(n_subsample, 500))
 
 
-def persistence_summary(diagram) -> dict:
-    """Extract summary statistics from a persistence diagram."""
+def persistence_summary(diagram, pers_threshold: float = 0.5) -> dict:
+    """
+    Extract summary statistics from a persistence diagram.
+
+    pers_threshold: minimum persistence to count as a "real" feature
+    (filters noise from the H0 components).
+    """
     if len(diagram) == 0:
         return {'n_features': 0, 'max_persistence': 0, 'mean_persistence': 0,
-                'n_h0': 0, 'n_h1': 0}
+                'n_h0': 0, 'n_h0_persistent': 0, 'n_h1': 0}
 
     persistence = diagram[:, 1] - diagram[:, 0]
     h0_mask = diagram[:, 2] == 0
     h1_mask = diagram[:, 2] == 1
 
+    # Persistent H0: components that survive past threshold
+    # = distinct clusters (many = diverse, few = echo chamber)
+    h0_pers = persistence[h0_mask]
+    n_h0_persistent = int(np.sum(h0_pers > pers_threshold))
+    # +1 for the component that never dies (infinite persistence)
+    # In our numpy implementation all components die, so the last merge
+    # is the most persistent one — count those above threshold
+
     return {
         'n_features': len(diagram),
-        'max_persistence': np.max(persistence),
-        'mean_persistence': np.mean(persistence),
-        'n_h0': np.sum(h0_mask),
-        'n_h1': np.sum(h1_mask),
-        'h0_max_pers': np.max(persistence[h0_mask]) if np.any(h0_mask) else 0,
-        'h1_max_pers': np.max(persistence[h1_mask]) if np.any(h1_mask) else 0,
+        'max_persistence': float(np.max(persistence)),
+        'mean_persistence': float(np.mean(persistence)),
+        'n_h0': int(np.sum(h0_mask)),
+        'n_h0_persistent': n_h0_persistent,
+        'n_h1': int(np.sum(h1_mask)),
+        'h0_max_pers': float(np.max(h0_pers)) if np.any(h0_mask) else 0,
+        'h1_max_pers': float(np.max(persistence[h1_mask])) if np.any(h1_mask) else 0,
+        'h0_mean_pers': float(np.mean(h0_pers)) if np.any(h0_mask) else 0,
     }
 
 
@@ -258,36 +277,57 @@ def generate_synthetic_communities(n_communities: int = 10,
         'echo_chamber', 'diverse', 'polarized',
     ]
 
+    # Create structured centers along interpretable axes
+    # Axis 0-1: political left-right, Axis 2-3: epistemic open-closed
+    # Same-type communities share a quadrant, different types don't
+    type_centers = {
+        'echo_chamber': np.zeros(d),
+        'diverse': np.zeros(d),
+        'polarized': np.zeros(d),
+    }
+    # Separate types along first few axes (large margin)
+    type_centers['echo_chamber'][:3] = [5, 5, 0]
+    type_centers['diverse'][:3] = [-5, -3, 4]
+    type_centers['polarized'][:3] = [0, -5, -5]
+
     communities = []
+    type_counter = {'echo_chamber': 0, 'diverse': 0, 'polarized': 0}
     for i in range(n_communities):
         ctype = community_types[i % len(community_types)]
+        tc = type_counter[ctype]
+        type_counter[ctype] += 1
         name = f"community_{i}_{ctype}"
 
-        # Community center
-        center = rng.normal(0, 3, size=d)
+        # Center: type center + small within-type offset
+        center = type_centers[ctype].copy()
+        center += rng.normal(0, 1.0, size=d)  # small within-type jitter
+        # Add within-type variation on first axes
+        center[:3] += rng.normal(0, 0.5, size=3)
 
         if ctype == 'echo_chamber':
-            # Tight cluster, slow drift
-            embeddings = center + rng.normal(0, 0.5, size=(n_posts_per, d))
-            drift_rate = 0.01
+            # Tight cluster, slow drift, high temporal autocorrelation
+            embeddings = center + rng.normal(0, 0.3, size=(n_posts_per, d))
+            drift_rate = 0.005  # very slow drift
         elif ctype == 'diverse':
-            # Broad distribution, multiple subclusters
+            # Broad distribution, multiple subclusters, fast drift
             n_clusters = rng.integers(3, 6)
-            subcenters = center + rng.normal(0, 2.0, size=(n_clusters, d))
+            subcenters = center + rng.normal(0, 1.5, size=(n_clusters, d))
             labels = rng.integers(0, n_clusters, size=n_posts_per)
-            embeddings = subcenters[labels] + rng.normal(0, 0.8, size=(n_posts_per, d))
-            drift_rate = 0.05
+            embeddings = subcenters[labels] + rng.normal(0, 0.6, size=(n_posts_per, d))
+            drift_rate = 0.08  # fast drift
         else:  # polarized
-            # Bimodal: two opposing camps
-            pole1 = center + rng.normal(0, 0.3, size=d) * 2
-            pole2 = center - rng.normal(0, 0.3, size=d) * 2
+            # Bimodal: two opposing camps with large gap
+            direction = rng.normal(0, 1, size=d)
+            direction /= np.linalg.norm(direction)
+            pole1 = center + 3.0 * direction
+            pole2 = center - 3.0 * direction
             mix = rng.random(n_posts_per)
             embeddings = np.where(
                 mix[:, None] < 0.5,
-                pole1 + rng.normal(0, 0.6, size=(n_posts_per, d)),
-                pole2 + rng.normal(0, 0.6, size=(n_posts_per, d)),
+                pole1 + rng.normal(0, 0.5, size=(n_posts_per, d)),
+                pole2 + rng.normal(0, 0.5, size=(n_posts_per, d)),
             )
-            drift_rate = 0.03
+            drift_rate = 0.02  # moderate drift, oscillating
 
         # Assign timestamps (spread over n_weeks)
         timestamps = np.sort(rng.uniform(0, n_weeks * 7 * 24 * 3600, size=n_posts_per))
@@ -343,18 +383,26 @@ def run_experiment(use_synthetic: bool = True, data_dir: str = None, seed: int =
             dgm = subreddit_persistence(emb, n_subsample=2000, max_edge=15.0)
             summary = persistence_summary(dgm)
             tda_results[comm.name] = summary
-            print(f"  {comm.name}: {summary['n_h0']} H0, {summary['n_h1']} H1, "
-                  f"max_pers={summary['max_persistence']:.3f}")
+            print(f"  {comm.name}: {summary['n_h0_persistent']} persistent H0 "
+                  f"(of {summary['n_h0']} total), {summary['n_h1']} H1, "
+                  f"max_pers={summary['max_persistence']:.3f}, "
+                  f"mean_pers={summary['h0_mean_pers']:.3f}")
 
-    # Check: echo chambers should have fewer H0 components (tighter clusters)
-    echo_h0 = [v['n_h0'] for k, v in tda_results.items() if 'echo' in k]
-    diverse_h0 = [v['n_h0'] for k, v in tda_results.items() if 'diverse' in k]
-    polar_h0 = [v['n_h0'] for k, v in tda_results.items() if 'polarized' in k]
+    # Echo chambers: few persistent components (tight), low mean persistence
+    # Diverse: many persistent components (multiple subclusters)
+    # Polarized: ~2 persistent components (bimodal)
+    echo_h0 = [v['n_h0_persistent'] for k, v in tda_results.items() if 'echo' in k]
+    diverse_h0 = [v['n_h0_persistent'] for k, v in tda_results.items() if 'diverse' in k]
+    polar_h0 = [v['n_h0_persistent'] for k, v in tda_results.items() if 'polarized' in k]
+    echo_mpers = [v['h0_mean_pers'] for k, v in tda_results.items() if 'echo' in k]
+    diverse_mpers = [v['h0_mean_pers'] for k, v in tda_results.items() if 'diverse' in k]
 
     if echo_h0 and diverse_h0:
-        print(f"\n  Echo chamber mean H0: {np.mean(echo_h0):.1f}")
-        print(f"  Diverse mean H0: {np.mean(diverse_h0):.1f}")
-        print(f"  Polarized mean H0: {np.mean(polar_h0):.1f}")
+        print(f"\n  Echo chamber: {np.mean(echo_h0):.1f} persistent H0, "
+              f"mean_pers={np.mean(echo_mpers):.3f}")
+        print(f"  Diverse: {np.mean(diverse_h0):.1f} persistent H0, "
+              f"mean_pers={np.mean(diverse_mpers):.3f}")
+        print(f"  Polarized: {np.mean(polar_h0):.1f} persistent H0")
 
     # ---- H2: Distance metric comparison ----
     print("\n--- H2: RDS vs KL vs Embedding Distance ---")
@@ -377,12 +425,14 @@ def run_experiment(use_synthetic: bool = True, data_dir: str = None, seed: int =
 
             # KL distance
             # Use PCA-reduced embeddings for numerical stability
-            from sklearn.decomposition import PCA
-            pca = PCA(n_components=min(20, ci.embeddings.shape[1]))
+            n_comp = min(20, ci.embeddings.shape[1])
             combined = np.vstack([ci.embeddings[:2000], cj.embeddings[:2000]])
-            pca.fit(combined)
-            emb_i_r = pca.transform(ci.embeddings[:2000])
-            emb_j_r = pca.transform(cj.embeddings[:2000])
+            mean_c = np.mean(combined, axis=0)
+            centered_c = combined - mean_c
+            _, _, Vt = np.linalg.svd(centered_c, full_matrices=False)
+            proj = Vt[:n_comp].T
+            emb_i_r = (ci.embeddings[:2000] - mean_c) @ proj
+            emb_j_r = (cj.embeddings[:2000] - mean_c) @ proj
             kl_d = kl_distance_gaussian(emb_i_r, emb_j_r)
             kl_matrix[i, j] = kl_matrix[j, i] = kl_d
 

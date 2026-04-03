@@ -7,6 +7,7 @@
 \usepackage{geometry}
 \geometry{margin=1in}
 \usepackage{graphicx}
+\graphicspath{{../figures/}}
 \usepackage{hyperref}
 \usepackage{cleveref}
 \usepackage{natbib}
@@ -121,6 +122,13 @@ We validate the framework through three experiments (\Cref{sec:experiments}): a 
   \item A Freidlin--Wentzell extension identifying least-surprise belief paths as the most likely trajectories of stochastic belief updating.
   \item Empirical validation across synthetic, neural, and social data demonstrating that topological structure predicts alignment dynamics where distributional metrics fail.
 \end{enumerate}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\textwidth]{fig_framework_overview.pdf}
+  \caption{Overview of the five-phase framework. Phase~1 reconstructs belief attractor topology on statistical manifolds. Phase~1.5 grounds the mathematics in cognitive interpretation. Phase~2 defines misalignment as RDS homomorphism distance. Phase~3 models belief transitions as least-surprise geodesics. Phase~4 develops co-steering via curvature and coarse-graining. Phase~4.5 establishes normative criteria for beneficial attractors.}
+  \label{fig:framework_overview}
+\end{figure}
 
 
 % ===================================================================
@@ -679,9 +687,23 @@ We create three groups with distinct attractor landscapes:
 
 \textit{H1 (Attractor reconstruction).} We run 10,000 time steps, apply Takens embedding ($\tau = 10$, $d_e = 10$) to each agent's belief trajectory, compute persistent homology via Vietoris--Rips filtration, and compare the resulting persistence diagrams to ground-truth attractor properties. Success criterion: $H_0$ barcodes (connected components) correctly identify the number of attractor basins; $H_1$ barcodes (loops) correctly identify limit cycles where present; bottleneck distances between agents in the same group are significantly smaller than between groups ($p < 0.01$, permutation test).
 
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\textwidth]{fig_exp1_trajectories.pdf}
+  \caption{Belief trajectories (projected to first two dimensions) for the three agent groups. \textbf{Left:} Group~R (Rigid) shows tight, high-precision trajectories converging rapidly to a deep attractor. \textbf{Center:} Group~F (Flexible) shows diffuse, exploratory trajectories with a shallow basin. \textbf{Right:} Group~M (Mixed) shows intermediate behavior. Black lines indicate group centroids.}
+  \label{fig:exp1_trajectories}
+\end{figure}
+
 \textit{H2 (RDS vs. KL).} We construct a critical test case: Groups R$'$ and F$'$ are tuned to have identical marginal belief distributions $p(\phi)$ at the final time step (achieved by adjusting the environmental signal to compensate for different dynamics). We then compute both $\dkl(p_{R'} \| p_{F'})$ and $d_{\mathrm{mis}}(R', F')$. Success criterion: $\dkl \approx 0$ (by construction), while $d_{\mathrm{mis}} > 0$ with statistical significance, demonstrating that RDS distance captures structural differences invisible to KL.
 
 \textit{H4 (Geodesic bending).} At $t = 5000$, we perturb Group R's precision: $\pi_i \to \pi_i / 2$ for half the group. We track the belief trajectories before and after perturbation, compute the geodesic curvature of the transition, and verify that the direction of belief change is predicted by the gradient of curvature on the belief landscape. Success criterion: the correlation between predicted geodesic direction (from curvature gradient) and observed belief shift is $r > 0.7$.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.8\textwidth]{fig_exp1_rds_vs_kl.pdf}
+  \caption{Comparison of RDS misalignment distance (left) and KL divergence (right) between agent groups. The RDS metric captures dynamical differences in how groups update beliefs, while KL reflects differences in the marginal belief distributions. Note the different scales: RDS distances are small but discriminate R--M $>$ F--M $>$ R--F, reflecting structural similarity between flexible and mixed groups.}
+  \label{fig:exp1_rds_kl}
+\end{figure}
 
 \textit{H5 (Empowerment vs. brittleness).} We compare two alignment interventions: (a) unconstrained (minimize $d_{\mathrm{mis}}$ directly by adjusting precisions) and (b) empowerment-constrained (minimize $d_{\mathrm{mis}}$ subject to $\mathfrak{E}_i \geq \mathfrak{E}_{\min}$). We then apply an adversarial shock (sudden environment change) and measure recovery time. Success criterion: empowerment-constrained agents recover faster (lower $d_{\mathrm{mis}}$ after 1000 post-shock steps) despite initially slower convergence.
 
@@ -705,6 +727,13 @@ We create three groups with distinct attractor landscapes:
 \end{itemize}
 Success criterion: significant correlation ($p < 0.01$, FDR-corrected) between Forman--Ricci curvature slope and task performance in a time-lagged cross-correlation analysis, with curvature changes \emph{preceding} behavioral changes by 1--5 seconds.
 
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\textwidth]{fig_exp2_curvature.pdf}
+  \caption{Forman--Ricci curvature dynamics on the inter-brain interaction graph (synthetic dual-EEG). \textbf{Top:} Raw and smoothed curvature time series. \textbf{Middle:} Ground-truth coupling strength (oscillating between synchronized and independent phases). \textbf{Bottom:} Normalized overlay showing strong co-variation ($r = 0.81$). Curvature leads coupling by $\sim$10\,s, confirming that topological changes in the interaction graph \emph{predict} synchronization dynamics.}
+  \label{fig:exp2_curvature}
+\end{figure}
+
 \paragraph{DCM validation.} As a secondary analysis, we apply DCM to the inter-brain EEG data to recover the effective causal graph. We compare the DCM-inferred connectivity structure with the attractor topology from TDA, testing whether the two methods identify consistent inter-brain coupling patterns.
 
 % -------------------------------------------------------------------
@@ -727,6 +756,20 @@ Success criterion: significant correlation ($p < 0.01$, FDR-corrected) between F
   \item Inter-subreddit hostility metrics: negative sentiment in cross-posts, moderator action rates on cross-linked content, user overlap-weighted toxicity scores.
 \end{itemize}
 Success criterion: $d_{\mathrm{mis}}$ correlates with hostility metrics significantly better than embedding distance or KL divergence ($\Delta r > 0.15$, Williams' test for dependent correlations).
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\textwidth]{fig_exp3_distances.pdf}
+  \caption{Pairwise distance matrices between 10 synthetic communities (3~echo chambers, 3~diverse, 4~polarized), computed using three metrics: RDS distance (left), KL divergence (center), and embedding distance (right). All matrices normalized to $[0,1]$ for comparison. KL divergence shows the clearest block structure discriminating community types, while RDS distance captures subtler dynamical differences. Echo chambers cluster tightly in all metrics.}
+  \label{fig:exp3_distances}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.5\textwidth]{fig_exp3_discrimination.pdf}
+  \caption{Community type discrimination ratio (between-type distance / within-type distance) for the three metrics. Higher values indicate better discrimination between structurally different communities. KL divergence achieves the highest ratio (3.88), followed by embedding distance (1.55) and RDS distance (1.17). The lower RDS performance reflects the challenge of Koopman operator estimation from short time series (156 weekly snapshots) in high-dimensional embedding space.}
+  \label{fig:exp3_discrimination}
+\end{figure}
 
 
 % ===================================================================

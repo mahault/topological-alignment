@@ -17,7 +17,6 @@ build/
 *.toc
 *.lof
 *.lot
-figures/*.pdf
 figures/*.png
 !figures/.gitkeep
 *.npy

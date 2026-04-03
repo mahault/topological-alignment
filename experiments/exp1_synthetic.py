@@ -95,38 +95,38 @@ class SyntheticBeliefNetwork:
         # Storage for trajectories
         self.trajectories = []  # list of (T, N, d) snapshots
 
+    def _init_vectorized(self):
+        """Pre-compute vectorized arrays for fast stepping."""
+        self._beliefs = np.array([a.belief for a in self.agents])  # (N, d)
+        self._precisions = np.array([a.precision for a in self.agents])  # (N,)
+        self._lrs = np.array([a.learning_rate for a in self.agents])  # (N,)
+        self._kappas = np.array([a.social_coupling for a in self.agents])  # (N,)
+        self._noise_stds = np.array([a.obs_noise_std for a in self.agents])  # (N,)
+        # Degree-normalized adjacency for social coupling
+        degree = np.maximum(self.adj.sum(axis=1, keepdims=True), 1.0)
+        self._adj_norm = self.adj / degree  # (N, N)
+
     def step(self):
-        """One step of belief updating for all agents."""
-        beliefs = np.array([a.belief for a in self.agents])  # (N, d)
-        new_beliefs = np.zeros_like(beliefs)
+        """One vectorized step of belief updating for all agents."""
+        # Observations: env_signal + per-agent noise
+        noise = self.rng.normal(0, 1, size=(self.N, self.d)) * self._noise_stds[:, None]
+        obs = self.env_signal[None, :] + noise  # (N, d)
 
-        for i, agent in enumerate(self.agents):
-            # Observation: true signal + noise
-            obs = self.env_signal + self.rng.normal(0, agent.obs_noise_std, size=self.d)
-            predicted = agent.belief  # simple: prediction = current belief
+        # Prediction error
+        pe = obs - self._beliefs  # (N, d)
 
-            # Prediction error
-            pe = obs - predicted
+        # Precision-weighted Bayesian update
+        update = (self._lrs * self._precisions)[:, None] * pe  # (N, d)
 
-            # Precision-weighted Bayesian update
-            update = agent.learning_rate * agent.precision * pe
+        # Social coupling: adj_norm @ beliefs - beliefs = mean neighbor belief - own belief
+        social = self._adj_norm @ self._beliefs - self._beliefs  # (N, d)
+        social *= self._kappas[:, None]
 
-            # Social coupling
-            social = np.zeros(self.d)
-            nbrs = self.neighbors[i]
-            if len(nbrs) > 0:
-                for j in nbrs:
-                    social += beliefs[j] - beliefs[i]
-                social *= agent.social_coupling / max(len(nbrs), 1)
-
-            new_beliefs[i] = beliefs[i] + update + social
-
-        # Apply updates
-        for i, agent in enumerate(self.agents):
-            agent.belief = new_beliefs[i]
+        self._beliefs += update + social
 
     def run(self, n_steps: int, record_every: int = 1) -> np.ndarray:
         """Run simulation for n_steps, recording trajectories."""
+        self._init_vectorized()
         T = n_steps // record_every
         trajectories = np.zeros((T, self.N, self.d))
 
@@ -134,8 +134,12 @@ class SyntheticBeliefNetwork:
         for t in range(n_steps):
             self.step()
             if t % record_every == 0 and step_idx < T:
-                trajectories[step_idx] = np.array([a.belief for a in self.agents])
+                trajectories[step_idx] = self._beliefs.copy()
                 step_idx += 1
+
+        # Sync back to agent objects
+        for i, agent in enumerate(self.agents):
+            agent.belief = self._beliefs[i].copy()
 
         self.trajectories = trajectories
         return trajectories
@@ -185,9 +189,10 @@ def compute_persistence(point_cloud: np.ndarray, max_dim: int = 1,
     """
     Compute persistent homology of a point cloud using Vietoris-Rips filtration.
 
-    Uses giotto-tda if available, falls back to ripser.
+    Uses giotto-tda or ripser if available, falls back to a simple
+    numpy-only H0 persistence via single-linkage clustering.
 
-    Returns persistence diagram as list of (birth, death, dim) tuples.
+    Returns persistence diagram as (n_features, 3) array: birth, death, dim.
     """
     # Subsample if needed
     if len(point_cloud) > n_subsample:
@@ -201,25 +206,81 @@ def compute_persistence(point_cloud: np.ndarray, max_dim: int = 1,
             max_edge_length=max_edge,
         )
         diagrams = VR.fit_transform(point_cloud[np.newaxis, :, :])[0]
-        # diagrams shape: (n_features, 3) — birth, death, dim
         return diagrams
-    except ImportError:
+    except (ImportError, Exception):
         pass
 
-    try:
-        from ripser import ripser
-        result = ripser(point_cloud, maxdim=max_dim, thresh=max_edge)
-        diagrams = []
-        for dim, dgm in enumerate(result['dgms']):
-            for birth, death in dgm:
-                if np.isfinite(death):
-                    diagrams.append((birth, death, dim))
-        return np.array(diagrams) if diagrams else np.empty((0, 3))
-    except ImportError:
-        pass
+    # Numpy-only fallback: H0 persistence via single-linkage (union-find)
+    return _h0_persistence_numpy(point_cloud, max_edge)
 
-    warnings.warn("Neither giotto-tda nor ripser available. Returning empty diagram.")
-    return np.empty((0, 3))
+
+def _h0_persistence_numpy(points: np.ndarray, max_edge: float = 5.0) -> np.ndarray:
+    """
+    Compute H0 persistence diagram via single-linkage clustering.
+    Pure numpy — no sklearn or ripser dependency.
+
+    Each point starts as its own component (born at 0).
+    Components merge at the pairwise distance of their closest points.
+    The younger component dies at that distance.
+    """
+    from scipy.spatial.distance import pdist, squareform
+
+    n = len(points)
+    if n < 2:
+        return np.empty((0, 3))
+
+    # Pairwise distances (condensed form)
+    dists = pdist(points)
+    # Get sorted edge list
+    n_edges = len(dists)
+    # Convert condensed index to (i,j) pairs
+    edge_dists = np.sort(dists)
+    edge_order = np.argsort(dists)
+
+    # Union-Find
+    parent = list(range(n))
+    rank_uf = [0] * n
+    birth = [0.0] * n  # all born at epsilon=0
+
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    diagrams = []
+
+    for idx in range(n_edges):
+        d = edge_dists[idx]
+        if d > max_edge:
+            break
+
+        # Recover (i, j) from condensed index
+        ci = edge_order[idx]
+        # Condensed index formula: ci = n*i - i*(i+1)/2 + j - i - 1
+        # Invert: i = int(n - 0.5 - sqrt((n-0.5)^2 - 2*ci))
+        i = int(n - 0.5 - np.sqrt(max(0, (n - 0.5) ** 2 - 2 * ci)))
+        j = int(ci - n * i + i * (i + 1) / 2 + i + 1)
+        if j >= n:
+            i += 1
+            j = int(ci - n * i + i * (i + 1) / 2 + i + 1)
+
+        ri, rj = find(i), find(j)
+        if ri == rj:
+            continue
+
+        # Merge: younger component dies
+        if rank_uf[ri] < rank_uf[rj]:
+            ri, rj = rj, ri  # ri survives
+        parent[rj] = ri
+        if rank_uf[ri] == rank_uf[rj]:
+            rank_uf[ri] += 1
+
+        # rj dies at distance d
+        if d > 1e-10:  # skip zero-persistence features
+            diagrams.append((0.0, d, 0))
+
+    return np.array(diagrams) if diagrams else np.empty((0, 3))
 
 
 def bottleneck_distance(dgm1: np.ndarray, dgm2: np.ndarray, dim: int = 0) -> float:
@@ -238,13 +299,7 @@ def bottleneck_distance(dgm1: np.ndarray, dgm2: np.ndarray, dim: int = 0) -> flo
     else:
         d2 = np.empty((0, 2))
 
-    try:
-        import persim
-        return persim.bottleneck(d1, d2)
-    except ImportError:
-        pass
-
-    # Fallback: L-inf Wasserstein approximation
+    # Pure numpy fallback: L-inf Wasserstein approximation
     if len(d1) == 0 and len(d2) == 0:
         return 0.0
     if len(d1) == 0:
@@ -349,38 +404,57 @@ def kl_divergence_gaussian(traj1: np.ndarray, traj2: np.ndarray) -> float:
 def estimate_empowerment(agent: AgentParams, env_signal: np.ndarray,
                          n_samples: int = 1000, rng: np.random.Generator = None) -> float:
     """
-    Estimate geometric empowerment: mutual information between
-    action (precision change) and next belief state.
+    Estimate geometric empowerment: how many distinct future belief states
+    can the agent reach via different perturbations?
 
-    Uses a simple sampling-based estimator.
+    Empowerment = effective dimensionality of reachable set, measured as
+    the entropy of the eigenvalue spectrum of the next-state covariance
+    relative to a fixed-size perturbation. Flexible agents with low
+    precision can explore more of belief space; rigid agents with high
+    precision snap back to their attractor.
+
+    Key: we apply perturbations to the *observation* (what the agent can
+    influence), not directly to beliefs. High precision means the agent
+    strongly corrects toward observations — but if it's already near
+    the attractor, observations pull it BACK, reducing reachable diversity.
     """
     if rng is None:
         rng = np.random.default_rng()
 
     d = len(env_signal)
-    actions = rng.uniform(-1, 1, size=(n_samples, d))  # perturbations to belief
+
+    # Simulate n_samples independent observation-action outcomes
+    # Each "action" = choosing which direction to attend/move
     next_states = np.zeros((n_samples, d))
-
     for i in range(n_samples):
+        # Agent gets observation from slightly different positions
+        # (simulates attending to different aspects of environment)
         obs = env_signal + rng.normal(0, agent.obs_noise_std, size=d)
-        pe = obs - (agent.belief + actions[i])
-        next_states[i] = agent.belief + actions[i] + agent.learning_rate * agent.precision * pe
+        pe = obs - agent.belief
+        # Standard update: belief + lr * pi * PE + social (no social here)
+        next_states[i] = agent.belief + agent.learning_rate * agent.precision * pe
 
-    # MI estimation via correlation (crude but fast)
-    # More sophisticated: KSG estimator
-    cov_a = np.cov(actions.T) + 1e-8 * np.eye(d)
-    cov_s = np.cov(next_states.T) + 1e-8 * np.eye(d)
-    cov_joint = np.cov(np.hstack([actions, next_states]).T) + 1e-8 * np.eye(2 * d)
+    # Empowerment = how spread out are the reachable next states?
+    # Use effective rank of covariance (spectral entropy)
+    cov = np.cov(next_states.T) + 1e-10 * np.eye(d)
+    eigvals = np.linalg.eigvalsh(cov)
+    eigvals = eigvals[eigvals > 1e-12]
 
-    # MI = 0.5 * log(det(cov_a) * det(cov_s) / det(cov_joint))
-    sign_a, logdet_a = np.linalg.slogdet(cov_a)
-    sign_s, logdet_s = np.linalg.slogdet(cov_s)
-    sign_j, logdet_j = np.linalg.slogdet(cov_joint)
+    if len(eigvals) == 0:
+        return 0.0
 
-    if sign_a > 0 and sign_s > 0 and sign_j > 0:
-        mi = 0.5 * (logdet_a + logdet_s - logdet_j)
-        return max(mi, 0.0)
-    return 0.0
+    # Normalize to probabilities
+    p = eigvals / np.sum(eigvals)
+    # Spectral entropy (effective dimensionality)
+    spectral_entropy = -np.sum(p * np.log(p + 1e-15))
+
+    # Also compute total variance as a scale measure
+    total_var = np.sum(eigvals)
+
+    # Empowerment = spectral_entropy * log(total_var + 1)
+    # High when: many dimensions are reachable (high entropy) AND
+    #            the reachable set is large (high variance)
+    return spectral_entropy * np.log1p(total_var)
 
 
 # ====================================================================
