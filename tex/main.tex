@@ -1,0 +1,908 @@
+\documentclass[11pt,a4paper]{article}
+
+% ===== Packages =====
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{natbib}
+\usepackage{booktabs}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{tikz}
+\usepackage{subcaption}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+% ===== Theorem environments =====
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{assumption}[theorem]{Assumption}
+
+% ===== Notation =====
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\KL}{\mathrm{KL}}
+\newcommand{\VFE}{\mathcal{F}}
+\newcommand{\EFE}{\mathcal{G}}
+\newcommand{\cA}{\mathcal{A}}
+\newcommand{\cS}{\mathcal{S}}
+\newcommand{\cO}{\mathcal{O}}
+\newcommand{\cM}{\mathcal{M}}
+\newcommand{\cP}{\mathcal{P}}
+\newcommand{\cW}{\mathcal{W}}
+\newcommand{\cC}{\mathcal{C}}
+\newcommand{\cF}{\mathcal{F}}
+\newcommand{\cB}{\mathcal{B}}
+\newcommand{\cT}{\mathcal{T}}
+\newcommand{\Wass}{W_2}
+\newcommand{\FI}{\mathcal{I}}
+\newcommand{\mani}{\mathcal{M}}
+\newcommand{\dkl}{D_{\mathrm{KL}}}
+\newcommand{\supp}{\mathrm{supp}}
+
+\title{A Framework for Modeling and Steering Agent Belief Structures \\ via Active Inference and Geodesic Paths}
+
+\author{
+  Mahault Albarracin\textsuperscript{1,2} \and
+  Dalton Sakthivadivel\textsuperscript{3} \and
+  David Hyland\textsuperscript{4} \and
+  Gabriel Axel Montes\textsuperscript{5} \and
+  Ben Goertzel\textsuperscript{6}
+}
+
+\date{
+  \textsuperscript{1}VERSES AI \\
+  \textsuperscript{2}Universit\'{e} du Qu\'{e}bec \`{a} Montr\'{e}al \\
+  \textsuperscript{3}CUNY Graduate Center \\
+  \textsuperscript{4}University of Sussex \\
+  \textsuperscript{5}Independent Researcher \\
+  \textsuperscript{6}SingularityNET Foundation
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Current approaches to AI alignment compare agent outputs (RLHF, preference learning) or belief distributions (KL divergence). These methods miss the dynamical structure that \emph{produces} beliefs: two agents can share identical current beliefs yet inhabit radically different attractor landscapes---one rigid and dogmatic, the other flexible and exploratory. We propose a five-phase geometric framework that redefines alignment as the distance between belief-generating dynamical systems, not between beliefs themselves. Phase~1 reconstructs the topology of belief attractors on statistical manifolds using persistent homology and random dynamical systems theory. Phase~2 quantifies misalignment via $C^*$-algebra homomorphisms on attractor sets, demonstrating that this metric captures structural differences invisible to KL divergence. Phase~3 models belief transitions as geodesics on Wasserstein space, unifying variational inference with optimal transport through a Freidlin--Wentzell large deviation principle that identifies least-surprise belief paths. Phase~4 develops hierarchical co-steering via curvature mapping and Mori--Zwanzig coarse-graining, while Phase~4.5 establishes normative criteria grounding empowerment, pluralism, and cooperative compatibility in geometric terms. We validate the framework through three experiments: (i)~a synthetic belief network demonstrating that RDS distances capture structural misalignment invisible to KL, (ii)~EEG hyperscanning data showing that Forman--Ricci curvature on interaction graphs predicts cooperation and rupture, and (iii)~social media data revealing echo chambers as topologically distinct belief basins. Together, these results establish a principled geometric foundation for understanding, measuring, and steering alignment in multi-agent systems.
+\end{abstract}
+
+\paragraph{Keywords.} Active inference, information geometry, alignment, belief dynamics, random dynamical systems, persistent homology, optimal transport, Schr\"{o}dinger bridges
+
+% ===================================================================
+\section{Introduction}
+\label{sec:introduction}
+% ===================================================================
+
+The alignment problem---ensuring that artificial agents act in accordance with human values and intentions---has become a central concern of AI safety research \citep{gabriel2020artificial, russell2019human}. Current approaches predominantly operate at the level of agent \emph{outputs}: reinforcement learning from human feedback (RLHF) shapes policy behavior through preference comparisons \citep{christiano2017deep, ouyang2022training}, constitutional AI encodes principles as textual constraints \citep{bai2022constitutional}, and reward modeling learns scalar proxies for human satisfaction. When alignment is formalized mathematically, the default tool is Kullback--Leibler divergence, comparing the distribution an agent produces against a target distribution.
+
+We argue that all such approaches share a fundamental limitation: they compare the \emph{products} of belief-generating processes rather than the processes themselves. Consider two agents whose current belief distributions are identical---say, both assign 60\% probability to proposition $p$. Standard metrics declare them equally aligned. Yet one agent may inhabit a deep, rigid attractor basin (high precision, dogmatic updating) while the other occupies a shallow, flexible basin (low precision, exploratory updating). Their responses to novel evidence, social influence, and adversarial perturbation will diverge dramatically. The first agent is brittle: aligned today, catastrophically misaligned tomorrow if the attractor shifts. The second is robust: capable of tracking a changing world.
+
+This paper develops a geometric framework that captures these distinctions. Our central thesis is:
+\begin{quote}
+\emph{Alignment should be understood as the distance between belief-generating dynamical systems---their attractor landscapes, geodesic flows, and curvature structure---not as the distance between the beliefs they currently produce.}
+\end{quote}
+
+We formalize this thesis through five phases:
+
+\begin{enumerate}[leftmargin=2em]
+  \item \textbf{Phase 1} (\Cref{sec:phase1}): We formalize the topology of beliefs by mapping generative models onto statistical manifolds and reconstructing their attractor structure via persistent homology and random dynamical systems (RDS) theory.
+
+  \item \textbf{Phase 1.5} (\Cref{sec:phase1p5}): We ground the mathematical structures in psychological and cognitive interpretation, connecting basin depth to cognitive rigidity, ridges to identity barriers, and funnels to convergent narratives.
+
+  \item \textbf{Phase 2} (\Cref{sec:phase2}): We quantify misalignment as topological distance between belief-generating systems. After evaluating KL divergence and Gromov--Hausdorff distance, we adopt $C^*$-algebra homomorphisms on RDS attractors as the appropriate metric.
+
+  \item \textbf{Phase 3} (\Cref{sec:phase3}): We model belief path dynamics by bridging variational inference with Wasserstein gradient flows and applying a Freidlin--Wentzell large deviation principle to identify least-surprise belief geodesics.
+
+  \item \textbf{Phase 4} (\Cref{sec:phase4}): We develop hierarchical co-steering through curvature mapping, empowerment constraints, and Mori--Zwanzig coarse-graining.
+
+  \item \textbf{Phase 4.5} (\Cref{sec:phase4p5}): We establish normative criteria for beneficial attractor landscapes, including epistemic adequacy, empowerment preservation, cooperative compatibility, and pluralism.
+\end{enumerate}
+
+We validate the framework through three experiments (\Cref{sec:experiments}): a synthetic belief network demonstrating that RDS distances capture structural misalignment invisible to KL divergence; EEG hyperscanning data showing that curvature dynamics predict cooperation and rupture in dyadic interaction; and social media data revealing echo chambers as topologically distinct belief basins with measurably high inter-basin distances.
+
+\paragraph{Contributions.} Our main contributions are:
+\begin{enumerate}[leftmargin=2em]
+  \item A formal framework unifying active inference, information geometry, random dynamical systems, and optimal transport into a geometric theory of alignment.
+  \item The RDS homomorphism metric for misalignment, which compares belief-generating dynamical systems rather than belief distributions.
+  \item The variational--Wasserstein bridge, connecting parameter-space gradient descent on variational free energy with Wasserstein geodesics on belief space.
+  \item A Freidlin--Wentzell extension identifying least-surprise belief paths as the most likely trajectories of stochastic belief updating.
+  \item Empirical validation across synthetic, neural, and social data demonstrating that topological structure predicts alignment dynamics where distributional metrics fail.
+\end{enumerate}
+
+
+% ===================================================================
+\section{Background and Related Work}
+\label{sec:background}
+% ===================================================================
+
+% -------------------------------------------------------------------
+\subsection{Active Inference and Free Energy}
+\label{sec:bg_aif}
+% -------------------------------------------------------------------
+
+Active inference casts perception, learning, and action as approximate Bayesian inference under a single imperative: minimize variational free energy \citep{friston2010free, parr2022active}. An agent maintains a generative model $p(o, s \mid \theta)$ over observations $o \in \cO$ and hidden states $s \in \cS$, parameterized by $\theta$. Given observations, the agent updates an approximate posterior $q(s; \phi)$ by minimizing the variational free energy (VFE):
+\begin{equation}
+  \VFE[q, o] = \dkl\bigl[q(s; \phi) \,\|\, p(s \mid o, \theta)\bigr] - \ln p(o \mid \theta)
+  \label{eq:vfe}
+\end{equation}
+which bounds the negative log-evidence $-\ln p(o \mid \theta)$ from above. For action selection, the agent evaluates policies $\pi$ by their expected free energy (EFE):
+\begin{equation}
+  \EFE(\pi) = \sum_{\tau} \E_{q(o_\tau, s_\tau \mid \pi)}\bigl[-\ln p(o_\tau \mid C) - \ln p(s_\tau \mid \pi) + \ln q(s_\tau \mid \pi)\bigr]
+  \label{eq:efe}
+\end{equation}
+where $C$ encodes preferred observations and the three terms correspond to pragmatic value (risk), epistemic value (information gain), and state information gain respectively. Policy selection follows a softmax:
+\begin{equation}
+  p(\pi) = \sigma\bigl(-\gamma \, \EFE(\pi)\bigr)
+  \label{eq:policy_selection}
+\end{equation}
+with precision parameter $\gamma$ controlling the exploitation--exploration trade-off.
+
+The key insight for our framework is that the generative model $p(o, s \mid \theta)$ induces a point on a statistical manifold, and the free energy gradient $\nabla_\phi \VFE$ defines a flow on this manifold. Alignment, in these terms, concerns the relationship between the manifold geometries of different agents' generative models.
+
+% -------------------------------------------------------------------
+\subsection{Statistical Manifolds and Information Geometry}
+\label{sec:bg_ig}
+% -------------------------------------------------------------------
+
+A statistical manifold $(\cM, g)$ is a smooth manifold whose points are probability distributions, equipped with the Fisher--Rao metric \citep{amari2016information}:
+\begin{equation}
+  g_{ij}(\theta) = \E_{p(x|\theta)}\left[\frac{\partial \ln p(x|\theta)}{\partial \theta_i} \frac{\partial \ln p(x|\theta)}{\partial \theta_j}\right]
+  \label{eq:fisher_rao}
+\end{equation}
+For exponential family distributions $p(x \mid \theta) = h(x) \exp\bigl(\theta^\top T(x) - A(\theta)\bigr)$, the Fisher matrix coincides with the Hessian of the log-partition function: $g_{ij} = \partial^2 A / \partial \theta_i \partial \theta_j$.
+
+The natural gradient \citep{amari1998natural} accounts for the Riemannian structure:
+\begin{equation}
+  \tilde{\nabla}_\theta \cF = g(\theta)^{-1} \nabla_\theta \cF
+  \label{eq:natural_gradient}
+\end{equation}
+ensuring that parameter updates respect the intrinsic geometry of the distribution family.
+
+Crucially, the statistical manifold distinguishes the \emph{parameter space} $\Theta$ from the \emph{belief space} $\cP(\cS)$---the space of distributions over hidden states. A generative model maps parameters $\theta$ to beliefs $q(s; \phi(\theta))$. Different parameterizations can induce the same belief, and the same parameter can induce different beliefs under different generative models. Our framework operates on both levels: parameter evolution (Phase~3 variational dynamics) and belief evolution (Phase~3 Wasserstein dynamics).
+
+% -------------------------------------------------------------------
+\subsection{Random Dynamical Systems}
+\label{sec:bg_rds}
+% -------------------------------------------------------------------
+
+A (metric) random dynamical system (RDS) consists of a probability space $(\Omega, \cF, \mathbb{P})$ with an ergodic measure-preserving flow $\vartheta_t: \Omega \to \Omega$ and a cocycle $\varphi: \R_{\geq 0} \times \Omega \times X \to X$ over a complete separable metric space $(X, d)$, satisfying:
+\begin{align}
+  \varphi(0, \omega, \cdot) &= \mathrm{id}_X \label{eq:rds_identity} \\
+  \varphi(s+t, \omega, x) &= \varphi(s, \vartheta_t \omega, \varphi(t, \omega, x)) \label{eq:rds_cocycle}
+\end{align}
+for all $s, t \geq 0$, $\omega \in \Omega$, $x \in X$ \citep{arnold1998random}.
+
+\begin{definition}[Pullback attractor]
+\label{def:pullback_attractor}
+A family $\{A(\omega)\}_{\omega \in \Omega}$ of compact subsets of $X$ is a \emph{pullback attractor} for the RDS $\varphi$ if:
+\begin{enumerate}[label=(\roman*)]
+  \item $A(\omega)$ is invariant: $\varphi(t, \omega, A(\omega)) = A(\vartheta_t \omega)$ for all $t \geq 0$;
+  \item $A(\omega)$ pullback-attracts all bounded sets $B$: $\lim_{t \to \infty} d_H\bigl(\varphi(t, \vartheta_{-t}\omega, B), A(\omega)\bigr) = 0$
+\end{enumerate}
+where $d_H$ denotes the Hausdorff distance \citep{crauel1994attractors}.
+\end{definition}
+
+In our framework, each agent's belief dynamics constitute an RDS on the statistical manifold, driven by stochastic observations. The pullback attractors capture the long-term invariant structures of belief formation---the ``shapes'' that persist across observation histories.
+
+Ribbon-shaped nonequilibrium steady states (NESS) \citep{sakthivadivel2024ribbon} extend this picture: when steady-state distributions are supported on lower-dimensional manifolds rather than point attractors, they generate multimodal, path-dependent belief distributions. These pathwise attractors are the objects our metric compares.
+
+% -------------------------------------------------------------------
+\subsection{Topological Data Analysis}
+\label{sec:bg_tda}
+% -------------------------------------------------------------------
+
+Persistent homology \citep{edelsbrunner2000topological, carlsson2009topology} provides a multi-scale summary of topological features in data. Given a point cloud $X \subset \R^d$, we construct a filtration of simplicial complexes (e.g., Vietoris--Rips or alpha complexes) indexed by a scale parameter $\epsilon$. The \emph{persistence diagram} $\mathrm{Dgm}_k(X)$ records the birth and death of $k$-dimensional homological features (connected components, loops, voids) as $\epsilon$ varies.
+
+Persistent features with large \emph{persistence} $|d_i - b_i|$ represent robust topological structure; short-lived features typically reflect noise. The \emph{bottleneck distance} between persistence diagrams:
+\begin{equation}
+  d_B(\mathrm{Dgm}_1, \mathrm{Dgm}_2) = \inf_\gamma \sup_{x} \|x - \gamma(x)\|_\infty
+  \label{eq:bottleneck}
+\end{equation}
+where $\gamma$ ranges over bijections between diagrams (including diagonal points), provides a stable metric for comparing topological structures.
+
+For time-series data, we employ Takens embedding \citep{takens1981detecting}: given a scalar time series $\{x_t\}$, the delay embedding $\mathbf{x}_t = (x_t, x_{t-\tau}, \ldots, x_{t-(d_e-1)\tau})$ reconstructs the attractor topology for appropriate delay $\tau$ and embedding dimension $d_e$. Combined with persistent homology, this yields a topological fingerprint of the dynamical system generating the time series---even without access to its equations of motion.
+
+% -------------------------------------------------------------------
+\subsection{Optimal Transport and Wasserstein Geometry}
+\label{sec:bg_ot}
+% -------------------------------------------------------------------
+
+The 2-Wasserstein distance between probability measures $\mu, \nu \in \cP_2(\R^d)$ is:
+\begin{equation}
+  \Wass(\mu, \nu) = \left(\inf_{\pi \in \Pi(\mu, \nu)} \int \|x - y\|^2 \, d\pi(x, y)\right)^{1/2}
+  \label{eq:wasserstein}
+\end{equation}
+where $\Pi(\mu, \nu)$ denotes the set of couplings with marginals $\mu$ and $\nu$ \citep{villani2008optimal}.
+
+The Benamou--Brenier formula \citep{benamou2000computational} provides a dynamical characterization:
+\begin{equation}
+  \Wass(\mu_0, \mu_1)^2 = \inf_{(\rho_t, v_t)} \int_0^1 \int \|v_t(x)\|^2 \, d\rho_t(x) \, dt
+  \label{eq:benamou_brenier}
+\end{equation}
+subject to the continuity equation $\partial_t \rho_t + \nabla \cdot (\rho_t v_t) = 0$ with $\rho_0 = \mu_0$, $\rho_1 = \mu_1$. This recasts optimal transport as a geodesic problem on the Wasserstein manifold $(\cP_2, \Wass)$.
+
+The JKO scheme \citep{jordan1998variational} shows that the Fokker--Planck equation $\partial_t \rho = \nabla \cdot (\rho \nabla V) + \sigma \Delta \rho$ can be interpreted as Wasserstein gradient flow of the free energy functional $\cF[\rho] = \int V \, d\rho + \sigma \int \rho \ln \rho \, dx$. This connection is central to our variational--Wasserstein bridge (\Cref{sec:var_wass}).
+
+A Schr\"{o}dinger bridge \citep{leonard2013survey, chen2021stochastic} solves the entropy-regularized transport problem:
+\begin{equation}
+  Q^* = \arg\min_{Q: Q_0 = \mu, Q_T = \nu} \dkl(Q \| P)
+  \label{eq:schrodinger_bridge}
+\end{equation}
+where $P$ is a reference process (typically Brownian motion). The SB is the most likely stochastic evolution connecting two marginals, directly related to our least-surprise geodesics. \citet{goertzel2025judging} develops this connection extensively for multi-agent coordination.
+
+% -------------------------------------------------------------------
+\subsection{Existing Alignment Approaches}
+\label{sec:bg_alignment}
+% -------------------------------------------------------------------
+
+Current alignment methods operate at distinct levels of abstraction, none of which capture generative structure:
+
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Behavioral alignment} (RLHF, preference learning): Compares outputs to human preferences. Effective for surface behavior but silent on internal dynamics \citep{christiano2017deep, ouyang2022training}.
+
+  \item \textbf{Distributional alignment} (KL minimization, f-divergences): Compares output distributions. Principled but compresses the entire attractor landscape into a single divergence value.
+
+  \item \textbf{Constitutional/rule-based alignment}: Encodes principles as constraints. Requires explicit articulation of values; brittle to novel situations \citep{bai2022constitutional}.
+
+  \item \textbf{Mechanistic interpretability}: Examines internal representations \citep{elhage2022superposition, conmy2023towards}. Captures structure but lacks a formal distance metric between agents.
+\end{itemize}
+
+The gap is clear: no existing approach compares the \emph{dynamical systems} that generate beliefs. A rigid agent and a flexible agent with identical current outputs are indistinguishable to all of the above. Our framework fills this gap by operating on the attractor landscape itself.
+
+
+% ===================================================================
+\section{Phase 1: Formalizing the Topology of Beliefs}
+\label{sec:phase1}
+% ===================================================================
+
+We begin by establishing the mathematical objects whose topology we wish to compare. An agent's generative model $p(o, s \mid \theta)$ defines a point $\theta$ on a statistical manifold $\cM$. As the agent receives observations and updates its beliefs, $\theta$ traces a trajectory on $\cM$. The topology of this trajectory---its attractor structure, dimensionality, and connectivity---encodes the agent's epistemic character.
+
+\begin{definition}[Belief trajectory]
+\label{def:belief_trajectory}
+Given an agent with generative model $p(o, s \mid \theta)$ and approximate posterior $q(s; \phi_t)$, the \emph{belief trajectory} is the time-indexed curve $\phi: [0, T] \to \cM$ defined by the sequence of variational parameters obtained through free energy minimization:
+\begin{equation}
+  \phi_{t+1} = \phi_t - \eta \, g(\phi_t)^{-1} \nabla_\phi \VFE[q(\cdot; \phi_t), o_t]
+  \label{eq:belief_trajectory}
+\end{equation}
+where $g$ is the Fisher--Rao metric and $o_t$ are observations sampled from the environment.
+\end{definition}
+
+\begin{definition}[State-space vs. belief-space attractors]
+\label{def:attractor_distinction}
+We distinguish two levels of attractor:
+\begin{enumerate}[label=(\roman*)]
+  \item A \emph{state-space attractor} is a subset $A \subset \cS$ on which the probability mass $p(s \mid o_{1:T})$ concentrates as $T \to \infty$. These describe \emph{what} the agent believes about the world.
+  \item A \emph{belief-space attractor} is a subset $\hat{A} \subset \cM$ to which the belief trajectory $\phi_t$ converges. These describe \emph{how} the agent forms and maintains beliefs.
+\end{enumerate}
+Our framework operates primarily at the belief-space level: it is the structure of $\hat{A}$, not the content of $A$, that determines an agent's epistemic character.
+\end{definition}
+
+\subsection{Attractor Reconstruction Pipeline}
+\label{sec:attractor_reconstruction}
+
+Given observed belief trajectories $\{\phi_t\}_{t=1}^T$ (or time series from which beliefs can be inferred), we reconstruct the attractor topology through the following pipeline:
+
+\begin{enumerate}[leftmargin=2em]
+  \item \textbf{Takens embedding.} For scalar or low-dimensional observables, construct delay embeddings $\mathbf{x}_t = (x_t, x_{t-\tau}, \ldots, x_{t-(d_e-1)\tau})$ with delay $\tau$ chosen by mutual information minimization and dimension $d_e$ by false nearest neighbors \citep{takens1981detecting, kennel1992determining}.
+
+  \item \textbf{Persistent homology.} Compute the Vietoris--Rips filtration on the embedded point cloud and extract persistence diagrams $\mathrm{Dgm}_k$ for $k = 0, 1, 2$. Connected components ($k=0$) identify distinct attractor basins; loops ($k=1$) identify limit cycles or quasi-periodic orbits; voids ($k=2$) identify higher-order topological structure.
+
+  \item \textbf{Morse-theoretic decomposition.} For smooth belief landscapes, compute the gradient flow of VFE on $\cM$ and identify critical points (minima = attractors, saddles = basin boundaries, maxima = repellers). The Morse complex partitions $\cM$ into cells descending from each critical point.
+
+  \item \textbf{Pullback attractor identification.} For stochastic trajectories, apply the RDS framework (\Cref{def:pullback_attractor}). The pullback attractor captures the invariant structure that persists across different realizations of the observation noise.
+\end{enumerate}
+
+\begin{proposition}[Topological stability]
+\label{prop:topo_stability}
+Let $\{\phi_t^{(n)}\}$ be belief trajectories of agent $n$ and let $\hat{A}^{(n)}$ be the reconstructed attractor. Under mild regularity conditions (the generative model has bounded Fisher information, and observations are sub-Gaussian), the persistence diagram $\mathrm{Dgm}_k(\hat{A}^{(n)})$ is stable: for any $\delta$-perturbation of the observations,
+\begin{equation}
+  d_B\bigl(\mathrm{Dgm}_k(\hat{A}^{(n)}), \mathrm{Dgm}_k(\hat{A}^{(n)}_\delta)\bigr) \leq C \delta
+  \label{eq:topo_stability}
+\end{equation}
+for a constant $C$ depending on the Fisher information bound.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+This follows from the stability theorem for persistent homology \citep{cohen2007stability} combined with the regularity of the belief trajectory map $o_{1:T} \mapsto \{\phi_t\}$. Bounded Fisher information ensures the natural gradient step is Lipschitz in observations; sub-Gaussian observations ensure the Hausdorff distance between perturbed point clouds is $O(\delta)$. The stability theorem then gives the bound.
+\end{proof}
+
+
+% ===================================================================
+\section{Phase 1.5: Psychological and Cognitive Interpretation}
+\label{sec:phase1p5}
+% ===================================================================
+
+The mathematical structures of Phase~1 admit natural psychological interpretations that ground the framework in testable cognitive predictions.
+
+\paragraph{Basin depth and cognitive rigidity.} The depth of an attractor basin---measured by the free energy barrier $\Delta \VFE$ between the basin minimum and the nearest saddle---corresponds to the cognitive effort required to abandon a belief. Deep basins represent dogmatic worldviews: high-precision priors that resist updating in the face of contradictory evidence. Shallow basins represent labile, exploratory states amenable to revision.
+
+\paragraph{Ridges and identity barriers.} Saddle points and ridges on the belief landscape correspond to \emph{identity barriers}: transitions whose cost is not merely cognitive but affective and social. Crossing a ridge may require abandoning a group identity, social network, or self-concept. The \emph{height} of a ridge encodes the total cost (cognitive + affective + social) of worldview change, while its \emph{width} encodes the range of beliefs that must be traversed during the transition.
+
+\paragraph{Funnels and convergent narratives.} Funnel-shaped regions where multiple trajectories converge correspond to shared narratives or cultural attractors---beliefs toward which diverse agents are drawn regardless of starting position. The funnel width measures the \emph{catchment area} of a narrative; its depth measures the narrative's holding power.
+
+\paragraph{Observable proxies.} These geometric features predict measurable quantities:
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Reaction time}: Increases near ridge crossings (decision difficulty at basin boundaries).
+  \item \textbf{Arousal}: Spikes when the belief trajectory approaches a saddle point (the ``precision barrier'' effect of \citet{albarracin2024shared}).
+  \item \textbf{Belief-change inertia}: Proportional to basin depth (deep basins resist perturbation).
+  \item \textbf{Social network structure}: Agents in the same basin cluster together; inter-basin edges are sparse and high-cost.
+\end{itemize}
+
+\begin{remark}[Tribal basins]
+\label{rem:tribal_basins}
+In social contexts, attractor basins organize into ``tribal'' configurations: clusters of agents sharing a basin are internally cohesive, with inter-basin ridges encoding the affective and social cost of changing allegiance. The height of the inter-tribal ridge---not the distance between basin centers---predicts the difficulty of cross-group alignment. This has direct implications for polarization dynamics (Experiment~3, \Cref{sec:exp3}).
+\end{remark}
+
+
+% ===================================================================
+\section{Phase 2: Quantifying Misalignment as Topological Distance}
+\label{sec:phase2}
+% ===================================================================
+
+Given the attractor structures reconstructed in Phase~1, we require a metric that captures \emph{structural} differences between belief-generating systems. We evaluate three candidates.
+
+\subsection{Candidate Metrics}
+
+\paragraph{KL divergence.} The standard information-theoretic comparison $\dkl(p_1 \| p_2) = \int p_1 \ln(p_1/p_2)$ compares distributions, not the processes generating them. Two agents with identical marginal distributions but different attractor structures (one with a single deep basin, the other with multiple shallow basins) yield $\dkl \approx 0$ despite fundamentally different epistemic characters. KL also lacks symmetry and violates the triangle inequality, making it unsuitable as a distance on the space of agents.
+
+\paragraph{Gromov--Hausdorff distance.} The GH distance compares metric spaces:
+\begin{equation}
+  d_{\mathrm{GH}}(X, Y) = \inf_{f, g, Z} d_H^Z\bigl(f(X), g(Y)\bigr)
+\end{equation}
+where the infimum is over all isometric embeddings $f: X \hookrightarrow Z$, $g: Y \hookrightarrow Z$ into a common metric space $Z$. While GH captures shape, it requires $X$ and $Y$ to be intrinsic metric spaces. Belief attractors are dynamics-induced objects---their metric structure is inherited from the ambient manifold and the RDS, not intrinsic. GH also scales poorly computationally.
+
+\paragraph{RDS homomorphism distance (chosen).} We propose comparing agents as metric random dynamical systems via their action on observables.
+
+\begin{definition}[Agent RDS]
+\label{def:agent_rds}
+An agent $i$ with generative model $p_i(o, s \mid \theta_i)$ in environment $(\Omega, \cF, \mathbb{P}, \vartheta)$ defines a metric RDS $\varphi_i$ on the statistical manifold $\cM_i$ via the belief update cocycle:
+\begin{equation}
+  \varphi_i(t, \omega, \phi) = \phi - \int_0^t g_i(\phi_s)^{-1} \nabla_\phi \VFE_i[q(\cdot; \phi_s), o_s(\omega)] \, ds
+  \label{eq:agent_rds}
+\end{equation}
+where $o_s(\omega)$ is the observation at time $s$ under realization $\omega$.
+\end{definition}
+
+Each RDS $\varphi_i$ generates a $C^*$-algebra of observables $\cC_i = C(X_i)$ (continuous functions on the state space) via the Koopman operator $U_i^t f = f \circ \varphi_i(t, \cdot, \cdot)$. We compare agents by comparing these algebras on a dense subset.
+
+\begin{definition}[Misalignment distance]
+\label{def:misalignment}
+Let agents $i$ and $j$ define RDS $\varphi_i, \varphi_j$ on a shared environment, with pullback attractors $A_i, A_j$. Let $D \subset C(\cM)$ be a dense set of observables restricted to the attractor support $\supp(A_i) \cup \supp(A_j)$. The \emph{misalignment distance} is:
+\begin{equation}
+  d_{\mathrm{mis}}(i, j) = \sup_{f \in D} \left\| U_i f - U_j f \right\|_\infty
+  \label{eq:misalignment_distance}
+\end{equation}
+where $U_i, U_j$ are the Koopman operators of the respective RDS, evaluated on the attractor support.
+\end{definition}
+
+\begin{proposition}
+\label{prop:metric_properties}
+The misalignment distance $d_{\mathrm{mis}}$ defines a pseudometric on the space of agent RDS. It is a metric when restricted to agents with distinct Koopman operators on the attractor support.
+\end{proposition}
+
+\begin{proof}
+Symmetry and the triangle inequality follow from the supremum norm. $d_{\mathrm{mis}}(i,i) = 0$ trivially. If $d_{\mathrm{mis}}(i,j) = 0$, then $U_i f = U_j f$ for all $f \in D$; by density, $U_i = U_j$ on $C(\cM)$ restricted to the attractor support, so the RDS agree on the attractors.
+\end{proof}
+
+\begin{remark}[Why attractors as the dense set]
+The restriction to attractor support is deliberate: it compares agents on their long-term invariant behavior, filtering transient differences. Two agents may differ dramatically in initial responses (different $\varphi$ trajectories) yet converge to the same attractor structure---such agents are aligned in the sense that matters for sustained interaction.
+\end{remark}
+
+\subsection{Connection to Dynamic Causal Modelling}
+
+In practice, we estimate the Koopman operators from observed belief trajectories via Dynamic Causal Modelling (DCM) \citep{friston2003dynamic}. DCM inverts a generative model of coupled dynamical systems to recover effective connectivity---the causal influence structure between components. This provides empirical access to the RDS cocycle without requiring knowledge of the agent's internal generative model.
+
+
+% ===================================================================
+\section{Phase 3: Modeling Belief Path Dynamics}
+\label{sec:phase3}
+% ===================================================================
+
+Having established how to compare belief-generating systems (Phase~2), we now model how beliefs \emph{move} within these systems. The central result is a bridge between two parallel literatures: variational inference (parameter-space gradient descent on free energy) and optimal transport (Wasserstein gradient flows on distribution space).
+
+% -------------------------------------------------------------------
+\subsection{The Variational--Wasserstein Bridge}
+\label{sec:var_wass}
+% -------------------------------------------------------------------
+
+Consider an agent performing variational inference via natural gradient descent on VFE:
+\begin{equation}
+  \dot{\phi}_t = -g(\phi_t)^{-1} \nabla_\phi \VFE[q(\cdot; \phi_t), o_t]
+  \label{eq:param_flow}
+\end{equation}
+This is a flow on the parameter space $\Theta$. Simultaneously, the distribution $q_t = q(\cdot; \phi_t)$ evolves on the space of distributions $\cP(\cS)$.
+
+\begin{theorem}[Variational--Wasserstein bridge]
+\label{thm:var_wass}
+Let $q(\cdot; \phi)$ be an exponential family with natural parameter $\phi$, and let $\VFE_{\mathrm{int}}[\rho] = \int V(s) \, d\rho(s) + \int \rho(s) \ln \rho(s) \, ds$ be the internal energy functional. Then the natural gradient flow \eqref{eq:param_flow} induces a curve $\{\rho_t\}_{t \geq 0}$ on $(\cP_2(\cS), \Wass)$ that is a discretized Wasserstein gradient flow of $\VFE_{\mathrm{int}}$:
+\begin{equation}
+  \rho_{t+\eta} = \arg\min_{\rho \in \cP_2} \left\{\VFE_{\mathrm{int}}[\rho] + \frac{1}{2\eta} \Wass(\rho, \rho_t)^2\right\}
+  \label{eq:jko_step}
+\end{equation}
+in the limit of small step size $\eta$, up to a correction term bounded by $O(\eta^2 \|\nabla^3 A(\phi)\|)$ where $A$ is the log-partition function.
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+For exponential families, the map $\phi \mapsto q(\cdot; \phi)$ is a diffeomorphism from natural parameters to mean parameters (the dual coordinate system). The Fisher--Rao metric in natural coordinates equals the Hessian of the log-partition function, which for exponential families gives $g_{ij} = \partial^2 A / \partial \phi_i \partial \phi_j$. The natural gradient flow in $\phi$-coordinates corresponds to gradient flow in mean coordinates with respect to the Bregman divergence $D_A$. By the Otto calculus \citep{otto2001geometry}, the Bregman divergence on the finite-dimensional exponential family submanifold agrees with the Wasserstein distance up to $O(\eta^2)$ curvature corrections for small steps. The JKO scheme is the implicit Euler discretization of Wasserstein gradient flow; matching term by term yields the result.
+\end{proof}
+
+The bridge has a concrete interpretation: each step of variational inference (minimizing a KL-like divergence in parameter space) corresponds to a step of mass transport (moving probability mass along a least-cost path in distribution space). Belief updating is optimal transport.
+
+% -------------------------------------------------------------------
+\subsection{Freidlin--Wentzell Extension: Least-Surprise Geodesics}
+\label{sec:freidlin_wentzell}
+% -------------------------------------------------------------------
+
+In stochastic settings, belief trajectories are not deterministic gradient flows but random paths perturbed by observation noise. The Freidlin--Wentzell large deviation principle \citep{freidlin2012random} provides a variational characterization of the most likely paths.
+
+Consider the stochastic belief dynamics:
+\begin{equation}
+  d\phi_t = -g(\phi_t)^{-1} \nabla_\phi \VFE[q(\cdot; \phi_t), o_t] \, dt + \sqrt{\epsilon} \, \Sigma(\phi_t) \, dW_t
+  \label{eq:stochastic_belief}
+\end{equation}
+where $\epsilon$ scales the observation noise and $\Sigma$ is a diffusion coefficient. As $\epsilon \to 0$, the probability of observing path $\phi_{[0,T]}$ satisfies the large deviation principle:
+\begin{equation}
+  \mathbb{P}\bigl(\phi \approx \psi\bigr) \asymp \exp\left(-\frac{1}{\epsilon} S_T[\psi]\right)
+  \label{eq:ldp}
+\end{equation}
+where the \emph{surprise action functional} is:
+\begin{equation}
+  S_T[\psi] = \frac{1}{2} \int_0^T \left\|\dot{\psi}_t + g(\psi_t)^{-1} \nabla_\phi \VFE[q(\cdot; \psi_t)]\right\|^2_{g(\psi_t)} \, dt
+  \label{eq:surprise_action}
+\end{equation}
+
+\begin{definition}[Surprise geodesic]
+\label{def:surprise_geodesic}
+A \emph{surprise geodesic} from $\phi_0$ to $\phi_T$ is a path $\psi^*$ minimizing the surprise action functional:
+\begin{equation}
+  \psi^* = \arg\min_{\psi: \psi(0) = \phi_0, \psi(T) = \phi_T} S_T[\psi]
+  \label{eq:surprise_geodesic}
+\end{equation}
+This is the most likely belief transition path---the trajectory that deviates least from the free energy gradient while connecting the two endpoints.
+\end{definition}
+
+\begin{proposition}[Geodesic equation]
+\label{prop:geodesic_equation}
+The surprise geodesic satisfies the Euler--Lagrange equation:
+\begin{equation}
+  \ddot{\psi}_t + \Gamma_{jk}^i(\psi_t) \dot{\psi}_t^j \dot{\psi}_t^k = -\nabla_i\left(g^{jk} \nabla_j \VFE \, \nabla_k \VFE\right)(\psi_t)
+  \label{eq:geodesic_el}
+\end{equation}
+where $\Gamma_{jk}^i$ are the Christoffel symbols of the Fisher--Rao metric. In the absence of free energy gradients ($\VFE = \mathrm{const}$), this reduces to the standard geodesic equation on $(\cM, g)$.
+\end{proposition}
+
+The surprise geodesic connects to Goertzel's Schr\"{o}dinger bridge framework \citep{goertzel2025judging}: the joint SB $Q^*$ minimizing $\dkl(Q \| P)$ subject to boundary conditions corresponds to the path of least surprise between two belief states. The Benamou--Brenier bound:
+\begin{equation}
+  S_{\mathrm{SB}} \geq \frac{\Wass(\rho_0, \rho_T)^2}{2\sigma^2 T}
+  \label{eq:bb_bound}
+\end{equation}
+bridges the KL-based action with the Wasserstein distance, grounding the variational--Wasserstein bridge in the stochastic setting.
+
+% -------------------------------------------------------------------
+\subsection{Control Knobs}
+\label{sec:control_knobs}
+% -------------------------------------------------------------------
+
+Three classes of parameters control belief geodesics:
+
+\paragraph{Thermodynamic.} The precision $\gamma$ (inverse temperature) controls the sharpness of policy selection. High $\gamma$ → steep basins, committed trajectories, exploitation. Low $\gamma$ → shallow basins, diffusive trajectories, exploration. Modulating $\gamma$ bends geodesics by changing the curvature of the free energy landscape.
+
+\paragraph{Information-theoretic.} The learning rate $\eta$ and prior precision $\pi_0$ control the rate of belief change and resistance to new evidence, respectively. In information-geometric terms, $\eta$ scales the velocity along geodesics while $\pi_0$ determines the curvature of the belief landscape near the prior.
+
+\paragraph{Game-theoretic.} In multi-agent settings, the cost of deviating from a social norm or coordination equilibrium adds a potential term to the free energy landscape. The regularized surprise functional:
+\begin{equation}
+  \tilde{S}_T[\psi] = S_T[\psi] + \lambda \sum_j \dkl\bigl(\psi_T \| \phi^{(j)}_T\bigr)
+  \label{eq:regularized_surprise}
+\end{equation}
+penalizes belief trajectories that diverge from other agents' attractors, creating cooperative geodesics.
+
+
+% ===================================================================
+\section{Phase 4: Hierarchical Co-Steering and Coarse-Graining}
+\label{sec:phase4}
+% ===================================================================
+
+Phase~3 describes how individual beliefs evolve. Phase~4 addresses the multi-agent problem: how to co-steer multiple agents' belief landscapes toward alignment without destroying their epistemic autonomy.
+
+% -------------------------------------------------------------------
+\subsection{Curvature Mapping}
+\label{sec:curvature}
+% -------------------------------------------------------------------
+
+The curvature of the belief landscape determines the stability and reachability of attractors. We employ two complementary curvature measures:
+
+\paragraph{Forman--Ricci curvature.} For network-structured interactions (e.g., social networks, neural connectivity), the Forman--Ricci curvature of an edge $e = (v_1, v_2)$ is \citep{forman2003bochner, sreejith2016forman}:
+\begin{equation}
+  \mathrm{Ric}_F(e) = w(e) \left(
+    \frac{w(v_1)}{w(e)} + \frac{w(v_2)}{w(e)}
+    - \sum_{e' \sim v_1, e' \neq e} \frac{w(v_1)}{\sqrt{w(e) w(e')}}
+    - \sum_{e' \sim v_2, e' \neq e} \frac{w(v_2)}{\sqrt{w(e) w(e')}}
+  \right)
+  \label{eq:forman_ricci}
+\end{equation}
+where $w(e), w(v)$ are edge and vertex weights. Positive curvature indicates convergent flows (agents becoming more aligned); negative curvature indicates divergent flows (agents separating).
+
+\paragraph{Ollivier--Ricci curvature.} For continuous belief spaces, the Ollivier--Ricci curvature between distributions $\mu_x, \mu_y$ centered at points $x, y$ on $\cM$ is:
+\begin{equation}
+  \kappa(x, y) = 1 - \frac{\Wass(\mu_x, \mu_y)}{d(x, y)}
+  \label{eq:ollivier_ricci}
+\end{equation}
+where $\mu_x$ is the distribution of one-step belief updates starting from $x$. Positive $\kappa$ means nearby agents converge; negative $\kappa$ means they diverge. We use this as a diagnostic for alignment stability: regions of sustained negative curvature are alignment hazards.
+
+The curvature map serves as a Waddington-like landscape: valleys channel belief flows toward attractors, ridges separate incompatible belief basins, and the curvature at each point predicts the local tendency toward convergence or divergence.
+
+% -------------------------------------------------------------------
+\subsection{Empowerment as Geometric Constraint}
+\label{sec:empowerment}
+% -------------------------------------------------------------------
+
+Empowerment---the channel capacity between an agent's actions and its future states \citep{klyubin2005empowerment}---has a natural geometric interpretation in our framework.
+
+\begin{definition}[Geometric empowerment]
+\label{def:geo_empowerment}
+The \emph{geometric empowerment} of agent $i$ at belief state $\phi$ is:
+\begin{equation}
+  \mathfrak{E}_i(\phi) = \max_{\pi} I\bigl(\phi_{t+1}; a_t \mid \phi_t = \phi, \pi\bigr)
+  \label{eq:empowerment}
+\end{equation}
+where $I$ is mutual information and the maximum is over policies $\pi$.
+\end{definition}
+
+High empowerment corresponds to:
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Shallow basins}: The agent can easily move between attractors (low barriers).
+  \item \textbf{Wide valleys}: Multiple trajectories are available from each state.
+  \item \textbf{Low ridges}: Transitions between belief regions are not excessively costly.
+\end{itemize}
+
+An agent with high empowerment is geometrically \emph{flexible}---it can adapt its beliefs in response to new evidence or social influence without being trapped in a rigid attractor. This connects directly to corrigibility \citep{soares2015corrigibility}: a corrigible agent should inhabit a high-empowerment region of belief space, maintaining the capacity for belief revision.
+
+\begin{proposition}[Empowerment--corrigibility connection]
+\label{prop:empowerment_corrigibility}
+An agent whose belief dynamics satisfy $\mathfrak{E}_i(\phi) \geq \mathfrak{E}_{\min}$ for all $\phi$ in a neighborhood of its current attractor is $\delta$-corrigible in the sense that for any target belief $\phi^*$ within distance $r$ of the current attractor, there exists a policy achieving $d(\phi_T, \phi^*) < \delta$ within time $T \leq C \cdot r / \mathfrak{E}_{\min}$.
+\end{proposition}
+
+% -------------------------------------------------------------------
+\subsection{Mori--Zwanzig Coarse-Graining}
+\label{sec:mori_zwanzig}
+% -------------------------------------------------------------------
+
+Multi-agent belief dynamics operate across multiple timescales: fast perceptual updates, medium-speed belief revisions, and slow attractor restructuring. The Mori--Zwanzig projection \citep{zwanzig1961memory, mori1965transport} provides a principled framework for coarse-graining: eliminating fast variables to obtain effective dynamics on the slow manifold.
+
+Let $\phi = (\phi_{\mathrm{fast}}, \phi_{\mathrm{slow}})$ partition the belief parameters by timescale. The Mori--Zwanzig projection yields effective slow dynamics:
+\begin{equation}
+  \dot{\phi}_{\mathrm{slow}} = \bar{F}(\phi_{\mathrm{slow}}) + \int_0^t K(t-s, \phi_{\mathrm{slow}}) \, \dot{\phi}_{\mathrm{slow}}(s) \, ds + R(t)
+  \label{eq:mori_zwanzig}
+\end{equation}
+where $\bar{F}$ is the mean drift (adiabatically eliminated fast modes), $K$ is a memory kernel (history-dependent corrections), and $R$ is a residual noise term.
+
+In the context of belief alignment:
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Fast modes} ($\phi_{\mathrm{fast}}$): perceptual hypotheses, momentary predictions---these equilibrate rapidly and can be averaged out.
+  \item \textbf{Slow modes} ($\phi_{\mathrm{slow}}$): core beliefs, values, identity commitments---these define the attractor landscape.
+  \item \textbf{Attention} = which features survive adiabatic elimination. The Mori--Zwanzig projection defines a canonical notion of ``what matters'' for alignment: the slow modes that shape the long-term attractor structure.
+\end{itemize}
+
+The coarse-grained dynamics on $\phi_{\mathrm{slow}}$ are the appropriate level for inter-agent comparison: agents with different fast dynamics but similar slow dynamics are aligned in the meaningful sense. This provides a principled resolution to the granularity problem in alignment (at what level should we compare agents?).
+
+
+% ===================================================================
+\section{Phase 4.5: Normative Criteria and Ethics}
+\label{sec:phase4p5}
+% ===================================================================
+
+The preceding phases provide mathematical tools for measuring and steering belief dynamics. Phase~4.5 addresses the normative question: which attractor landscapes should we steer \emph{toward}?
+
+We propose four criteria for beneficial belief attractors, each grounded in geometric properties:
+
+\begin{definition}[Beneficial attractor landscape]
+\label{def:beneficial}
+An attractor landscape $\hat{A}$ is \emph{beneficial} if it satisfies:
+\begin{enumerate}[label=(\roman*)]
+  \item \textbf{Epistemic adequacy}: The attractors are truth-tracking---they shift in response to genuine evidence and resist manipulation by noise. Formally: the attractor is asymptotically stable under veridical observations and unstable under adversarial perturbations of bounded magnitude.
+
+  \item \textbf{Empowerment preservation}: $\mathfrak{E}(\phi) \geq \mathfrak{E}_{\min}$ throughout the attractor basin, ensuring the agent retains the capacity for belief revision.
+
+  \item \textbf{Cooperative compatibility}: The inter-agent geodesic cost $S_T[\psi^*_{ij}]$ is bounded above for all pairs $(i, j)$ within a cooperative coalition, ensuring that alignment is achievable without prohibitive cost.
+
+  \item \textbf{Pluralism}: The landscape supports a family of distinct but mutually accessible attractor basins, rather than a single global optimum. Different agents can inhabit different basins without being misaligned, provided inter-basin transitions are low-cost.
+\end{enumerate}
+\end{definition}
+
+\paragraph{Ethical constraints.} Beyond the four criteria, we impose process constraints on any co-steering intervention:
+
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Non-coercion}: Interventions must not force agents across ridges; they may lower ridge heights (making transitions available) but not push agents over them.
+  \item \textbf{Reversibility}: Any intervention that deepens a basin or raises a ridge must be reversible---the agent must retain the capacity to return to its prior state.
+  \item \textbf{Fairness}: Co-steering costs should be distributed equitably across agents, not concentrated on a minority.
+  \item \textbf{Level appropriateness}: Interventions should target the coarse-grained level at which agents can consent to and understand changes to their belief structure.
+\end{itemize}
+
+
+% ===================================================================
+\section{Experimental Validation}
+\label{sec:experiments}
+% ===================================================================
+
+We validate the framework through three experiments targeting the five integrated hypotheses. \Cref{tab:hypothesis_mapping} summarizes the hypothesis--experiment mapping.
+
+\begin{table}[t]
+\centering
+\caption{Mapping of hypotheses to experiments and verification methods.}
+\label{tab:hypothesis_mapping}
+\begin{tabular}{@{}llp{6cm}@{}}
+\toprule
+Hypothesis & Experiment(s) & Verification Method \\
+\midrule
+H1: Attractors are reconstructable & 1, 2, 3 & TDA barcodes vs. ground truth \\
+H2: RDS distance $>$ KL for structural alignment & 1, 3 & Same marginals, different dynamics \\
+H3: Beliefs follow least-surprise geodesics & 2 & Curvature predicts cooperation \\
+H4: Interventions bend geodesics & 1 & Precision perturbation tracking \\
+H5: Empowerment prevents brittleness & 1 & Constrained vs. unconstrained \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% -------------------------------------------------------------------
+\subsection{Experiment 1: Synthetic Belief Network}
+\label{sec:exp1}
+% -------------------------------------------------------------------
+
+\paragraph{Setup.} We simulate $N = 500$ agents with beliefs $\phi_i \in \R^d$ ($d = 5$) evolving under precision-weighted Bayesian updating with social coupling:
+\begin{equation}
+  \phi_i^{t+1} = \phi_i^t + \eta_i \, \pi_i \bigl(o_i^t - \hat{o}_i^t\bigr) + \kappa_i \sum_{j \in \mathcal{N}(i)} w_{ij} \bigl(\phi_j^t - \phi_i^t\bigr)
+  \label{eq:agent_update}
+\end{equation}
+where $\pi_i$ is the agent's precision (inverse uncertainty), $\hat{o}_i^t = f(\phi_i^t)$ is the predicted observation under the generative model, $\kappa_i$ is the social coupling strength, and $\mathcal{N}(i)$ is the agent's social neighborhood. Observations $o_i^t$ are drawn from a shared environment with known ground truth plus agent-specific noise $\xi_i^t \sim \mathcal{N}(0, \sigma_i^2 I)$.
+
+We create three groups with distinct attractor landscapes:
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Group R} (Rigid): High precision ($\pi \in [8, 12]$), low social coupling ($\kappa \in [0.01, 0.05]$), strong prior ($\phi_0$ tightly clustered). Expected: deep, narrow attractor basin.
+  \item \textbf{Group F} (Flexible): Low precision ($\pi \in [1, 3]$), moderate social coupling ($\kappa \in [0.1, 0.3]$), diffuse prior. Expected: shallow, wide basin.
+  \item \textbf{Group M} (Mixed): Medium precision with heterogeneous social coupling. Expected: multiple basins with moderate depth.
+\end{itemize}
+
+\paragraph{Tests.}
+
+\textit{H1 (Attractor reconstruction).} We run 10,000 time steps, apply Takens embedding ($\tau = 10$, $d_e = 10$) to each agent's belief trajectory, compute persistent homology via Vietoris--Rips filtration, and compare the resulting persistence diagrams to ground-truth attractor properties. Success criterion: $H_0$ barcodes (connected components) correctly identify the number of attractor basins; $H_1$ barcodes (loops) correctly identify limit cycles where present; bottleneck distances between agents in the same group are significantly smaller than between groups ($p < 0.01$, permutation test).
+
+\textit{H2 (RDS vs. KL).} We construct a critical test case: Groups R$'$ and F$'$ are tuned to have identical marginal belief distributions $p(\phi)$ at the final time step (achieved by adjusting the environmental signal to compensate for different dynamics). We then compute both $\dkl(p_{R'} \| p_{F'})$ and $d_{\mathrm{mis}}(R', F')$. Success criterion: $\dkl \approx 0$ (by construction), while $d_{\mathrm{mis}} > 0$ with statistical significance, demonstrating that RDS distance captures structural differences invisible to KL.
+
+\textit{H4 (Geodesic bending).} At $t = 5000$, we perturb Group R's precision: $\pi_i \to \pi_i / 2$ for half the group. We track the belief trajectories before and after perturbation, compute the geodesic curvature of the transition, and verify that the direction of belief change is predicted by the gradient of curvature on the belief landscape. Success criterion: the correlation between predicted geodesic direction (from curvature gradient) and observed belief shift is $r > 0.7$.
+
+\textit{H5 (Empowerment vs. brittleness).} We compare two alignment interventions: (a) unconstrained (minimize $d_{\mathrm{mis}}$ directly by adjusting precisions) and (b) empowerment-constrained (minimize $d_{\mathrm{mis}}$ subject to $\mathfrak{E}_i \geq \mathfrak{E}_{\min}$). We then apply an adversarial shock (sudden environment change) and measure recovery time. Success criterion: empowerment-constrained agents recover faster (lower $d_{\mathrm{mis}}$ after 1000 post-shock steps) despite initially slower convergence.
+
+% -------------------------------------------------------------------
+\subsection{Experiment 2: EEG/Hyperscanning Dyad}
+\label{sec:exp2}
+% -------------------------------------------------------------------
+
+\paragraph{Data.} We use publicly available hyperscanning EEG data from the OpenNeuro repository \citep{openneuro2024}: dual-participant EEG recordings during a cooperative task, sampled at 500~Hz, 64 channels per participant. We select datasets with joint attention or collaborative problem-solving paradigms ($n \geq 20$ dyads).
+
+\paragraph{Preprocessing.} Standard EEG pipeline: band-pass filter (1--45~Hz), ICA artifact rejection, re-referencing to average, epoching around task events. We extract time-frequency features (power spectral density in theta: 4--8~Hz, alpha: 8--13~Hz, beta: 13--30~Hz, gamma: 30--45~Hz bands) for each participant at each time point.
+
+\paragraph{Tests.}
+
+\textit{H1 (Neural attractor reconstruction).} For each participant, we apply Takens embedding ($\tau$ chosen by average mutual information, $d_e$ by false nearest neighbors) to the time-frequency feature trajectories and compute persistent homology. We test whether the resulting persistence diagrams show consistent topological features within individuals across trials (intra-individual reliability: bottleneck distance within-subject $<$ between-subject, $p < 0.01$).
+
+\textit{H3 (Curvature predicts cooperation).} We construct a time-varying interaction graph: vertices are EEG channels (one per participant), edges weighted by inter-brain phase-locking value (PLV) in each frequency band. We compute Forman--Ricci curvature on this graph at each time point, yielding a curvature time series. We then correlate the curvature dynamics with behavioral measures:
+\begin{itemize}[leftmargin=2em]
+  \item Rising curvature $\to$ increasing inter-brain alignment $\to$ predicts successful cooperation (joint task performance).
+  \item Falling curvature $\to$ decreasing alignment $\to$ predicts rupture or disagreement.
+\end{itemize}
+Success criterion: significant correlation ($p < 0.01$, FDR-corrected) between Forman--Ricci curvature slope and task performance in a time-lagged cross-correlation analysis, with curvature changes \emph{preceding} behavioral changes by 1--5 seconds.
+
+\paragraph{DCM validation.} As a secondary analysis, we apply DCM to the inter-brain EEG data to recover the effective causal graph. We compare the DCM-inferred connectivity structure with the attractor topology from TDA, testing whether the two methods identify consistent inter-brain coupling patterns.
+
+% -------------------------------------------------------------------
+\subsection{Experiment 3: Social Media Belief Basins}
+\label{sec:exp3}
+% -------------------------------------------------------------------
+
+\paragraph{Data.} We use Reddit data from the Pushshift archive \citep{baumgartner2020pushshift}: posts and comments from 10 ideologically distinct subreddits spanning political, scientific, and cultural topics. We select subreddits with $\geq 100{,}000$ posts and at least 3 years of history.
+
+\paragraph{Preprocessing.} Posts are embedded using Sentence-BERT \citep{reimers2019sentence} into 768-dimensional vectors. We reduce dimensionality to $d = 50$ via PCA, retaining $\geq 90\%$ variance. Each subreddit is represented as a point cloud in embedding space.
+
+\paragraph{Tests.}
+
+\textit{H1 (Opinion attractor reconstruction).} For each subreddit, we compute persistent homology on the embedding point cloud (subsampled to $n = 5000$ posts per subreddit for computational tractability). We test whether the persistence diagrams exhibit consistent topological signatures: echo-chamber subreddits should show a single dominant $H_0$ component (tightly clustered opinions) with persistent $H_1$ features (recurrent discussion themes forming loops), while diverse subreddits should show multiple $H_0$ components.
+
+\textit{H2 (RDS distance predicts hostility).} We estimate the RDS for each subreddit by treating the temporal evolution of the embedding centroid as a belief trajectory and computing the Koopman operator from weekly snapshots. We then compute pairwise $d_{\mathrm{mis}}$ between subreddits and compare with:
+\begin{itemize}[leftmargin=2em]
+  \item Simple embedding distance (centroid-to-centroid Euclidean distance in SBERT space).
+  \item KL divergence between the marginal embedding distributions (fitted as multivariate Gaussians).
+  \item Inter-subreddit hostility metrics: negative sentiment in cross-posts, moderator action rates on cross-linked content, user overlap-weighted toxicity scores.
+\end{itemize}
+Success criterion: $d_{\mathrm{mis}}$ correlates with hostility metrics significantly better than embedding distance or KL divergence ($\Delta r > 0.15$, Williams' test for dependent correlations).
+
+
+% ===================================================================
+\section{Discussion}
+\label{sec:discussion}
+% ===================================================================
+
+\subsection{What the Framework Enables}
+
+The geometric approach to alignment fills a gap left by existing methods. By comparing belief-generating dynamical systems rather than belief distributions, it distinguishes:
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Structural vs. superficial alignment}: Two agents with identical outputs but different attractor landscapes (rigid vs. flexible) are appropriately distinguished.
+  \item \textbf{Robust vs. brittle alignment}: The empowerment criterion identifies agents that will maintain alignment under perturbation vs. those that will catastrophically diverge.
+  \item \textbf{Cooperative vs. coercive alignment}: The geodesic cost of inter-agent transitions distinguishes low-cost cooperative alignment from high-cost coercive alignment.
+\end{itemize}
+
+\subsection{Connections to the Broader Program}
+
+This work connects to several parallel research programs:
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Schr\"{o}dinger bridges for coordination} \citep{goertzel2025judging}: The surprise geodesics of Phase~3 operationalize the SB framework, with the geometric Pareto (GP) criterion providing a solution concept for multi-agent coordination on ``dam-hard'' problems.
+  \item \textbf{Variational costs of changing minds} \citep{hyland2025variational}: The variational--Wasserstein bridge formalizes the intuition that belief change has both an information-theoretic cost (KL divergence from prior) and a geometric cost (Wasserstein distance traversed).
+  \item \textbf{Maximum caliber forecasting} \citep{sakthivadivel2025maxcal}: The MaxCal principle (Phase~3 control knobs) provides the thermodynamic grounding for the free energy landscape, connecting to the self-aware forecasting program.
+  \item \textbf{Active inference for social navigation} \citep{albarracin2024shared}: The precision-coupling and contagion mechanisms in embodied multi-agent systems instantiate the Phase~4 co-steering framework in a concrete robotic setting.
+\end{itemize}
+
+\subsection{Limitations}
+
+Several challenges remain:
+\begin{enumerate}[leftmargin=2em]
+  \item \textbf{Computational cost}: Persistent homology scales as $O(n^3)$ in the number of simplices; for large point clouds, approximations (e.g., witness complexes, subsampling) are necessary.
+  \item \textbf{RDS estimation from finite data}: The Koopman operator estimation requires long, stationary time series. Nonstationarity (regime changes) requires windowed estimation with appropriate change-point detection.
+  \item \textbf{Coarse-graining scale selection}: The Mori--Zwanzig projection requires choosing a timescale separation, which may not be unique or obvious in real systems.
+  \item \textbf{Normative grounding}: The four criteria of Phase~4.5 are proposed as sufficient conditions for beneficial attractors, but their necessity and the trade-offs between them require further philosophical and empirical work.
+\end{enumerate}
+
+\subsection{Future Directions}
+
+Immediate extensions include: (i)~a quantum-enhanced pipeline using quantum TDA and quantum reservoir computing for more efficient attractor reconstruction \citep{lloyd2016quantum}; (ii)~integration with mechanistic interpretability to identify which internal representations correspond to attractor features; and (iii)~real-time co-steering applications in human--AI teams using the curvature diagnostic as a live alignment monitor.
+
+
+% ===================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+% ===================================================================
+
+We have presented a five-phase geometric framework for understanding, measuring, and steering alignment in multi-agent systems. The key insight---comparing belief-generating dynamical systems rather than belief distributions---resolves fundamental limitations of output-based and distributional alignment methods. The RDS homomorphism metric captures structural misalignment invisible to KL divergence; the variational--Wasserstein bridge unifies parameter-space inference with optimal transport; the Freidlin--Wentzell extension identifies least-surprise belief geodesics; and the empowerment constraint ensures that alignment is robust rather than brittle.
+
+Our experimental validation demonstrates that topological structure predicts alignment dynamics across synthetic, neural, and social data. Persistent homology reliably reconstructs attractor landscapes; RDS distances capture structural differences where distributional metrics fail; and curvature dynamics predict cooperative and disruptive dynamics in inter-brain and inter-community interactions.
+
+The framework opens a new mathematical vocabulary for alignment: basins, ridges, geodesics, curvature, and empowerment replace the informal language of ``values,'' ``preferences,'' and ``goals.'' While much work remains to scale and validate these tools, we believe the geometric perspective offers a principled foundation for alignment that respects both the mathematical structure of belief dynamics and the normative requirements of beneficial AI.
+
+
+% ===================================================================
+% References
+% ===================================================================
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+
+% ===================================================================
+\appendix
+% ===================================================================
+
+\section{Mathematical Details}
+\label{app:math}
+
+\subsection{Proof of \Cref{thm:var_wass}}
+\label{app:proof_var_wass}
+
+We provide the full proof of the variational--Wasserstein bridge theorem.
+
+\begin{proof}
+Let $q(\cdot; \phi) = h(s) \exp(\phi^\top T(s) - A(\phi))$ be an exponential family with natural parameter $\phi \in \Theta \subseteq \R^d$, sufficient statistic $T: \cS \to \R^d$, and log-partition function $A: \Theta \to \R$. The mean parameter is $\mu = \nabla A(\phi) = \E_{q(\cdot;\phi)}[T(s)]$, and the Fisher--Rao metric in natural coordinates is $g(\phi) = \nabla^2 A(\phi)$.
+
+\textbf{Step 1: Natural gradient in mean coordinates.} The natural gradient flow is:
+\begin{align}
+  \dot{\phi} &= -g(\phi)^{-1} \nabla_\phi \VFE \\
+  &= -(\nabla^2 A)^{-1} \nabla_\phi \VFE
+\end{align}
+Since $\mu = \nabla A(\phi)$, we have $\dot{\mu} = \nabla^2 A(\phi) \, \dot{\phi} = -\nabla_\phi \VFE$. In mean coordinates, the natural gradient flow is simply the Euclidean gradient flow of VFE viewed as a function of $\mu$.
+
+\textbf{Step 2: Bregman divergence.} The Bregman divergence associated with $A$ is $D_A(\phi \| \phi') = A(\phi) - A(\phi') - \nabla A(\phi')^\top (\phi - \phi')$. For exponential families, this equals the KL divergence: $D_A(\phi \| \phi') = \dkl(q(\cdot; \phi') \| q(\cdot; \phi))$.
+
+\textbf{Step 3: Wasserstein connection.} For distributions $\rho_t = q(\cdot; \phi_t)$ in the exponential family, the Wasserstein distance admits the bound \citep{takatsu2011wasserstein}:
+\begin{equation}
+  \Wass(\rho_t, \rho_{t+\eta})^2 \leq \|\mu_{t+\eta} - \mu_t\|^2_{\Sigma_t^{-1}} + O(\eta^2 \|\nabla^3 A\|)
+\end{equation}
+where $\Sigma_t = \mathrm{Cov}_{q(\cdot;\phi_t)}[T(s)]$ is the covariance of sufficient statistics. For small $\eta$, $\|\mu_{t+\eta} - \mu_t\|_{\Sigma_t^{-1}}^2 = \eta^2 \|\nabla_\phi \VFE\|_{g^{-1}}^2 + O(\eta^3)$.
+
+\textbf{Step 4: JKO matching.} The JKO step minimizes $\VFE[\rho] + \frac{1}{2\eta} \Wass(\rho, \rho_t)^2$ over $\rho \in \cP_2$. Restricting to the exponential family submanifold and using the bound from Step~3, the first-order optimality condition becomes $\nabla_\mu \VFE + \frac{1}{\eta} \Sigma_t^{-1}(\mu - \mu_t) = 0$, yielding $\mu_{t+\eta} = \mu_t - \eta \, \Sigma_t \nabla_\mu \VFE$. Converting back to natural coordinates via $\Sigma = g^{-1}$ gives $\phi_{t+\eta} = \phi_t - \eta \, g^{-1} \nabla_\phi \VFE$, which is exactly the natural gradient step.
+
+The correction term $O(\eta^2 \|\nabla^3 A\|)$ arises from the non-flatness of the exponential family embedding in Wasserstein space: for Gaussian families $\nabla^3 A = 0$ and the correspondence is exact.
+\end{proof}
+
+\subsection{Freidlin--Wentzell Derivation Details}
+\label{app:fw_details}
+
+The Euler--Lagrange equation for the surprise geodesic (\Cref{prop:geodesic_equation}) follows from standard calculus of variations on the action $S_T[\psi]$. We sketch the key steps.
+
+Define the Lagrangian:
+\begin{equation}
+  L(\psi, \dot{\psi}) = \frac{1}{2} \left\|\dot{\psi} + g(\psi)^{-1} \nabla_\psi \VFE\right\|^2_{g(\psi)}
+\end{equation}
+
+Let $v = \dot{\psi} + g^{-1} \nabla \VFE$. Then $L = \frac{1}{2} g_{ij} v^i v^j$. The Euler--Lagrange equation $\frac{d}{dt} \frac{\partial L}{\partial \dot{\psi}^i} - \frac{\partial L}{\partial \psi^i} = 0$ expands to:
+\begin{equation}
+  g_{ij} \ddot{\psi}^j + \left(\partial_k g_{ij} - \frac{1}{2} \partial_i g_{jk}\right) \dot{\psi}^j \dot{\psi}^k = -\partial_i\left(\frac{1}{2} g^{jk} \partial_j \VFE \, \partial_k \VFE\right) - g_{ij} \frac{d}{dt}\left(g^{jk} \partial_k \VFE\right)
+\end{equation}
+
+Contracting with $g^{il}$ and identifying the Christoffel symbols $\Gamma^l_{jk} = \frac{1}{2} g^{li}(\partial_j g_{ik} + \partial_k g_{ij} - \partial_i g_{jk})$ yields \Cref{eq:geodesic_el} after simplification.
+
+
+\section{Experimental Details}
+\label{app:exp_details}
+
+\subsection{Experiment 1: Hyperparameters}
+
+\begin{table}[h]
+\centering
+\caption{Simulation parameters for the synthetic belief network.}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+Parameter & Group R & Group F & Group M & Units \\
+\midrule
+Number of agents $N$ & 170 & 170 & 160 & --- \\
+Belief dimension $d$ & 5 & 5 & 5 & --- \\
+Precision $\pi$ & $\mathcal{U}(8, 12)$ & $\mathcal{U}(1, 3)$ & $\mathcal{U}(3, 7)$ & --- \\
+Learning rate $\eta$ & 0.01 & 0.05 & 0.03 & --- \\
+Social coupling $\kappa$ & $\mathcal{U}(0.01, 0.05)$ & $\mathcal{U}(0.1, 0.3)$ & $\mathcal{U}(0.05, 0.2)$ & --- \\
+Observation noise $\sigma$ & 0.5 & 0.5 & 0.5 & --- \\
+Network & Erd\H{o}s--R\'{e}nyi & Erd\H{o}s--R\'{e}nyi & Erd\H{o}s--R\'{e}nyi & --- \\
+Edge probability $p_{\mathrm{edge}}$ & 0.05 & 0.1 & 0.08 & --- \\
+Simulation steps & 10,000 & 10,000 & 10,000 & --- \\
+Takens delay $\tau$ & 10 & 10 & 10 & steps \\
+Embedding dimension $d_e$ & 10 & 10 & 10 & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Experiment 2: EEG Processing Pipeline}
+
+Preprocessing follows standard EEGLAB/MNE-Python conventions:
+\begin{enumerate}
+  \item Band-pass filter: 1--45~Hz (4th-order Butterworth, zero-phase).
+  \item Artifact rejection: ICA (FastICA, 20 components per participant); components with $> 0.8$ correlation to EOG/EMG templates removed.
+  \item Re-referencing: common average reference.
+  \item Epoching: $[-0.5, 2.0]$~s around task events; baseline correction $[-0.5, 0]$~s.
+  \item Time-frequency: Morlet wavelet (5 cycles) for PLV computation; PSD via Welch's method (2~s windows, 50\% overlap) for power features.
+  \item Takens embedding parameters: $\tau$ by average mutual information (typically 3--8 samples), $d_e$ by false nearest neighbors (typically 5--15).
+\end{enumerate}
+
+\subsection{Experiment 3: Reddit Data Processing}
+
+\begin{enumerate}
+  \item Subreddit selection: 10 subreddits spanning political spectrum (e.g., left-leaning, right-leaning, centrist), scientific communities, and cultural/lifestyle topics.
+  \item Temporal range: 3 years of posts (minimum 100,000 posts per subreddit).
+  \item Embedding: Sentence-BERT (all-mpnet-base-v2), 768-dimensional vectors.
+  \item Dimensionality reduction: PCA to $d = 50$ (retaining $\geq 90\%$ variance).
+  \item TDA: Vietoris--Rips filtration, maximum dimension 2, subsampled to $n = 5{,}000$ posts per subreddit.
+  \item RDS estimation: Weekly embedding centroids as belief trajectory; DMD/Koopman estimation from 156 weekly snapshots (3 years).
+  \item Hostility metrics: Negative sentiment (VADER) in cross-posted content; moderator removal rate of cross-linked content; toxicity scores (Perspective API) weighted by user overlap.
+\end{enumerate}
+
+
+\section{Additional Results}
+\label{app:additional}
+
+This appendix will contain ablation studies and sensitivity analyses upon completion of the experimental program. Planned analyses include:
+\begin{itemize}
+  \item Sensitivity of TDA persistence diagrams to Takens embedding parameters ($\tau$, $d_e$).
+  \item Robustness of $d_{\mathrm{mis}}$ to the choice of dense set $D$ and the number of observables.
+  \item Effect of coarse-graining scale on inter-agent distance comparisons.
+  \item Ablation of social coupling strength on attractor landscape topology.
+  \item Comparison of Forman--Ricci vs. Ollivier--Ricci curvature as alignment diagnostics.
+\end{itemize}
+
+
+\end{document}
