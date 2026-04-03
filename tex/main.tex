@@ -21,15 +21,13 @@
 \usepackage{microtype}
 
 % ===== Theorem environments =====
-\newtheorem{theorem}{Theorem}[section]
-\newtheorem{proposition}[theorem]{Proposition}
-\newtheorem{lemma}[theorem]{Lemma}
-\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{claim}{Claim}[section]
+\newtheorem{conjecture}[claim]{Conjecture}
 \theoremstyle{definition}
-\newtheorem{definition}[theorem]{Definition}
-\newtheorem{example}[theorem]{Example}
-\newtheorem{remark}[theorem]{Remark}
-\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{definition}[claim]{Definition}
+\newtheorem{example}[claim]{Example}
+\newtheorem{remark}[claim]{Remark}
+\newtheorem{assumption}[claim]{Assumption}
 
 % ===== Notation =====
 \newcommand{\R}{\mathbb{R}}
@@ -199,19 +197,17 @@ A critical distinction separates two levels of attractor. A \emph{state-space at
 
 Given observed belief trajectories $\{\phi_t\}_{t=1}^T$, we reconstruct the attractor topology through a four-stage pipeline. First, for scalar or low-dimensional observables, we construct Takens delay embeddings with delay $\tau$ chosen by mutual information minimization and dimension $d_e$ by false nearest neighbors \citep{takens1981detecting, kennel1992determining}. Second, we compute the Vietoris--Rips filtration on the embedded point cloud and extract persistence diagrams $\mathrm{Dgm}_k$ for $k = 0, 1, 2$: connected components ($k=0$) identify distinct attractor basins, loops ($k=1$) identify limit cycles or quasi-periodic orbits, and voids ($k=2$) reveal higher-order topological structure. Third, for smooth belief landscapes, we compute the gradient flow of VFE on $\cM$ and identify critical points through Morse-theoretic decomposition: minima correspond to attractors, saddles to basin boundaries, and maxima to repellers. Fourth, for stochastic trajectories, we apply the RDS framework (\Cref{def:pullback_attractor}) to capture the invariant structure that persists across different realizations of the observation noise.
 
-\begin{proposition}[Topological stability]
-\label{prop:topo_stability}
+\begin{claim}[Topological stability]
+\label{claim:topo_stability}
 Let $\{\phi_t^{(n)}\}$ be belief trajectories of agent $n$ and let $\hat{A}^{(n)}$ be the reconstructed attractor. Under mild regularity conditions (the generative model has bounded Fisher information and observations are sub-Gaussian), the persistence diagram $\mathrm{Dgm}_k(\hat{A}^{(n)})$ is stable: for any $\delta$-perturbation of the observations,
 \begin{equation}
   d_B\bigl(\mathrm{Dgm}_k(\hat{A}^{(n)}), \mathrm{Dgm}_k(\hat{A}^{(n)}_\delta)\bigr) \leq C \delta
   \label{eq:topo_stability}
 \end{equation}
 for a constant $C$ depending on the Fisher information bound.
-\end{proposition}
+\end{claim}
 
-\begin{proof}[Proof sketch]
-This follows from the stability theorem for persistent homology \citep{cohen2007stability} combined with the regularity of the belief trajectory map $o_{1:T} \mapsto \{\phi_t\}$. Bounded Fisher information ensures the natural gradient step is Lipschitz in observations; sub-Gaussian observations ensure the Hausdorff distance between perturbed point clouds is $O(\delta)$. The stability theorem then gives the bound.
-\end{proof}
+The argument follows from the stability theorem for persistent homology \citep{cohen2007stability} combined with the regularity of the belief trajectory map $o_{1:T} \mapsto \{\phi_t\}$. Bounded Fisher information ensures the natural gradient step is Lipschitz in observations; sub-Gaussian observations ensure the Hausdorff distance between perturbed point clouds is $O(\delta)$. The stability theorem then gives the bound. A full treatment would require verifying the Lipschitz constant under specific generative model families, which we leave to future work.
 
 
 \section{Phase 1.5: Psychological and Cognitive Interpretation}
@@ -260,14 +256,12 @@ Let agents $i$ and $j$ define RDS $\varphi_i, \varphi_j$ on a shared environment
 where $U_i, U_j$ are the Koopman operators of the respective RDS, evaluated on the attractor support.
 \end{definition}
 
-\begin{proposition}
-\label{prop:metric_properties}
+\begin{claim}
+\label{claim:metric_properties}
 The misalignment distance $d_{\mathrm{mis}}$ defines a pseudometric on the space of agent RDS. It is a metric when restricted to agents with distinct Koopman operators on the attractor support.
-\end{proposition}
+\end{claim}
 
-\begin{proof}
-Symmetry and the triangle inequality follow from the supremum norm. $d_{\mathrm{mis}}(i,i) = 0$ trivially. If $d_{\mathrm{mis}}(i,j) = 0$, then $U_i f = U_j f$ for all $f \in D$; by density, $U_i = U_j$ on $C(\cM)$ restricted to the attractor support, so the RDS agree on the attractors.
-\end{proof}
+This follows directly from properties of the supremum norm: symmetry and the triangle inequality are inherited, $d_{\mathrm{mis}}(i,i) = 0$ trivially, and $d_{\mathrm{mis}}(i,j) = 0$ implies $U_i f = U_j f$ for all $f \in D$, which by density gives $U_i = U_j$ on $C(\cM)$ restricted to the attractor support.
 
 The restriction to attractor support is deliberate: it compares agents on their long-term invariant behavior, filtering transient differences. Two agents may differ dramatically in initial responses yet converge to the same attractor structure; such agents are aligned in the sense that matters for sustained interaction.
 
@@ -286,19 +280,17 @@ Consider an agent performing variational inference via natural gradient descent 
 \end{equation}
 This defines a flow on the parameter space $\Theta$. Simultaneously, the induced distribution $q_t = q(\cdot; \phi_t)$ evolves on the space of distributions $\cP(\cS)$.
 
-\begin{theorem}[Variational--Wasserstein bridge]
-\label{thm:var_wass}
+\begin{claim}[Variational--Wasserstein bridge]
+\label{claim:var_wass}
 Let $q(\cdot; \phi)$ be an exponential family with natural parameter $\phi$, and let $\VFE_{\mathrm{int}}[\rho] = \int V(s) \, d\rho(s) + \int \rho(s) \ln \rho(s) \, ds$ be the internal energy functional. Then the natural gradient flow \eqref{eq:param_flow} induces a curve $\{\rho_t\}_{t \geq 0}$ on $(\cP_2(\cS), \Wass)$ that is a discretized Wasserstein gradient flow of $\VFE_{\mathrm{int}}$:
 \begin{equation}
   \rho_{t+\eta} = \arg\min_{\rho \in \cP_2} \left\{\VFE_{\mathrm{int}}[\rho] + \frac{1}{2\eta} \Wass(\rho, \rho_t)^2\right\}
   \label{eq:jko_step}
 \end{equation}
 in the limit of small step size $\eta$, up to a correction term bounded by $O(\eta^2 \|\nabla^3 A(\phi)\|)$ where $A$ is the log-partition function.
-\end{theorem}
+\end{claim}
 
-\begin{proof}[Proof sketch]
-For exponential families, the map $\phi \mapsto q(\cdot; \phi)$ is a diffeomorphism from natural parameters to mean parameters. The Fisher--Rao metric in natural coordinates equals the Hessian of the log-partition function, so $g_{ij} = \partial^2 A / \partial \phi_i \partial \phi_j$. Since $\mu = \nabla A(\phi)$, we have $\dot{\mu} = \nabla^2 A(\phi) \, \dot{\phi} = -\nabla_\phi \VFE$: the natural gradient flow in $\phi$-coordinates corresponds to Euclidean gradient flow in mean coordinates. The Bregman divergence $D_A(\phi \| \phi') = A(\phi) - A(\phi') - \nabla A(\phi')^\top (\phi - \phi')$ equals the KL divergence for exponential families. By the Otto calculus \citep{otto2001geometry}, the Bregman divergence on the finite-dimensional exponential family submanifold agrees with the Wasserstein distance up to $O(\eta^2)$ curvature corrections for small steps. Matching the JKO implicit Euler scheme term by term yields the result. The correction vanishes for Gaussian families where $\nabla^3 A = 0$.
-\end{proof}
+The key steps of the argument are as follows (a fuller derivation appears in \Cref{app:derivation_var_wass}). For exponential families, the map $\phi \mapsto q(\cdot; \phi)$ is a diffeomorphism from natural parameters to mean parameters. The Fisher--Rao metric in natural coordinates equals the Hessian of the log-partition function, so $g_{ij} = \partial^2 A / \partial \phi_i \partial \phi_j$. Since $\mu = \nabla A(\phi)$, the natural gradient flow in $\phi$-coordinates corresponds to Euclidean gradient flow in mean coordinates. The Bregman divergence $D_A(\phi \| \phi')$ equals the KL divergence for exponential families, and by the Otto calculus \citep{otto2001geometry} this agrees with the Wasserstein distance up to $O(\eta^2)$ curvature corrections for small steps. Matching the JKO implicit Euler scheme term by term yields the result. The correction vanishes for Gaussian families where $\nabla^3 A = 0$.
 
 The bridge has a concrete interpretation: each step of variational inference (minimizing a KL-like divergence in parameter space) corresponds to a step of mass transport (moving probability mass along a least-cost path in distribution space). Belief updating is optimal transport.
 
@@ -313,15 +305,15 @@ In stochastic settings, belief trajectories are not deterministic gradient flows
 A \emph{surprise geodesic} from $\phi_0$ to $\phi_T$ is a path $\psi^*$ minimizing the surprise action functional $S_T[\psi]$ subject to the boundary conditions $\psi(0) = \phi_0$, $\psi(T) = \phi_T$. This is the most likely belief transition path: the trajectory that deviates least from the free energy gradient while connecting the two endpoints.
 \end{definition}
 
-\begin{proposition}[Geodesic equation]
-\label{prop:geodesic_equation}
+\begin{claim}[Geodesic equation]
+\label{claim:geodesic_equation}
 The surprise geodesic satisfies the Euler--Lagrange equation:
 \begin{equation}
   \ddot{\psi}_t + \Gamma_{jk}^i(\psi_t) \dot{\psi}_t^j \dot{\psi}_t^k = -\nabla_i\left(g^{jk} \nabla_j \VFE \, \nabla_k \VFE\right)(\psi_t)
   \label{eq:geodesic_el}
 \end{equation}
-where $\Gamma_{jk}^i$ are the Christoffel symbols of the Fisher--Rao metric. In the absence of free energy gradients ($\VFE = \mathrm{const}$), this reduces to the standard geodesic equation on $(\cM, g)$.
-\end{proposition}
+where $\Gamma_{jk}^i$ are the Christoffel symbols of the Fisher--Rao metric. In the absence of free energy gradients ($\VFE = \mathrm{const}$), this reduces to the standard geodesic equation on $(\cM, g)$. The derivation follows from standard calculus of variations on $S_T[\psi]$ and is given in \Cref{app:fw_details}.
+\end{claim}
 
 The surprise geodesic connects to Goertzel's Schr\"{o}dinger bridge framework \citep{goertzel2025judging}: the joint SB $Q^*$ minimizing $\dkl(Q \| P)$ subject to boundary conditions corresponds to the path of least surprise between two belief states. The Benamou--Brenier bound $S_{\mathrm{SB}} \geq \Wass(\rho_0, \rho_T)^2 / (2\sigma^2 T)$ bridges the KL-based action with the Wasserstein distance, grounding the variational--Wasserstein bridge in the stochastic setting.
 
@@ -358,10 +350,12 @@ where $I$ is mutual information and the maximum is over policies $\pi$.
 
 High empowerment corresponds to shallow basins where the agent can easily move between attractors, wide valleys offering multiple available trajectories, and low ridges making transitions affordable. An agent with high empowerment is geometrically \emph{flexible}: it can adapt its beliefs in response to new evidence or social influence without being trapped in a rigid attractor. This connects directly to corrigibility \citep{soares2015corrigibility}: a corrigible agent should inhabit a high-empowerment region of belief space, maintaining the capacity for belief revision.
 
-\begin{proposition}[Empowerment--corrigibility connection]
-\label{prop:empowerment_corrigibility}
+\begin{conjecture}[Empowerment--corrigibility connection]
+\label{conj:empowerment_corrigibility}
 An agent whose belief dynamics satisfy $\mathfrak{E}_i(\phi) \geq \mathfrak{E}_{\min}$ for all $\phi$ in a neighborhood of its current attractor is $\delta$-corrigible in the sense that for any target belief $\phi^*$ within distance $r$ of the current attractor, there exists a policy achieving $d(\phi_T, \phi^*) < \delta$ within time $T \leq C \cdot r / \mathfrak{E}_{\min}$.
-\end{proposition}
+\end{conjecture}
+
+The intuition is that empowerment lower-bounds the rate at which an agent can traverse belief space: high mutual information between actions and future states guarantees reachability. A formal treatment would require specifying the relationship between the information-theoretic quantity $\mathfrak{E}$ and the metric structure of $\cM$, which we defer to future work.
 
 Multi-agent belief dynamics operate across multiple timescales: fast perceptual updates, medium-speed belief revisions, and slow attractor restructuring. The Mori--Zwanzig projection \citep{zwanzig1961memory, mori1965transport} provides a principled framework for coarse-graining. Partitioning the belief parameters as $\phi = (\phi_{\mathrm{fast}}, \phi_{\mathrm{slow}})$ by timescale yields effective slow dynamics:
 \begin{equation}
@@ -507,29 +501,29 @@ The framework opens a new mathematical vocabulary for alignment: basins, ridges,
 \section{Mathematical Details}
 \label{app:math}
 
-\subsection{Proof of \Cref{thm:var_wass}}
-\label{app:proof_var_wass}
+\subsection{Derivation of \Cref{claim:var_wass}}
+\label{app:derivation_var_wass}
 
-\begin{proof}
 Let $q(\cdot; \phi) = h(s) \exp(\phi^\top T(s) - A(\phi))$ be an exponential family with natural parameter $\phi \in \Theta \subseteq \R^d$, sufficient statistic $T: \cS \to \R^d$, and log-partition function $A: \Theta \to \R$. The mean parameter is $\mu = \nabla A(\phi) = \E_{q(\cdot;\phi)}[T(s)]$, and the Fisher--Rao metric in natural coordinates is $g(\phi) = \nabla^2 A(\phi)$.
 
-The natural gradient flow takes the form $\dot{\phi} = -g(\phi)^{-1} \nabla_\phi \VFE = -(\nabla^2 A)^{-1} \nabla_\phi \VFE$. Since $\mu = \nabla A(\phi)$, we have $\dot{\mu} = \nabla^2 A(\phi) \, \dot{\phi} = -\nabla_\phi \VFE$. In mean coordinates, the natural gradient flow is simply the Euclidean gradient flow of VFE viewed as a function of $\mu$.
+\paragraph{Step 1: Natural gradient in mean coordinates.} The natural gradient flow takes the form $\dot{\phi} = -g(\phi)^{-1} \nabla_\phi \VFE = -(\nabla^2 A)^{-1} \nabla_\phi \VFE$. Since $\mu = \nabla A(\phi)$, we have $\dot{\mu} = \nabla^2 A(\phi) \, \dot{\phi} = -\nabla_\phi \VFE$. In mean coordinates, the natural gradient flow is simply the Euclidean gradient flow of VFE viewed as a function of $\mu$.
 
-The Bregman divergence associated with $A$ is $D_A(\phi \| \phi') = A(\phi) - A(\phi') - \nabla A(\phi')^\top (\phi - \phi')$. For exponential families, this equals the KL divergence: $D_A(\phi \| \phi') = \dkl(q(\cdot; \phi') \| q(\cdot; \phi))$.
+\paragraph{Step 2: Bregman--KL equivalence.} The Bregman divergence associated with $A$ is $D_A(\phi \| \phi') = A(\phi) - A(\phi') - \nabla A(\phi')^\top (\phi - \phi')$. For exponential families, this equals the KL divergence: $D_A(\phi \| \phi') = \dkl(q(\cdot; \phi') \| q(\cdot; \phi))$.
 
-For distributions $\rho_t = q(\cdot; \phi_t)$ in the exponential family, the Wasserstein distance admits the bound \citep{takatsu2011wasserstein}:
+\paragraph{Step 3: Wasserstein bound.} For distributions $\rho_t = q(\cdot; \phi_t)$ in the exponential family, the Wasserstein distance admits the bound \citep{takatsu2011wasserstein}:
 \begin{equation}
   \Wass(\rho_t, \rho_{t+\eta})^2 \leq \|\mu_{t+\eta} - \mu_t\|^2_{\Sigma_t^{-1}} + O(\eta^2 \|\nabla^3 A\|)
 \end{equation}
 where $\Sigma_t = \mathrm{Cov}_{q(\cdot;\phi_t)}[T(s)]$ is the covariance of sufficient statistics. For small $\eta$, $\|\mu_{t+\eta} - \mu_t\|_{\Sigma_t^{-1}}^2 = \eta^2 \|\nabla_\phi \VFE\|_{g^{-1}}^2 + O(\eta^3)$.
 
-The JKO step minimizes $\VFE[\rho] + \frac{1}{2\eta} \Wass(\rho, \rho_t)^2$ over $\rho \in \cP_2$. Restricting to the exponential family submanifold and using the bound from above, the first-order optimality condition becomes $\nabla_\mu \VFE + \frac{1}{\eta} \Sigma_t^{-1}(\mu - \mu_t) = 0$, yielding $\mu_{t+\eta} = \mu_t - \eta \, \Sigma_t \nabla_\mu \VFE$. Converting back to natural coordinates via $\Sigma = g^{-1}$ gives $\phi_{t+\eta} = \phi_t - \eta \, g^{-1} \nabla_\phi \VFE$, which is exactly the natural gradient step. The correction term $O(\eta^2 \|\nabla^3 A\|)$ arises from the non-flatness of the exponential family embedding in Wasserstein space; for Gaussian families $\nabla^3 A = 0$ and the correspondence is exact.
-\end{proof}
+\paragraph{Step 4: JKO matching.} The JKO step minimizes $\VFE[\rho] + \frac{1}{2\eta} \Wass(\rho, \rho_t)^2$ over $\rho \in \cP_2$. Restricting to the exponential family submanifold and using the bound from Step~3, the first-order optimality condition becomes $\nabla_\mu \VFE + \frac{1}{\eta} \Sigma_t^{-1}(\mu - \mu_t) = 0$, yielding $\mu_{t+\eta} = \mu_t - \eta \, \Sigma_t \nabla_\mu \VFE$. Converting back to natural coordinates via $\Sigma = g^{-1}$ gives $\phi_{t+\eta} = \phi_t - \eta \, g^{-1} \nabla_\phi \VFE$, which is exactly the natural gradient step. The correction term $O(\eta^2 \|\nabla^3 A\|)$ arises from the non-flatness of the exponential family embedding in Wasserstein space; for Gaussian families $\nabla^3 A = 0$ and the correspondence is exact.
+
+\paragraph{Limitations.} This derivation relies on the exponential family restriction and the small-step regime. Extending to non-exponential families would require bounding the Wasserstein--Bregman discrepancy on more general manifolds, which remains an open problem in information geometry.
 
 \subsection{Freidlin--Wentzell Derivation Details}
 \label{app:fw_details}
 
-The Euler--Lagrange equation for the surprise geodesic (\Cref{prop:geodesic_equation}) follows from standard calculus of variations on the action $S_T[\psi]$. Define the Lagrangian $L(\psi, \dot{\psi}) = \frac{1}{2} \left\|\dot{\psi} + g(\psi)^{-1} \nabla_\psi \VFE\right\|^2_{g(\psi)}$. Let $v = \dot{\psi} + g^{-1} \nabla \VFE$. Then $L = \frac{1}{2} g_{ij} v^i v^j$. The Euler--Lagrange equation $\frac{d}{dt} \frac{\partial L}{\partial \dot{\psi}^i} - \frac{\partial L}{\partial \psi^i} = 0$ expands to:
+The Euler--Lagrange equation for the surprise geodesic (\Cref{claim:geodesic_equation}) follows from standard calculus of variations on the action $S_T[\psi]$. Define the Lagrangian $L(\psi, \dot{\psi}) = \frac{1}{2} \left\|\dot{\psi} + g(\psi)^{-1} \nabla_\psi \VFE\right\|^2_{g(\psi)}$. Let $v = \dot{\psi} + g^{-1} \nabla \VFE$. Then $L = \frac{1}{2} g_{ij} v^i v^j$. The Euler--Lagrange equation $\frac{d}{dt} \frac{\partial L}{\partial \dot{\psi}^i} - \frac{\partial L}{\partial \psi^i} = 0$ expands to:
 \begin{equation}
   g_{ij} \ddot{\psi}^j + \left(\partial_k g_{ij} - \frac{1}{2} \partial_i g_{jk}\right) \dot{\psi}^j \dot{\psi}^k = -\partial_i\left(\frac{1}{2} g^{jk} \partial_j \VFE \, \partial_k \VFE\right) - g_{ij} \frac{d}{dt}\left(g^{jk} \partial_k \VFE\right)
 \end{equation}

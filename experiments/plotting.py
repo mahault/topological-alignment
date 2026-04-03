@@ -46,7 +46,7 @@ plt.rcParams.update({
 COLORS = {
     'R': '#c0392b',    # deep red -- rigid
     'F': '#27ae60',    # green -- flexible
-    'M': '#2980b9',    # blue -- mixed
+    'M': '#f39c12',    # amber/gold -- mixed
     'echo': '#c0392b',
     'diverse': '#27ae60',
     'polarized': '#e67e22',
