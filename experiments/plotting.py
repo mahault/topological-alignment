@@ -249,50 +249,60 @@ def fig_exp1_combined(trajectories: np.ndarray, group_indices: dict,
     gs = GridSpec(2, 2, figure=fig, hspace=0.35, wspace=0.3)
 
     # ------------------------------------------------------------------
-    # Panel (a): Trajectories with attractor ellipses
+    # Panel (a): Per-agent belief volatility over time
+    # Measures how much each agent's beliefs fluctuate around their
+    # local attractor.  Flexible agents explore more (high volatility),
+    # Rigid agents are locked in (low volatility).
     # ------------------------------------------------------------------
-    ax_traj = fig.add_subplot(gs[0, 0])
+    ax_vol = fig.add_subplot(gs[0, 0])
 
-    # Plot each group with distinct styling
-    style_map = {
-        'R': dict(alpha_line=0.08, alpha_fill=0.25, lw=0.4, linestyle='-'),
-        'F': dict(alpha_line=0.04, alpha_fill=0.12, lw=0.3, linestyle='-'),
-        'M': dict(alpha_line=0.06, alpha_fill=0.18, lw=0.35, linestyle='-'),
-    }
+    n_steps = trajectories.shape[0]
+    # Rolling window for volatility (std of belief changes)
+    window = 200
+    # Subsample output for plotting
+    out_step = max(1, n_steps // 300)
+    t_out = np.arange(window, n_steps, out_step)
 
     for name, idx in group_indices.items():
         color = COLORS.get(name, 'gray')
-        style = style_map.get(name, style_map['M'])
         label = GROUP_LABELS.get(name, name)
 
-        # Plot individual trajectories (subsample for clarity)
-        n_show = min(40, len(idx))
-        for i in idx[:n_show]:
-            traj = trajectories[:, i, :2]
-            ax_traj.plot(traj[:, 0], traj[:, 1],
-                         alpha=style['alpha_line'], linewidth=style['lw'],
-                         color=color, linestyle=style['linestyle'])
+        # Compute per-agent rolling std of belief updates (step-to-step)
+        group_traj = trajectories[:, idx, :]  # (T, n_agents, d)
+        deltas = np.diff(group_traj, axis=0)  # (T-1, n_agents, d)
+        delta_norms = np.sqrt(np.sum(deltas**2, axis=2))  # (T-1, n_agents)
 
-        # Centroid trajectory
-        centroid = np.mean(trajectories[:, idx, :2], axis=1)
-        ax_traj.plot(centroid[:, 0], centroid[:, 1], color=color,
-                     linewidth=2.0, label=label, zorder=5)
+        # Rolling mean of delta norms (belief volatility)
+        # Use cumsum trick for efficiency
+        cs = np.cumsum(delta_norms, axis=0)
+        vol_per_agent = np.zeros((len(t_out), len(idx)))
+        for k, t in enumerate(t_out):
+            t_idx = min(t - 1, cs.shape[0] - 1)
+            start_idx = max(0, t_idx - window)
+            span = t_idx - start_idx
+            if span > 0:
+                vol_per_agent[k] = (cs[t_idx] - cs[start_idx]) / span
 
-        # 2-sigma covariance ellipse on final beliefs
-        final_beliefs = trajectories[-1, idx, :2]
-        ell_params = _covariance_ellipse(final_beliefs, n_std=2.0)
-        if ell_params is not None:
-            cx, cy, w, h, angle = ell_params
-            ellipse = Ellipse((cx, cy), w, h, angle=angle,
-                              facecolor=color, edgecolor=color,
-                              alpha=style['alpha_fill'], linewidth=1.5,
-                              linestyle='--', zorder=4)
-            ax_traj.add_patch(ellipse)
+        # Group mean and std
+        vol_mean = np.mean(vol_per_agent, axis=1)
+        vol_std = np.std(vol_per_agent, axis=1)
 
-    ax_traj.set_xlabel(r'$\phi_1$')
-    ax_traj.set_ylabel(r'$\phi_2$')
-    ax_traj.set_title('(a) Belief Trajectories + 2$\\sigma$ Attractors', fontsize=11)
-    ax_traj.legend(loc='upper right', framealpha=0.9)
+        ax_vol.plot(t_out, vol_mean, color=color, linewidth=2.0,
+                    label=label, zorder=5)
+        ax_vol.fill_between(t_out, vol_mean - vol_std, vol_mean + vol_std,
+                            color=color, alpha=0.12)
+
+    # Mark the perturbation point (H4 test at t=5000)
+    ax_vol.axvline(5000, color='gray', linewidth=1.0, linestyle=':',
+                   alpha=0.6, zorder=1)
+    ax_vol.text(5200, 0.92, 'Precision\nperturbation', fontsize=7,
+                color='gray', fontstyle='italic', va='top',
+                transform=ax_vol.get_xaxis_transform())
+
+    ax_vol.set_xlabel('Time step')
+    ax_vol.set_ylabel('Step-to-step $\\|\\Delta\\phi\\|$')
+    ax_vol.set_title('(a) Belief Volatility', fontsize=11)
+    ax_vol.legend(loc='upper right', framealpha=0.9)
 
     # ------------------------------------------------------------------
     # Panel (b): Persistence barcodes
@@ -402,9 +412,10 @@ def fig_exp1_combined(trajectories: np.ndarray, group_indices: dict,
     bars_emp = ax_emp.bar(emp_labels, emp_vals, color=emp_colors, width=0.5,
                            edgecolor='white', linewidth=0.5, alpha=0.85)
 
+    emp_offset = max(np.max(emp_vals) * 0.08, 1e-5) if emp_vals else 0.001
     for bar, val in zip(bars_emp, emp_vals):
-        ax_emp.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.01,
-                     f'{val:.3f}', ha='center', va='bottom', fontsize=8)
+        ax_emp.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + emp_offset,
+                     f'{val:.4f}', ha='center', va='bottom', fontsize=8)
 
     ax_emp.set_ylabel('Empowerment')
     ax_emp.set_title('(d) Geometric Empowerment by Group', fontsize=11)

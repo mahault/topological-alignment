@@ -115,8 +115,10 @@ class SyntheticBeliefNetwork:
         # Prediction error
         pe = obs - self._beliefs  # (N, d)
 
-        # Precision-weighted Bayesian update
-        update = (self._lrs * self._precisions)[:, None] * pe  # (N, d)
+        # Bayesian gain: high precision → low gain → resistant to change
+        obs_prec = 1.0 / (self._noise_stds ** 2)  # (N,)
+        gain = (self._lrs * obs_prec) / (self._precisions + obs_prec)  # (N,)
+        update = gain[:, None] * pe  # (N, d)
 
         # Social coupling: adj_norm @ beliefs - beliefs = mean neighbor belief - own belief
         social = self._adj_norm @ self._beliefs - self._beliefs  # (N, d)
@@ -124,8 +126,13 @@ class SyntheticBeliefNetwork:
 
         self._beliefs += update + social
 
-    def run(self, n_steps: int, record_every: int = 1) -> np.ndarray:
-        """Run simulation for n_steps, recording trajectories."""
+    def run(self, n_steps: int, record_every: int = 1,
+            perturbation: dict = None) -> np.ndarray:
+        """Run simulation for n_steps, recording trajectories.
+
+        perturbation: optional dict with 'step', 'agents', 'precision_factor'
+            to apply mid-simulation precision scaling.
+        """
         self._init_vectorized()
         T = n_steps // record_every
         trajectories = np.zeros((T, self.N, self.d))
@@ -133,6 +140,9 @@ class SyntheticBeliefNetwork:
         step_idx = 0
         for t in range(n_steps):
             self.step()
+            if perturbation and t == perturbation['step']:
+                for i in perturbation['agents']:
+                    self._precisions[i] *= perturbation['precision_factor']
             if t % record_every == 0 and step_idx < T:
                 trajectories[step_idx] = self._beliefs.copy()
                 step_idx += 1
@@ -432,7 +442,9 @@ def estimate_empowerment(agent: AgentParams, env_signal: np.ndarray,
         obs = env_signal + rng.normal(0, agent.obs_noise_std, size=d)
         pe = obs - agent.belief
         # Standard update: belief + lr * pi * PE + social (no social here)
-        next_states[i] = agent.belief + agent.learning_rate * agent.precision * pe
+        obs_prec = 1.0 / (agent.obs_noise_std ** 2)
+        gain_i = agent.learning_rate * obs_prec / (agent.precision + obs_prec)
+        next_states[i] = agent.belief + gain_i * pe
 
     # Empowerment = how spread out are the reachable next states?
     # Use effective rank of covariance (spectral entropy)
@@ -509,10 +521,15 @@ def run_experiment(seed: int = 42, n_steps: int = 10000, d: int = 5):
             if adj[i, j] == 0 and rng.random() < 0.005:
                 adj[i, j] = adj[j, i] = 1.0
 
-    # Run simulation
+    # Run simulation with precision perturbation at midpoint (H4)
     print("Running simulation...")
+    r_idx = group_indices['R']
     sim = SyntheticBeliefNetwork(all_agents, adj, env_signal, seed=seed)
-    trajectories = sim.run(n_steps, record_every=1)
+    trajectories = sim.run(n_steps, record_every=1, perturbation={
+        'step': n_steps // 2,
+        'agents': r_idx,          # all of Group R
+        'precision_factor': 0.25,  # quarter precision → doubles gain
+    })
     print(f"Trajectories shape: {trajectories.shape}")
 
     results = {}
@@ -584,25 +601,15 @@ def run_experiment(seed: int = 42, n_steps: int = 10000, d: int = 5):
 
     # ---- H4: Geodesic bending ----
     print("\n--- H4: Precision Perturbation ---")
-    # Record pre-perturbation trajectory direction for Group R
-    r_idx = group_indices['R']
-    pre_traj = trajectories[4000:5000, r_idx, :]
+    # Compare pre- vs post-perturbation dynamics for Group R
+    # Perturbation was applied inline at t = n_steps // 2
+    mid = n_steps // 2
+    pre_traj = trajectories[mid - 1000:mid, r_idx, :]
     pre_direction = np.mean(np.diff(pre_traj, axis=0), axis=(0, 1))
     pre_direction /= np.linalg.norm(pre_direction) + 1e-8
 
-    # Apply perturbation: halve precision for half of Group R
-    perturb_agents = r_idx[:len(r_idx) // 2]
-    for i in perturb_agents:
-        all_agents[i].precision /= 2.0
-
-    # Continue simulation
-    sim2 = SyntheticBeliefNetwork(all_agents, adj, env_signal, seed=seed + 1)
-    # Copy current beliefs
-    for i, agent in enumerate(all_agents):
-        agent.belief = trajectories[-1, i, :].copy()
-    post_traj = sim2.run(2000, record_every=1)
-
-    post_direction = np.mean(np.diff(post_traj[:1000], axis=0), axis=(0, 1))
+    post_traj = trajectories[mid + 500:mid + 1500, r_idx, :]
+    post_direction = np.mean(np.diff(post_traj, axis=0), axis=(0, 1))
     post_direction /= np.linalg.norm(post_direction) + 1e-8
 
     direction_change = 1.0 - np.dot(pre_direction, post_direction)
