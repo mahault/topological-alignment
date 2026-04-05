@@ -100,6 +100,27 @@ def reduce_dimensions(embeddings: np.ndarray, n_components: int = 50) -> np.ndar
     return reduced
 
 
+def _compute_monthly_centroids(embeddings: np.ndarray,
+                               timestamps: np.ndarray,
+                               min_posts: int = 10) -> np.ndarray:
+    """
+    Compute monthly embedding centroids for longer-range temporal dynamics.
+
+    Returns (n_months, d) array.
+    """
+    if timestamps is None or len(timestamps) == 0:
+        return embeddings[np.newaxis, :]
+    min_t = np.min(timestamps)
+    months = ((timestamps - min_t) / (30.44 * 24 * 3600)).astype(int)
+    unique_months = np.unique(months)
+    centroids = []
+    for m in unique_months:
+        mask = months == m
+        if np.sum(mask) >= min_posts:
+            centroids.append(np.mean(embeddings[mask], axis=0))
+    return np.array(centroids) if centroids else embeddings[:1]
+
+
 def compute_weekly_centroids(embeddings: np.ndarray,
                              timestamps: np.ndarray) -> np.ndarray:
     """
@@ -129,19 +150,28 @@ def compute_weekly_centroids(embeddings: np.ndarray,
 # ====================================================================
 
 def subreddit_persistence(embeddings: np.ndarray, n_subsample: int = 5000,
-                          max_dim: int = 1, max_edge: float = 10.0):
+                          max_dim: int = 1, max_edge: float = None):
     """
     Compute persistent homology on a subreddit's embedding point cloud.
+
+    If max_edge is None, uses 95th percentile of pairwise distances.
 
     Returns persistence diagram.
     """
     from exp1_synthetic import compute_persistence
+    from scipy.spatial.distance import pdist
 
     if len(embeddings) > n_subsample:
         idx = np.random.choice(len(embeddings), n_subsample, replace=False)
         cloud = embeddings[idx]
     else:
         cloud = embeddings
+
+    # Adaptive max_edge from data
+    if max_edge is None:
+        sub_idx = np.random.choice(len(cloud), min(200, len(cloud)), replace=False)
+        dists = pdist(cloud[sub_idx])
+        max_edge = np.percentile(dists, 95)
 
     return compute_persistence(cloud, max_dim=max_dim,
                                max_edge=max_edge, n_subsample=min(n_subsample, 500))
@@ -358,18 +388,121 @@ def generate_synthetic_communities(n_communities: int = 10,
 
 
 # ====================================================================
+# Community type classification
+# ====================================================================
+
+# Maps real subreddit names to community types
+_SUBREDDIT_TYPE_MAP = {
+    'socialism': 'echo', 'latestageCapitalism': 'echo', 'chapotraphouse': 'echo',
+    'conservative': 'echo', 'the_donald': 'echo', 'republican': 'echo',
+    'politicaldiscussion': 'diverse', 'neutralpolitics': 'diverse',
+    'moderatepolitics': 'diverse',
+    'politics': 'polarized',
+}
+
+
+def _classify_community_type(name: str) -> str:
+    """Classify a community by type from its name."""
+    name_lower = name.lower()
+    # Check subreddit type map first (real data)
+    for key, ctype in _SUBREDDIT_TYPE_MAP.items():
+        if key in name_lower:
+            return ctype
+    # Synthetic community names contain the type
+    if 'echo' in name_lower:
+        return 'echo'
+    elif 'diverse' in name_lower:
+        return 'diverse'
+    elif 'polarized' in name_lower or 'polar' in name_lower:
+        return 'polarized'
+    return 'unknown'
+
+
+# ====================================================================
 # Main experiment runner
 # ====================================================================
 
-def run_experiment(use_synthetic: bool = True, data_dir: str = None, seed: int = 42):
-    """Run the full Experiment 3 pipeline."""
+def run_experiment(use_synthetic: bool = True, data_dir: str = None,
+                   subreddits: list[str] = None, seed: int = 42):
+    """Run the full Experiment 3 pipeline.
+
+    Parameters
+    ----------
+    use_synthetic : bool
+        If True, use synthetic community data. If False, load real Reddit data.
+    data_dir : str
+        Base data directory (should contain reddit/ and embeddings/ subdirs).
+    subreddits : list[str]
+        Subreddits to load when use_synthetic=False. Defaults to 10 political subs.
+    seed : int
+        Random seed for reproducibility.
+    """
     rng = np.random.default_rng(seed)
 
     if use_synthetic:
         print("Using synthetic community data...")
         communities = generate_synthetic_communities(seed=seed)
     else:
-        raise NotImplementedError("Real data loading requires Pushshift files in data_dir")
+        from data_loaders import (load_reddit_politosphere,
+                                  load_precomputed_embeddings, SUBREDDIT_LABELS)
+        from pathlib import Path
+
+        if data_dir is None:
+            raise ValueError("data_dir required for real data mode")
+
+        if subreddits is None:
+            subreddits = [
+                'socialism', 'LateStageCapitalism', 'ChapoTrapHouse',
+                'Conservative', 'The_Donald', 'Republican',
+                'PoliticalDiscussion', 'NeutralPolitics', 'moderatepolitics',
+                'politics',
+            ]
+
+        reddit_dir = str(Path(data_dir) / 'reddit')
+        communities = []
+
+        for sub_name in subreddits:
+            print(f"Loading r/{sub_name}...")
+            comm = load_reddit_politosphere(reddit_dir, sub_name)
+            if not comm.texts:
+                print(f"  No data for r/{sub_name}, skipping")
+                continue
+
+            print(f"  {len(comm.texts)} posts loaded")
+
+            # Check for precomputed embeddings
+            precomputed = load_precomputed_embeddings(data_dir, sub_name)
+            if precomputed is not None:
+                print(f"  Using precomputed embeddings: {precomputed.shape}")
+                # Truncate to match text count
+                n = min(len(comm.texts), len(precomputed))
+                comm.embeddings = precomputed[:n]
+                if comm.timestamps is not None:
+                    comm.timestamps = comm.timestamps[:n]
+            else:
+                print(f"  Computing SBERT embeddings...")
+                comm.embeddings = embed_texts(comm.texts)
+
+            # Reduce dimensions
+            if comm.embeddings is not None and len(comm.embeddings) > 10:
+                comm.embeddings = reduce_dimensions(comm.embeddings, n_components=50)
+
+            # Compute weekly centroids (use monthly for longer-range dynamics)
+            if comm.timestamps is not None and len(comm.timestamps) > 0:
+                comm.weekly_centroids = compute_weekly_centroids(
+                    comm.embeddings, comm.timestamps)
+                # If too few weekly centroids, try monthly
+                if len(comm.weekly_centroids) < 10:
+                    print(f"  Few weekly centroids ({len(comm.weekly_centroids)}), "
+                          f"trying monthly...")
+                    comm.weekly_centroids = _compute_monthly_centroids(
+                        comm.embeddings, comm.timestamps)
+                print(f"  {len(comm.weekly_centroids)} temporal centroids")
+
+            communities.append(comm)
+
+        if not communities:
+            raise RuntimeError("No communities loaded. Check data_dir.")
 
     n_communities = len(communities)
     print(f"Loaded {n_communities} communities")
@@ -380,7 +513,7 @@ def run_experiment(use_synthetic: bool = True, data_dir: str = None, seed: int =
     for comm in communities:
         emb = comm.embeddings
         if emb is not None and len(emb) > 100:
-            dgm = subreddit_persistence(emb, n_subsample=2000, max_edge=15.0)
+            dgm = subreddit_persistence(emb, n_subsample=2000)
             summary = persistence_summary(dgm)
             tda_results[comm.name] = summary
             print(f"  {comm.name}: {summary['n_h0_persistent']} persistent H0 "
@@ -391,11 +524,16 @@ def run_experiment(use_synthetic: bool = True, data_dir: str = None, seed: int =
     # Echo chambers: few persistent components (tight), low mean persistence
     # Diverse: many persistent components (multiple subclusters)
     # Polarized: ~2 persistent components (bimodal)
-    echo_h0 = [v['n_h0_persistent'] for k, v in tda_results.items() if 'echo' in k]
-    diverse_h0 = [v['n_h0_persistent'] for k, v in tda_results.items() if 'diverse' in k]
-    polar_h0 = [v['n_h0_persistent'] for k, v in tda_results.items() if 'polarized' in k]
-    echo_mpers = [v['h0_mean_pers'] for k, v in tda_results.items() if 'echo' in k]
-    diverse_mpers = [v['h0_mean_pers'] for k, v in tda_results.items() if 'diverse' in k]
+    echo_h0 = [v['n_h0_persistent'] for k, v in tda_results.items()
+                if _classify_community_type(k) == 'echo']
+    diverse_h0 = [v['n_h0_persistent'] for k, v in tda_results.items()
+                  if _classify_community_type(k) == 'diverse']
+    polar_h0 = [v['n_h0_persistent'] for k, v in tda_results.items()
+                if _classify_community_type(k) == 'polarized']
+    echo_mpers = [v['h0_mean_pers'] for k, v in tda_results.items()
+                  if _classify_community_type(k) == 'echo']
+    diverse_mpers = [v['h0_mean_pers'] for k, v in tda_results.items()
+                     if _classify_community_type(k) == 'diverse']
 
     if echo_h0 and diverse_h0:
         print(f"\n  Echo chamber: {np.mean(echo_h0):.1f} persistent H0, "
@@ -454,12 +592,8 @@ def run_experiment(use_synthetic: bool = True, data_dir: str = None, seed: int =
 
     type_labels = []
     for c in communities:
-        if 'echo' in c.name:
-            type_labels.append('echo')
-        elif 'diverse' in c.name:
-            type_labels.append('diverse')
-        else:
-            type_labels.append('polarized')
+        label = _classify_community_type(c.name)
+        type_labels.append(label)
 
     for i in range(n):
         for j in range(i + 1, n):

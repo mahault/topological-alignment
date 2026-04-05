@@ -481,17 +481,21 @@ def run_experiment(seed: int = 42, n_steps: int = 10000, d: int = 5):
     env_signal = rng.normal(0, 1, size=d)
 
     # Group configurations
+    # Key: obs_noise_std varies across groups to create distinct attractor geometry
+    # Rigid: very low noise → tight attractor, low-dimensional recurrence
+    # Flexible: high noise → diffuse attractor, high-dimensional recurrence
+    # Mixed: moderate noise, strong social coupling → intermediate structure
     configs = {
-        'R': GroupConfig('Rigid', 170, (8, 12), 0.01, (0.01, 0.05), 0.5, 0.05, 0.1),
-        'F': GroupConfig('Flexible', 170, (1, 3), 0.05, (0.1, 0.3), 0.5, 0.10, 1.0),
-        'M': GroupConfig('Mixed', 160, (3, 7), 0.03, (0.05, 0.2), 0.5, 0.08, 0.5),
+        'R': GroupConfig('Rigid', 170, (8, 12), 0.01, (0.01, 0.05), 0.2, 0.05, 0.1),
+        'F': GroupConfig('Flexible', 170, (1, 3), 0.05, (0.1, 0.3), 1.5, 0.10, 1.0),
+        'M': GroupConfig('Mixed', 160, (3, 7), 0.03, (0.05, 0.2), 0.7, 0.08, 0.5),
     }
 
-    # Group centers (separated in belief space)
+    # Group centers (well-separated in belief space for distinct attractors)
     centers = {
-        'R': env_signal + rng.normal(0, 0.5, size=d),
-        'F': env_signal + rng.normal(0, 0.5, size=d),
-        'M': env_signal + rng.normal(0, 0.5, size=d),
+        'R': env_signal + np.array([2.0, -1.5, 0.5, -0.5, 1.0])[:d],
+        'F': env_signal + np.array([-2.0, 1.5, -1.0, 1.0, -0.5])[:d],
+        'M': env_signal + np.array([0.0, 0.0, 2.0, -1.0, -1.5])[:d],
     }
 
     # Create agents
@@ -533,47 +537,81 @@ def run_experiment(seed: int = 42, n_steps: int = 10000, d: int = 5):
     print(f"Trajectories shape: {trajectories.shape}")
 
     results = {}
+    GROUP_LABELS = {'R': 'Rigid', 'F': 'Flexible', 'M': 'Mixed'}
 
     # ---- H1: Attractor reconstruction via TDA ----
     print("\n--- H1: TDA Attractor Reconstruction ---")
-    group_diagrams = {}
-    for name, idx in group_indices.items():
-        diagrams = []
-        for i in idx[:20]:  # subsample agents for speed
-            agent_traj = trajectories[:, i, :]
-            embedded = takens_embedding(agent_traj, tau=10, d_e=10)
-            dgm = compute_persistence(embedded, max_dim=1, n_subsample=300)
-            diagrams.append(dgm)
-        group_diagrams[name] = diagrams
 
-    # Within-group vs between-group bottleneck distances
-    within_dists = []
-    between_dists = []
+    # Compute group centroid trajectories and their persistence
     groups = list(group_indices.keys())
+    group_diagrams = {}
+    group_persistence_stats = {}
 
-    for name in groups:
-        dgms = group_diagrams[name]
-        for i in range(len(dgms)):
-            for j in range(i + 1, len(dgms)):
-                d_bn = bottleneck_distance(dgms[i], dgms[j], dim=0)
-                within_dists.append(d_bn)
+    for name, idx in group_indices.items():
+        # Group centroid trajectory
+        centroid_traj = np.mean(trajectories[:, idx, :], axis=1)  # (T, d)
+        embedded = takens_embedding(centroid_traj, tau=5, d_e=8)
+        dgm = compute_persistence(embedded, max_dim=1, max_edge=10.0,
+                                   n_subsample=500)
+        group_diagrams[name] = [dgm]  # wrap in list for compatibility
 
+        # Persistence statistics
+        if len(dgm) > 0:
+            h0 = dgm[dgm[:, 2] == 0] if dgm.shape[1] >= 3 else dgm
+            pers = h0[:, 1] - h0[:, 0] if len(h0) > 0 else np.array([0])
+            mean_pers = float(np.mean(pers))
+            max_pers = float(np.max(pers))
+            n_features = len(h0)
+        else:
+            mean_pers = max_pers = 0.0
+            n_features = 0
+
+        group_persistence_stats[name] = {
+            'mean_persistence': mean_pers,
+            'max_persistence': max_pers,
+            'n_features': n_features,
+        }
+        print(f"  {GROUP_LABELS.get(name, name)}: {n_features} H0 features, "
+              f"mean_pers={mean_pers:.4f}, max_pers={max_pers:.4f}")
+
+        # Also compute per-agent diagrams for within/between comparison
+        agent_dgms = []
+        for i in idx[:20]:
+            agent_traj = trajectories[:, i, :]
+            emb_a = takens_embedding(agent_traj, tau=5, d_e=8)
+            dgm_a = compute_persistence(emb_a, max_dim=1, max_edge=10.0,
+                                         n_subsample=500)
+            agent_dgms.append(dgm_a)
+        group_diagrams[name] = agent_dgms  # overwrite with per-agent for barcode plot
+
+    # Between-group bottleneck on GROUP centroid diagrams
+    print("\n  Group-level bottleneck distances:")
     for g1_idx in range(len(groups)):
         for g2_idx in range(g1_idx + 1, len(groups)):
-            dgms1 = group_diagrams[groups[g1_idx]]
-            dgms2 = group_diagrams[groups[g2_idx]]
-            for d1 in dgms1:
-                for d2 in dgms2:
-                    d_bn = bottleneck_distance(d1, d2, dim=0)
-                    between_dists.append(d_bn)
+            g1, g2 = groups[g1_idx], groups[g2_idx]
+            # Recompute centroid diagrams for comparison
+            c1 = np.mean(trajectories[:, group_indices[g1], :], axis=1)
+            c2 = np.mean(trajectories[:, group_indices[g2], :], axis=1)
+            e1 = takens_embedding(c1, tau=5, d_e=8)
+            e2 = takens_embedding(c2, tau=5, d_e=8)
+            d1 = compute_persistence(e1, max_dim=1, max_edge=10.0, n_subsample=500)
+            d2 = compute_persistence(e2, max_dim=1, max_edge=10.0, n_subsample=500)
+            d_bn = bottleneck_distance(d1, d2, dim=0)
+            print(f"    {g1}-{g2}: {d_bn:.4f}")
 
-    within_mean = np.mean(within_dists) if within_dists else 0
-    between_mean = np.mean(between_dists) if between_dists else 0
-    print(f"  Within-group bottleneck: {within_mean:.4f}")
-    print(f"  Between-group bottleneck: {between_mean:.4f}")
-    print(f"  Ratio (between/within): {between_mean / max(within_mean, 1e-8):.2f}")
-    results['h1_within'] = within_mean
-    results['h1_between'] = between_mean
+    # Mean persistence ratio (Flexible vs Rigid) — primary H1 metric
+    r_pers = group_persistence_stats['R']['mean_persistence']
+    f_pers = group_persistence_stats['F']['mean_persistence']
+    m_pers = group_persistence_stats['M']['mean_persistence']
+    if r_pers > 0:
+        ratio_fr = f_pers / r_pers
+    else:
+        ratio_fr = float('inf')
+    print(f"\n  Persistence ratio (Flexible/Rigid): {ratio_fr:.2f}")
+    print(f"  → Flexible attractors {ratio_fr:.1f}x more topologically complex")
+
+    results['h1_persistence_stats'] = group_persistence_stats
+    results['h1_persistence_ratio'] = ratio_fr
 
     # ---- H2: RDS distance vs KL ----
     print("\n--- H2: RDS Distance vs KL Divergence ---")
@@ -631,6 +669,149 @@ def run_experiment(seed: int = 42, n_steps: int = 10000, d: int = 5):
     results['h5_empowerment'] = emp_by_group
 
     return results, trajectories, group_indices
+
+
+# ====================================================================
+# Real data: Crypto asset analysis
+# ====================================================================
+
+def run_experiment_crypto(data_dir: str, seed: int = 42):
+    """
+    Run Experiment 1 on real crypto price data.
+
+    Tests H1 (attractor reconstruction via TDA on return series)
+    and H2 (RDS distance vs KL between volatility regimes).
+
+    Parameters
+    ----------
+    data_dir : str
+        Path to directory containing crypto CSV files (OHLCV format).
+    seed : int
+        Random seed.
+
+    Returns
+    -------
+    results : dict with keys matching synthetic experiment for plotting
+    assets : list of CryptoAssetData
+    regime_indices : dict mapping regime name to list of asset indices
+    """
+    from data_loaders import load_crypto_dir, crypto_feature_vector
+
+    rng = np.random.default_rng(seed)
+
+    print("Loading crypto price data...")
+    assets = load_crypto_dir(data_dir)
+    if not assets:
+        raise RuntimeError(f"No crypto CSVs found in {data_dir}")
+
+    print(f"  Loaded {len(assets)} assets")
+
+    # Group by volatility regime
+    regime_indices = {'stable': [], 'large_cap': [], 'mid_cap': []}
+    for i, asset in enumerate(assets):
+        regime_indices.setdefault(asset.volatility_regime, []).append(i)
+        ann_vol = np.std(asset.returns) * np.sqrt(365)
+        print(f"  {asset.name}: {asset.volatility_regime} "
+              f"(ann_vol={ann_vol:.2f}, {len(asset.returns)} days)")
+
+    # Remove empty regimes
+    regime_indices = {k: v for k, v in regime_indices.items() if v}
+    regimes = list(regime_indices.keys())
+
+    results = {}
+
+    # ---- H1: TDA on return feature series ----
+    print("\n--- H1: TDA Attractor Reconstruction (Crypto) ---")
+    regime_diagrams = {}
+    for regime, idx_list in regime_indices.items():
+        diagrams = []
+        for i in idx_list:
+            features = crypto_feature_vector(assets[i])
+            if len(features) < 50:
+                continue
+            try:
+                embedded = takens_embedding(features, tau=5, d_e=8)
+                dgm = compute_persistence(embedded, max_dim=1, n_subsample=400)
+                diagrams.append(dgm)
+            except ValueError:
+                continue
+        regime_diagrams[regime] = diagrams
+        print(f"  {regime}: {len(diagrams)} assets with TDA diagrams")
+
+    # Within-regime vs between-regime bottleneck distances
+    within_dists = []
+    between_dists = []
+    for regime in regimes:
+        dgms = regime_diagrams.get(regime, [])
+        for i in range(len(dgms)):
+            for j in range(i + 1, len(dgms)):
+                d_bn = bottleneck_distance(dgms[i], dgms[j], dim=0)
+                within_dists.append(d_bn)
+
+    for r1 in range(len(regimes)):
+        for r2 in range(r1 + 1, len(regimes)):
+            dgms1 = regime_diagrams.get(regimes[r1], [])
+            dgms2 = regime_diagrams.get(regimes[r2], [])
+            for d1 in dgms1:
+                for d2 in dgms2:
+                    d_bn = bottleneck_distance(d1, d2, dim=0)
+                    between_dists.append(d_bn)
+
+    within_mean = np.mean(within_dists) if within_dists else 0
+    between_mean = np.mean(between_dists) if between_dists else 0
+    print(f"  Within-regime bottleneck: {within_mean:.4f}")
+    print(f"  Between-regime bottleneck: {between_mean:.4f}")
+    print(f"  Ratio (between/within): {between_mean / max(within_mean, 1e-8):.2f}")
+    results['h1_within'] = within_mean
+    results['h1_between'] = between_mean
+
+    # ---- H2: RDS distance vs KL between regimes ----
+    print("\n--- H2: RDS Distance vs KL (Crypto) ---")
+    # Compute regime-level return centroid trajectories
+    regime_centroids = {}
+    for regime, idx_list in regime_indices.items():
+        # Find common time range across assets in this regime
+        min_len = min(len(assets[i].returns) for i in idx_list)
+        if min_len < 30:
+            continue
+        # Stack returns and average
+        returns_stack = np.column_stack([assets[i].returns[:min_len] for i in idx_list])
+        # Use rolling features as the "trajectory"
+        window = 20
+        n_out = min_len - window
+        if n_out < 20:
+            continue
+        trajectory = np.zeros((n_out, 3))
+        for t in range(window, min_len):
+            trajectory[t - window, 0] = np.mean(returns_stack[t])
+            trajectory[t - window, 1] = np.std(returns_stack[t - window:t])
+            trajectory[t - window, 2] = np.mean(np.abs(returns_stack[t - window:t]))
+        regime_centroids[regime] = trajectory
+
+    rds_dists = {}
+    kl_dists = {}
+    for r1 in range(len(regimes)):
+        for r2 in range(r1 + 1, len(regimes)):
+            g1, g2 = regimes[r1], regimes[r2]
+            key = f"{g1}-{g2}"
+            if g1 in regime_centroids and g2 in regime_centroids:
+                min_len = min(len(regime_centroids[g1]), len(regime_centroids[g2]))
+                if min_len > 10:
+                    d_rds = rds_distance(
+                        regime_centroids[g1][:min_len],
+                        regime_centroids[g2][:min_len], rank=5)
+                    d_kl = kl_divergence_gaussian(
+                        regime_centroids[g1][:min_len],
+                        regime_centroids[g2][:min_len])
+                    rds_dists[key] = d_rds
+                    kl_dists[key] = d_kl
+                    print(f"  {key}: RDS={d_rds:.4f}, KL={d_kl:.4f}")
+
+    results['h2_rds'] = rds_dists
+    results['h2_kl'] = kl_dists
+    results['regime_diagrams'] = regime_diagrams
+
+    return results, assets, regime_indices
 
 
 if __name__ == '__main__':

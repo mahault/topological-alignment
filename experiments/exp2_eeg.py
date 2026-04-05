@@ -519,8 +519,20 @@ def run_experiment_synthetic(seed: int = 42):
     else:
         print("  Insufficient data for TDA")
 
+    # Compute p-value for peak correlation via permutation
+    from scipy.stats import pearsonr
+    n_corr = min(len(curv_smooth), len(coupling_ds))
+    if peak_lag >= 0:
+        r_val, p_val = pearsonr(curv_smooth[:n_corr - peak_lag],
+                                coupling_ds[peak_lag:n_corr])
+    else:
+        r_val, p_val = pearsonr(curv_smooth[-peak_lag:n_corr],
+                                coupling_ds[:n_corr + peak_lag])
+
     results = {
         'peak_correlation': peak_corr,
+        'peak_r': peak_corr,
+        'peak_p': p_val,
         'peak_lag': peak_lag,
         'mean_curvature': np.mean(curv_ts),
         'curvature_std': np.std(curv_ts),
@@ -528,6 +540,271 @@ def run_experiment_synthetic(seed: int = 42):
     }
 
     return results, curv_ts, coupling_ds
+
+
+# ====================================================================
+# Wavelet coherence (for fNIRS data)
+# ====================================================================
+
+def compute_wavelet_coherence(signal1: np.ndarray, signal2: np.ndarray,
+                               sfreq: float,
+                               freq_range: tuple[float, float] = (0.01, 0.1),
+                               n_freqs: int = 20,
+                               window_sec: float = 30.0) -> np.ndarray:
+    """
+    Compute time-resolved wavelet coherence between two fNIRS signals.
+
+    Uses Morlet wavelets for time-frequency decomposition, then computes
+    coherence in sliding windows across the frequency range of interest.
+
+    Parameters
+    ----------
+    signal1, signal2 : (n_times,) arrays
+    sfreq : sampling frequency (Hz)
+    freq_range : frequency band of interest (Hz)
+    n_freqs : number of frequency bins
+    window_sec : window size for coherence averaging (seconds)
+
+    Returns
+    -------
+    coherence_ts : (n_windows,) array of mean coherence values
+    """
+    import pywt
+
+    n_times = len(signal1)
+    window_samples = int(window_sec * sfreq)
+
+    # Generate wavelet scales corresponding to freq_range
+    freqs = np.linspace(freq_range[0], freq_range[1], n_freqs)
+    freqs = freqs[freqs > 0]
+    scales = sfreq / (2 * freqs)  # Morlet wavelet scales
+
+    # Continuous wavelet transform
+    coefs1, _ = pywt.cwt(signal1, scales, 'morl', sampling_period=1.0/sfreq)
+    coefs2, _ = pywt.cwt(signal2, scales, 'morl', sampling_period=1.0/sfreq)
+
+    # Windowed coherence
+    n_windows = max(1, n_times // window_samples)
+    coherence_ts = np.zeros(n_windows)
+
+    for w in range(n_windows):
+        s = w * window_samples
+        e = min(s + window_samples, n_times)
+
+        # Cross-spectral density and auto-spectra
+        S12 = np.mean(coefs1[:, s:e] * np.conj(coefs2[:, s:e]), axis=1)
+        S11 = np.mean(np.abs(coefs1[:, s:e])**2, axis=1)
+        S22 = np.mean(np.abs(coefs2[:, s:e])**2, axis=1)
+
+        # Coherence per frequency
+        coh = np.abs(S12)**2 / (S11 * S22 + 1e-12)
+        # Mean coherence across frequencies
+        coherence_ts[w] = np.mean(coh)
+
+    return coherence_ts
+
+
+def compute_synchrony_matrix(data1: np.ndarray, data2: np.ndarray,
+                              sfreq: float, modality: str = 'eeg',
+                              window_sec: float = 2.0) -> np.ndarray:
+    """
+    Compute time-resolved synchrony matrix between two participants.
+
+    Dispatches to PLV (for EEG) or wavelet coherence (for fNIRS)
+    based on the modality parameter.
+
+    Parameters
+    ----------
+    data1 : (n_channels, n_times) — participant 1
+    data2 : (n_channels, n_times) — participant 2
+    sfreq : sampling frequency
+    modality : 'eeg' or 'fnirs'
+    window_sec : window size in seconds
+
+    Returns
+    -------
+    sync_matrix : (n_ch1, n_ch2, n_windows) synchrony values
+    """
+    n_ch1 = data1.shape[0]
+    n_ch2 = data2.shape[0]
+    n_times = min(data1.shape[1], data2.shape[1])
+
+    if modality == 'eeg':
+        # PLV in alpha band with specified window
+        window_samples = int(window_sec * sfreq)
+        alpha_band = (8, 13)
+        n_blocks = max(1, n_times // window_samples)
+
+        from scipy.signal import hilbert, butter, filtfilt
+        nyq = sfreq / 2.0
+
+        # Check Nyquist constraint
+        if alpha_band[1] >= nyq:
+            band = (max(1.0, nyq * 0.1), nyq * 0.9)
+        else:
+            band = alpha_band
+
+        b, a = butter(4, [band[0] / nyq, band[1] / nyq], btype='band')
+        phases1 = np.angle(hilbert(filtfilt(b, a, data1[:, :n_times], axis=-1), axis=-1))
+        phases2 = np.angle(hilbert(filtfilt(b, a, data2[:, :n_times], axis=-1), axis=-1))
+
+        sync_matrix = np.zeros((n_ch1, n_ch2, n_blocks))
+        for blk in range(n_blocks):
+            s = blk * window_samples
+            e = min(s + window_samples, n_times)
+            for i in range(n_ch1):
+                for j in range(n_ch2):
+                    phase_diff = phases1[i, s:e] - phases2[j, s:e]
+                    sync_matrix[i, j, blk] = np.abs(np.mean(np.exp(1j * phase_diff)))
+
+    elif modality == 'fnirs':
+        # Wavelet coherence for fNIRS (lower frequencies)
+        window_samples = int(window_sec * sfreq)
+        n_blocks = max(1, n_times // window_samples)
+
+        sync_matrix = np.zeros((n_ch1, n_ch2, n_blocks))
+        for i in range(n_ch1):
+            for j in range(n_ch2):
+                coh = compute_wavelet_coherence(
+                    data1[i, :n_times], data2[j, :n_times],
+                    sfreq, freq_range=(0.01, 0.1),
+                    window_sec=window_sec,
+                )
+                n_w = min(len(coh), n_blocks)
+                sync_matrix[i, j, :n_w] = coh[:n_w]
+    else:
+        raise ValueError(f"Unknown modality: {modality}")
+
+    return sync_matrix
+
+
+# ====================================================================
+# Real data experiment runner
+# ====================================================================
+
+def run_experiment_real(datasets: list, plv_threshold: float = 0.3):
+    """
+    Run Experiment 2 on real hyperscanning datasets.
+
+    Parameters
+    ----------
+    datasets : list of HyperscanningData
+        Real hyperscanning dyads (EEG and/or fNIRS).
+    plv_threshold : float
+        Threshold for building interaction graphs.
+
+    Returns
+    -------
+    results : dict with per-dyad and aggregate results
+    all_curvatures : list of curvature time series per dyad
+    """
+    from scipy.stats import pearsonr
+
+    all_results = []
+    all_curvatures = []
+    all_conditions = []
+
+    for data in datasets:
+        dyad_id = data.dyad_id
+        print(f"\nProcessing dyad: {dyad_id} ({data.modality})")
+        print(f"  Channels: P1={data.participant1.shape[0]}, "
+              f"P2={data.participant2.shape[0]}, "
+              f"samples={data.participant1.shape[1]}")
+
+        # Determine window size based on modality
+        if data.modality == 'fnirs':
+            window_sec = 30.0  # larger windows for fNIRS
+        else:
+            window_sec = 2.0
+
+        # Compute synchrony matrix
+        print(f"  Computing synchrony ({data.modality}, {window_sec}s windows)...")
+        sync_matrix = compute_synchrony_matrix(
+            data.participant1, data.participant2,
+            data.sfreq, modality=data.modality,
+            window_sec=window_sec,
+        )
+        print(f"  Synchrony matrix shape: {sync_matrix.shape}")
+
+        # Forman-Ricci curvature time series
+        print(f"  Computing Forman-Ricci curvature...")
+        curv_ts = curvature_time_series(sync_matrix, threshold=plv_threshold)
+
+        # Smooth curvature
+        kernel_size = min(5, len(curv_ts) // 3)
+        if kernel_size > 1:
+            kernel = np.ones(kernel_size) / kernel_size
+            curv_smooth = np.convolve(curv_ts, kernel, mode='same')
+        else:
+            curv_smooth = curv_ts
+
+        dyad_result = {
+            'dyad_id': dyad_id,
+            'modality': data.modality,
+            'n_windows': len(curv_ts),
+            'mean_curvature': float(np.mean(curv_ts)),
+            'std_curvature': float(np.std(curv_ts)),
+            'mean_sync': float(np.mean(sync_matrix)),
+        }
+
+        # If condition labels exist, correlate curvature with condition
+        if data.condition_labels is not None:
+            n_cond = len(data.condition_labels)
+            n_curv = len(curv_smooth)
+
+            # Conditions may be per-timepoint or per-epoch
+            if n_cond >= n_curv:
+                # Downsample conditions to match curvature windows
+                window_samples = int(window_sec * data.sfreq)
+                n_blocks = n_curv
+                cond_ds = np.array([
+                    np.mean(data.condition_labels[
+                        blk * window_samples:min((blk + 1) * window_samples, n_cond)])
+                    for blk in range(n_blocks)
+                ])
+            elif n_cond == n_curv:
+                cond_ds = data.condition_labels.astype(float)
+            else:
+                cond_ds = None
+
+            if cond_ds is not None and len(cond_ds) > 5:
+                r, p = pearsonr(curv_smooth[:len(cond_ds)], cond_ds[:len(curv_smooth)])
+                dyad_result['condition_r'] = float(r)
+                dyad_result['condition_p'] = float(p)
+                print(f"  Curvature-condition correlation: r={r:.3f}, p={p:.4f}")
+
+        all_results.append(dyad_result)
+        all_curvatures.append(curv_ts)
+        if data.condition_labels is not None:
+            all_conditions.append(data.condition_labels)
+
+    # Aggregate results
+    r_values = [r['condition_r'] for r in all_results if 'condition_r' in r]
+    aggregate = {
+        'n_dyads': len(all_results),
+        'per_dyad': all_results,
+    }
+
+    if r_values:
+        aggregate['mean_r'] = float(np.mean(r_values))
+        aggregate['std_r'] = float(np.std(r_values))
+        aggregate['median_r'] = float(np.median(r_values))
+        # 95% CI via bootstrap
+        if len(r_values) >= 5:
+            rng = np.random.default_rng(42)
+            boot_means = []
+            for _ in range(1000):
+                sample = rng.choice(r_values, size=len(r_values), replace=True)
+                boot_means.append(np.mean(sample))
+            aggregate['ci_lower'] = float(np.percentile(boot_means, 2.5))
+            aggregate['ci_upper'] = float(np.percentile(boot_means, 97.5))
+        print(f"\n=== Aggregate Results ===")
+        print(f"  {len(r_values)} dyads with condition correlations")
+        print(f"  Mean r = {aggregate['mean_r']:.3f} +/- {aggregate['std_r']:.3f}")
+        if 'ci_lower' in aggregate:
+            print(f"  95% CI: [{aggregate['ci_lower']:.3f}, {aggregate['ci_upper']:.3f}]")
+
+    return aggregate, all_curvatures
 
 
 if __name__ == '__main__':

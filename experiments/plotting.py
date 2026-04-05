@@ -6,10 +6,12 @@ Generates publication-quality figures for all three experiments.
 
 Figures produced:
   1. fig_framework_overview.pdf  — Conceptual belief landscape with basins, geodesic, ridge
-  2. fig_exp1_combined.pdf       — 4-panel: trajectories, persistence barcodes, RDS/KL bars, empowerment
+  2. fig_exp1_combined.pdf       — 6-panel (3x2): synthetic + crypto side-by-side
   3. fig_exp2_curvature.pdf      — 3-panel: curvature, coupling, overlay (oversampled, shaded epochs)
+  3b. fig_exp2_real_summary.pdf  — Multi-dataset summary (real hyperscanning)
   4. fig_exp3_distances.pdf      — Sorted distance heatmaps (RDS, KL, embedding) with diverging cmap
   5. fig_exp3_persistence.pdf    — Persistence barcodes for echo/diverse/polarized communities
+  S1. fig_exp1_empowerment.pdf   — Empowerment by group (supplementary, synthetic-only)
 """
 
 import numpy as np
@@ -233,26 +235,22 @@ def fig_framework_overview(filename: str = 'fig_framework_overview.pdf'):
 
 def fig_exp1_combined(trajectories: np.ndarray, group_indices: dict,
                       rds_dists: dict, kl_dists: dict,
-                      empowerment: dict, group_diagrams: dict = None,
+                      empowerment: dict = None, group_diagrams: dict = None,
                       filename: str = 'fig_exp1_combined.pdf'):
     """
-    Combined 4-panel figure for Experiment 1.
+    Combined 3-panel figure for Experiment 1.
 
-    (a) Belief trajectories with 2-sigma covariance ellipses
+    (a) Belief volatility over time
     (b) Persistence barcodes by group
     (c) RDS vs KL grouped bar chart
-    (d) Empowerment by group
     """
     ensure_fig_dir()
 
-    fig = plt.figure(figsize=(14, 10))
-    gs = GridSpec(2, 2, figure=fig, hspace=0.35, wspace=0.3)
+    fig = plt.figure(figsize=(15, 4.5))
+    gs = GridSpec(1, 3, figure=fig, wspace=0.30)
 
     # ------------------------------------------------------------------
     # Panel (a): Per-agent belief volatility over time
-    # Measures how much each agent's beliefs fluctuate around their
-    # local attractor.  Flexible agents explore more (high volatility),
-    # Rigid agents are locked in (low volatility).
     # ------------------------------------------------------------------
     ax_vol = fig.add_subplot(gs[0, 0])
 
@@ -309,6 +307,7 @@ def fig_exp1_combined(trajectories: np.ndarray, group_indices: dict,
     # ------------------------------------------------------------------
     ax_pers = fig.add_subplot(gs[0, 1])
 
+
     if group_diagrams is not None:
         y_offset = 0
         y_ticks = []
@@ -364,7 +363,7 @@ def fig_exp1_combined(trajectories: np.ndarray, group_indices: dict,
     # ------------------------------------------------------------------
     # Panel (c): RDS vs KL grouped bar chart
     # ------------------------------------------------------------------
-    ax_bars = fig.add_subplot(gs[1, 0])
+    ax_bars = fig.add_subplot(gs[0, 2])
 
     keys = list(rds_dists.keys())
     x = np.arange(len(keys))
@@ -399,32 +398,7 @@ def fig_exp1_combined(trajectories: np.ndarray, group_indices: dict,
     ax_bars.legend(loc='upper left', fontsize=8, framealpha=0.9)
     ax_bars.set_ylim(0, 1.35)
 
-    # ------------------------------------------------------------------
-    # Panel (d): Empowerment by group
-    # ------------------------------------------------------------------
-    ax_emp = fig.add_subplot(gs[1, 1])
-
-    group_names = list(empowerment.keys())
-    emp_vals = [empowerment[k] for k in group_names]
-    emp_colors = [COLORS.get(k, 'gray') for k in group_names]
-    emp_labels = [GROUP_LABELS.get(k, k) for k in group_names]
-
-    bars_emp = ax_emp.bar(emp_labels, emp_vals, color=emp_colors, width=0.5,
-                           edgecolor='white', linewidth=0.5, alpha=0.85)
-
-    emp_offset = max(np.max(emp_vals) * 0.08, 1e-5) if emp_vals else 0.001
-    for bar, val in zip(bars_emp, emp_vals):
-        ax_emp.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + emp_offset,
-                     f'{val:.4f}', ha='center', va='bottom', fontsize=8)
-
-    ax_emp.set_ylabel('Empowerment')
-    ax_emp.set_title('(d) Geometric Empowerment by Group', fontsize=11)
-    # Add annotation
-    ax_emp.annotate('Higher = more reachable\nbelief states',
-                    xy=(0.98, 0.95), xycoords='axes fraction',
-                    fontsize=7, color='gray', ha='right', va='top',
-                    fontstyle='italic')
-
+    plt.tight_layout()
     fig.savefig(FIG_DIR / filename)
     plt.close(fig)
     print(f"Saved {filename}")
@@ -436,6 +410,8 @@ def fig_exp1_combined(trajectories: np.ndarray, group_indices: dict,
 
 def fig_curvature_coupling(curv_ts: np.ndarray, coupling_ts: np.ndarray,
                             sfreq_windows: float = 0.5,
+                            peak_r: float = None, peak_p: float = None,
+                            peak_lag: int = None,
                             filename: str = 'fig_exp2_curvature.pdf'):
     """
     3-panel figure: curvature, coupling, and overlay with vertical
@@ -522,6 +498,17 @@ def fig_curvature_coupling(curv_ts: np.ndarray, coupling_ts: np.ndarray,
     ax3.set_ylabel('z-score', fontsize=10)
     ax3.set_xlabel('Time (s)', fontsize=11)
     ax3.legend(loc='upper right', fontsize=8, framealpha=0.9)
+
+    # Add r-value / p-value annotation
+    if peak_r is not None:
+        lag_str = f', lag={peak_lag}' if peak_lag is not None else ''
+        p_str = f'p < 0.001' if (peak_p is not None and peak_p < 0.001) else (
+            f'p = {peak_p:.3f}' if peak_p is not None else '')
+        ann_text = f'$r = {peak_r:.3f}${lag_str}\n{p_str}'
+        ax3.annotate(ann_text, xy=(0.02, 0.95), xycoords='axes fraction',
+                     fontsize=9, fontweight='bold', va='top', ha='left',
+                     bbox=dict(boxstyle='round,pad=0.3', facecolor='white',
+                               alpha=0.9, edgecolor='gray'))
 
     # Legend for shading (add to panel 1)
     from matplotlib.patches import Patch
@@ -675,9 +662,16 @@ def fig_exp3_persistence(communities: list, tda_results: dict,
             ax.set_title(type_name)
             continue
 
-        # Compute persistence for this community
+        # Compute persistence with data-adaptive max_edge
+        # Use 95th percentile of pairwise distances as ceiling
+        from scipy.spatial.distance import pdist
+        sub_idx = np.random.choice(len(comm.embeddings),
+                                    min(200, len(comm.embeddings)), replace=False)
+        sub_cloud = comm.embeddings[sub_idx]
+        dists_sample = pdist(sub_cloud)
+        adaptive_max = np.percentile(dists_sample, 95)
         dgm = compute_persistence(comm.embeddings, max_dim=1,
-                                   max_edge=15.0, n_subsample=500)
+                                   max_edge=adaptive_max, n_subsample=500)
 
         if len(dgm) == 0:
             ax.text(0.5, 0.5, 'No features', ha='center', va='center',
@@ -738,11 +732,358 @@ def fig_exp3_persistence(communities: list, tda_results: dict,
 
 
 # ====================================================================
+# Figure 2b: Experiment 1 Combined (6-panel: synthetic + crypto)
+# ====================================================================
+
+def fig_exp1_combined_real(
+    # Synthetic data
+    trajectories: np.ndarray, group_indices: dict,
+    rds_dists: dict, kl_dists: dict,
+    group_diagrams: dict = None,
+    # Crypto data
+    crypto_assets: list = None, crypto_regime_indices: dict = None,
+    crypto_rds: dict = None, crypto_kl: dict = None,
+    crypto_diagrams: dict = None,
+    filename: str = 'fig_exp1_combined.pdf',
+):
+    """
+    Combined 6-panel figure (3x2) for Experiment 1: synthetic + crypto.
+
+    Left column: synthetic (volatility, persistence, RDS/KL)
+    Right column: crypto (price trajectories, persistence, RDS/KL)
+    """
+    ensure_fig_dir()
+
+    fig = plt.figure(figsize=(14, 12))
+    gs = GridSpec(3, 2, figure=fig, hspace=0.40, wspace=0.30)
+
+    # === Left column: Synthetic ===
+
+    # (a) Synthetic: belief volatility
+    ax_vol = fig.add_subplot(gs[0, 0])
+    n_steps = trajectories.shape[0]
+    window = 200
+    out_step = max(1, n_steps // 300)
+    t_out = np.arange(window, n_steps, out_step)
+
+    for name, idx in group_indices.items():
+        color = COLORS.get(name, 'gray')
+        label = GROUP_LABELS.get(name, name)
+        group_traj = trajectories[:, idx, :]
+        deltas = np.diff(group_traj, axis=0)
+        delta_norms = np.sqrt(np.sum(deltas**2, axis=2))
+        cs = np.cumsum(delta_norms, axis=0)
+        vol_per_agent = np.zeros((len(t_out), len(idx)))
+        for k, t in enumerate(t_out):
+            t_idx = min(t - 1, cs.shape[0] - 1)
+            start_idx = max(0, t_idx - window)
+            span = t_idx - start_idx
+            if span > 0:
+                vol_per_agent[k] = (cs[t_idx] - cs[start_idx]) / span
+        vol_mean = np.mean(vol_per_agent, axis=1)
+        vol_std = np.std(vol_per_agent, axis=1)
+        ax_vol.plot(t_out, vol_mean, color=color, linewidth=2.0, label=label, zorder=5)
+        ax_vol.fill_between(t_out, vol_mean - vol_std, vol_mean + vol_std,
+                            color=color, alpha=0.12)
+
+    ax_vol.axvline(5000, color='gray', linewidth=1.0, linestyle=':', alpha=0.6, zorder=1)
+    ax_vol.set_xlabel('Time step')
+    ax_vol.set_ylabel('Step-to-step $\\|\\Delta\\phi\\|$')
+    ax_vol.set_title('(a) Synthetic: Belief Volatility', fontsize=11)
+    ax_vol.legend(loc='upper right', framealpha=0.9, fontsize=7)
+
+    # (c) Synthetic: persistence barcodes
+    ax_pers = fig.add_subplot(gs[1, 0])
+    if group_diagrams is not None:
+        _draw_persistence_barcodes(ax_pers, group_diagrams,
+                                   ['R', 'F', 'M'], COLORS, GROUP_LABELS)
+    ax_pers.set_title('(c) Synthetic: $H_0$ Persistence', fontsize=11)
+
+    # (e) Synthetic: RDS vs KL
+    ax_bars = fig.add_subplot(gs[2, 0])
+    _draw_rds_kl_bars(ax_bars, rds_dists, kl_dists)
+    ax_bars.set_title('(e) Synthetic: RDS vs KL', fontsize=11)
+
+    # === Right column: Crypto ===
+
+    # (b) Crypto: price trajectories
+    ax_price = fig.add_subplot(gs[0, 1])
+    if crypto_assets and crypto_regime_indices:
+        regime_colors = {'stable': '#3498db', 'large_cap': '#e67e22', 'mid_cap': '#e74c3c'}
+        regime_labels = {'stable': 'Stable', 'large_cap': 'Large-Cap', 'mid_cap': 'Mid-Cap'}
+        plotted_labels = set()
+        for regime, idx_list in crypto_regime_indices.items():
+            color = regime_colors.get(regime, 'gray')
+            for i in idx_list[:5]:  # max 5 per regime
+                asset = crypto_assets[i]
+                # Normalize prices to start at 1.0
+                norm_prices = asset.prices / asset.prices[0]
+                lbl = regime_labels.get(regime, regime) if regime not in plotted_labels else None
+                ax_price.plot(norm_prices, color=color, linewidth=0.8, alpha=0.7, label=lbl)
+                plotted_labels.add(regime)
+        ax_price.set_xlabel('Trading day')
+        ax_price.set_ylabel('Normalized price')
+        ax_price.set_yscale('log')
+        ax_price.legend(loc='upper left', fontsize=7, framealpha=0.9)
+    else:
+        ax_price.text(0.5, 0.5, 'No crypto data', ha='center', va='center',
+                      transform=ax_price.transAxes, color='gray')
+    ax_price.set_title('(b) Crypto: Price Trajectories', fontsize=11)
+
+    # (d) Crypto: persistence
+    ax_cpers = fig.add_subplot(gs[1, 1])
+    if crypto_diagrams:
+        regime_color_map = {'stable': '#3498db', 'large_cap': '#e67e22', 'mid_cap': '#e74c3c'}
+        regime_label_map = {'stable': 'Stable', 'large_cap': 'Large-Cap', 'mid_cap': 'Mid-Cap'}
+        _draw_persistence_barcodes(ax_cpers, crypto_diagrams,
+                                   list(crypto_diagrams.keys()),
+                                   regime_color_map, regime_label_map)
+    else:
+        ax_cpers.text(0.5, 0.5, 'No crypto TDA data', ha='center', va='center',
+                      transform=ax_cpers.transAxes, color='gray')
+    ax_cpers.set_title('(d) Crypto: $H_0$ Persistence', fontsize=11)
+
+    # (f) Crypto: RDS vs KL
+    ax_cbars = fig.add_subplot(gs[2, 1])
+    if crypto_rds and crypto_kl:
+        _draw_rds_kl_bars(ax_cbars, crypto_rds, crypto_kl)
+    else:
+        ax_cbars.text(0.5, 0.5, 'No crypto distance data', ha='center', va='center',
+                      transform=ax_cbars.transAxes, color='gray')
+    ax_cbars.set_title('(f) Crypto: RDS vs KL', fontsize=11)
+
+    fig.savefig(FIG_DIR / filename)
+    plt.close(fig)
+    print(f"Saved {filename}")
+
+
+def _draw_persistence_barcodes(ax, diagrams_dict, group_order, color_map, label_map):
+    """Helper: draw H0 persistence barcodes for multiple groups."""
+    y_offset = 0
+    y_ticks = []
+    y_labels = []
+    group_separators = []
+
+    for name in group_order:
+        if name not in diagrams_dict:
+            continue
+        diagrams = diagrams_dict[name]
+        color = color_map.get(name, 'gray')
+        label = label_map.get(name, name)
+        group_start = y_offset
+
+        all_bars = []
+        for dgm in diagrams[:10]:
+            if len(dgm) == 0:
+                continue
+            h0 = dgm[dgm[:, 2] == 0] if dgm.shape[1] >= 3 else dgm
+            for row in h0:
+                if row[1] - row[0] > 1e-6:
+                    all_bars.append((row[0], row[1]))
+
+        all_bars.sort(key=lambda b: b[1] - b[0], reverse=True)
+        bars_to_show = all_bars[:25]
+
+        for birth, death in bars_to_show:
+            ax.barh(y_offset, death - birth, left=birth, height=0.7,
+                    color=color, alpha=0.7, edgecolor='none')
+            y_offset += 1
+
+        y_ticks.append((group_start + y_offset) / 2)
+        y_labels.append(label)
+        group_separators.append(y_offset)
+        y_offset += 2
+
+    for sep in group_separators[:-1]:
+        ax.axhline(sep + 0.5, color='gray', linewidth=0.5, linestyle=':')
+
+    ax.set_yticks(y_ticks)
+    ax.set_yticklabels(y_labels)
+    ax.set_xlabel('Filtration value ($\\epsilon$)')
+    ax.invert_yaxis()
+
+
+def _draw_rds_kl_bars(ax, rds_dists, kl_dists):
+    """Helper: draw RDS vs KL grouped bar chart."""
+    keys = list(rds_dists.keys())
+    if not keys:
+        return
+    x = np.arange(len(keys))
+    width = 0.35
+    rds_vals = np.array([rds_dists[k] for k in keys])
+    kl_vals = np.array([kl_dists[k] for k in keys])
+    rds_max = np.max(rds_vals) if np.max(rds_vals) > 0 else 1.0
+    kl_max = np.max(kl_vals) if np.max(kl_vals) > 0 else 1.0
+
+    bars_rds = ax.bar(x - width / 2, rds_vals / rds_max, width,
+                      color=COLORS['rds'], label='RDS (norm)',
+                      edgecolor='white', linewidth=0.5, alpha=0.85)
+    bars_kl = ax.bar(x + width / 2, kl_vals / kl_max, width,
+                     color=COLORS['kl'], label='KL (norm)',
+                     edgecolor='white', linewidth=0.5, alpha=0.85)
+
+    for bar, val in zip(bars_rds, rds_vals):
+        ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.02,
+                f'{val:.3f}', ha='center', va='bottom', fontsize=7, color=COLORS['rds'])
+    for bar, val in zip(bars_kl, kl_vals):
+        ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.02,
+                f'{val:.3f}', ha='center', va='bottom', fontsize=7, color=COLORS['kl'])
+
+    ax.set_xticks(x)
+    ax.set_xticklabels(keys, fontsize=8)
+    ax.set_ylabel('Normalized distance')
+    ax.legend(loc='upper left', fontsize=7, framealpha=0.9)
+    ax.set_ylim(0, 1.35)
+
+
+# ====================================================================
+# Figure S1: Empowerment by group (supplementary)
+# ====================================================================
+
+def fig_exp1_empowerment(empowerment: dict,
+                          filename: str = 'fig_exp1_empowerment.pdf'):
+    """Supplementary figure: geometric empowerment by group."""
+    ensure_fig_dir()
+    fig, ax = plt.subplots(figsize=(6, 4))
+
+    group_names = list(empowerment.keys())
+    emp_vals = [empowerment[k] for k in group_names]
+    emp_colors = [COLORS.get(k, 'gray') for k in group_names]
+    emp_labels = [GROUP_LABELS.get(k, k) for k in group_names]
+
+    bars = ax.bar(emp_labels, emp_vals, color=emp_colors, width=0.5,
+                  edgecolor='white', linewidth=0.5, alpha=0.85)
+    emp_offset = max(np.max(emp_vals) * 0.08, 1e-5) if emp_vals else 0.001
+    for bar, val in zip(bars, emp_vals):
+        ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + emp_offset,
+                f'{val:.4f}', ha='center', va='bottom', fontsize=9)
+
+    ax.set_ylabel('Empowerment')
+    ax.set_title('Geometric Empowerment by Group (Synthetic)', fontsize=12)
+    ax.annotate('Higher = more reachable belief states',
+                xy=(0.98, 0.95), xycoords='axes fraction',
+                fontsize=8, color='gray', ha='right', va='top', fontstyle='italic')
+
+    plt.tight_layout()
+    fig.savefig(FIG_DIR / filename)
+    plt.close(fig)
+    print(f"Saved {filename}")
+
+
+# ====================================================================
+# Figure 3b: Experiment 2 — Multi-dataset real summary
+# ====================================================================
+
+def fig_exp2_real_summary(aggregate_results: dict,
+                           all_curvatures: list = None,
+                           filename: str = 'fig_exp2_real_summary.pdf'):
+    """
+    Multi-dataset summary figure for real hyperscanning data.
+
+    Left: representative dyad curvature time series
+    Right: scatter/bar of r-values across dyads, grouped by dataset
+    """
+    ensure_fig_dir()
+
+    per_dyad = aggregate_results.get('per_dyad', [])
+    if not per_dyad:
+        print("No real Exp2 data for plotting")
+        return
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4.5))
+
+    # Left: representative curvature time series (first dyad with data)
+    if all_curvatures and len(all_curvatures) > 0:
+        rep_idx = 0
+        curv = all_curvatures[rep_idx]
+        rep_info = per_dyad[rep_idx]
+        t = np.arange(len(curv))
+        ax1.plot(t, curv, color=COLORS['curvature'], linewidth=0.6, alpha=0.5)
+        # Smoothed
+        kernel_size = min(5, len(curv) // 3)
+        if kernel_size > 1:
+            kernel = np.ones(kernel_size) / kernel_size
+            curv_smooth = np.convolve(curv, kernel, mode='same')
+            ax1.plot(t, curv_smooth, color=COLORS['curvature'], linewidth=2.5, zorder=5)
+        ax1.set_xlabel('Window index')
+        ax1.set_ylabel('Forman-Ricci Curvature')
+        ax1.set_title(f'(a) Representative Dyad: {rep_info["dyad_id"]}', fontsize=11)
+    else:
+        ax1.text(0.5, 0.5, 'No curvature data', ha='center', va='center',
+                 transform=ax1.transAxes, color='gray')
+
+    # Right: r-values across dyads
+    dyads_with_r = [d for d in per_dyad if 'condition_r' in d]
+    if dyads_with_r:
+        # Group by modality
+        eeg_rs = [d['condition_r'] for d in dyads_with_r if d['modality'] == 'eeg']
+        fnirs_rs = [d['condition_r'] for d in dyads_with_r if d['modality'] == 'fnirs']
+
+        # Bar plot
+        groups = []
+        means = []
+        stds = []
+        colors = []
+        if eeg_rs:
+            groups.append('EEG')
+            means.append(np.mean(eeg_rs))
+            stds.append(np.std(eeg_rs) / np.sqrt(len(eeg_rs)))
+            colors.append('#2980b9')
+        if fnirs_rs:
+            groups.append('fNIRS')
+            means.append(np.mean(fnirs_rs))
+            stds.append(np.std(fnirs_rs) / np.sqrt(len(fnirs_rs)))
+            colors.append('#e67e22')
+        if eeg_rs or fnirs_rs:
+            all_rs = eeg_rs + fnirs_rs
+            groups.append('All')
+            means.append(np.mean(all_rs))
+            stds.append(np.std(all_rs) / np.sqrt(len(all_rs)))
+            colors.append('#2c3e50')
+
+        x = np.arange(len(groups))
+        bars = ax2.bar(x, means, yerr=stds, color=colors, width=0.5,
+                       edgecolor='white', linewidth=0.5, alpha=0.85,
+                       capsize=5)
+        ax2.set_xticks(x)
+        ax2.set_xticklabels(groups)
+        ax2.set_ylabel('Mean $r$ (curvature--condition)')
+        ax2.axhline(0, color='gray', linewidth=0.5, linestyle='-')
+
+        # Individual points as scatter overlay
+        if eeg_rs:
+            ax2.scatter(np.zeros(len(eeg_rs)), eeg_rs,
+                       color='#2980b9', alpha=0.5, s=20, zorder=5)
+        if fnirs_rs:
+            ax2.scatter(np.ones(len(fnirs_rs)), fnirs_rs,
+                       color='#e67e22', alpha=0.5, s=20, zorder=5)
+
+        ax2.set_title(f'(b) Curvature-Condition $r$ ($n={len(dyads_with_r)}$ dyads)',
+                      fontsize=11)
+    else:
+        ax2.text(0.5, 0.5, 'No condition correlations', ha='center', va='center',
+                 transform=ax2.transAxes, color='gray')
+
+    plt.tight_layout()
+    fig.savefig(FIG_DIR / filename)
+    plt.close(fig)
+    print(f"Saved {filename}")
+
+
+# ====================================================================
 # Generate all figures
 # ====================================================================
 
-def generate_all_figures():
-    """Generate all paper figures using experiment results."""
+def generate_all_figures(use_real: bool = False, data_dir: str = None):
+    """Generate all paper figures using experiment results.
+
+    Parameters
+    ----------
+    use_real : bool
+        If True, run real data experiments alongside synthetic.
+    data_dir : str
+        Base data directory for real data (contains crypto/, reddit/, etc.).
+    """
     print("=" * 60)
     print("Generating paper figures")
     print("=" * 60)
@@ -753,49 +1094,135 @@ def generate_all_figures():
     # Experiment 1
     print("\n--- Experiment 1 ---")
     from exp1_synthetic import run_experiment as run_exp1
+    from exp1_synthetic import takens_embedding, compute_persistence
     results1, traj1, groups1 = run_exp1(seed=42, n_steps=10000)
 
     # Compute persistence diagrams for panel (b)
-    from exp1_synthetic import takens_embedding, compute_persistence
+    # Use per-agent diagrams from the experiment results (already computed)
+    # Re-compute here for the plotting pass
     group_diagrams = {}
     for name, idx in groups1.items():
         diagrams = []
         for i in idx[:20]:
             agent_traj = traj1[:, i, :]
             try:
-                embedded = takens_embedding(agent_traj, tau=10, d_e=10)
-                dgm = compute_persistence(embedded, max_dim=1, n_subsample=300)
+                embedded = takens_embedding(agent_traj, tau=5, d_e=8)
+                dgm = compute_persistence(embedded, max_dim=1, max_edge=10.0,
+                                           n_subsample=500)
                 diagrams.append(dgm)
             except Exception:
                 pass
         group_diagrams[name] = diagrams
 
-    fig_exp1_combined(
-        trajectories=traj1,
-        group_indices=groups1,
-        rds_dists=results1['h2_rds'],
-        kl_dists=results1['h2_kl'],
-        empowerment=results1['h5_empowerment'],
-        group_diagrams=group_diagrams,
-    )
+    # Try crypto data if available
+    crypto_assets = None
+    crypto_regime_indices = None
+    crypto_rds = None
+    crypto_kl = None
+    crypto_diagrams = None
+
+    if use_real and data_dir:
+        from pathlib import Path
+        crypto_dir = str(Path(data_dir) / 'crypto')
+        if Path(crypto_dir).exists() and list(Path(crypto_dir).glob('*.csv')):
+            try:
+                from exp1_synthetic import run_experiment_crypto
+                crypto_results, crypto_assets, crypto_regime_indices = \
+                    run_experiment_crypto(crypto_dir, seed=42)
+                crypto_rds = crypto_results.get('h2_rds', {})
+                crypto_kl = crypto_results.get('h2_kl', {})
+                crypto_diagrams = crypto_results.get('regime_diagrams', {})
+            except Exception as e:
+                print(f"  Crypto experiment failed: {e}")
+
+    if crypto_assets:
+        # 6-panel figure with both synthetic + crypto
+        fig_exp1_combined_real(
+            trajectories=traj1, group_indices=groups1,
+            rds_dists=results1['h2_rds'], kl_dists=results1['h2_kl'],
+            group_diagrams=group_diagrams,
+            crypto_assets=crypto_assets,
+            crypto_regime_indices=crypto_regime_indices,
+            crypto_rds=crypto_rds, crypto_kl=crypto_kl,
+            crypto_diagrams=crypto_diagrams,
+        )
+    else:
+        # 3-panel (synthetic only, no empowerment)
+        fig_exp1_combined(
+            trajectories=traj1, group_indices=groups1,
+            rds_dists=results1['h2_rds'], kl_dists=results1['h2_kl'],
+            group_diagrams=group_diagrams,
+        )
 
     # Experiment 2
     print("\n--- Experiment 2 ---")
     from exp2_eeg import run_experiment_synthetic as run_exp2
     results2, curv_ts, coupling_ds = run_exp2(seed=42)
+    fig_curvature_coupling(curv_ts, coupling_ds,
+                           peak_r=results2.get('peak_r'),
+                           peak_p=results2.get('peak_p'),
+                           peak_lag=results2.get('peak_lag'))
 
-    fig_curvature_coupling(curv_ts, coupling_ds)
+    if use_real and data_dir:
+        from pathlib import Path
+        # Try loading real hyperscanning data
+        real_datasets = []
+        from data_loaders import (load_collaboration_eeg,
+                                  load_parent_child_fnirs,
+                                  load_social_touch_fnirs)
+
+        eeg_dir = str(Path(data_dir) / 'eeg_collab')
+        fnirs_parent_dir = str(Path(data_dir) / 'fnirs_parent')
+        fnirs_touch_dir = str(Path(data_dir) / 'fnirs_touch')
+
+        for dyad_id in range(1, 20):
+            d = load_collaboration_eeg(eeg_dir, dyad_id)
+            if d is not None:
+                real_datasets.append(d)
+
+        for dyad_id in range(1, 65):
+            d = load_parent_child_fnirs(fnirs_parent_dir, dyad_id)
+            if d is not None:
+                real_datasets.append(d)
+
+        for dyad_id in range(1, 50):
+            d = load_social_touch_fnirs(fnirs_touch_dir, dyad_id)
+            if d is not None:
+                real_datasets.append(d)
+
+        if real_datasets:
+            from exp2_eeg import run_experiment_real
+            real_results, real_curvatures = run_experiment_real(real_datasets)
+            fig_exp2_real_summary(real_results, real_curvatures)
 
     # Experiment 3
     print("\n--- Experiment 3 ---")
     from exp3_social_media import run_experiment as run_exp3
-    results3, communities = run_exp3(use_synthetic=True, seed=42)
 
-    names = [c.name for c in communities]
-    fig_distance_matrices(results3['rds_matrix'], results3['kl_matrix'],
-                           results3['emb_matrix'], names)
-
-    fig_exp3_persistence(communities, results3.get('tda_results', {}))
+    if use_real and data_dir:
+        try:
+            results3_real, communities_real = run_exp3(
+                use_synthetic=False, data_dir=data_dir, seed=42)
+            names = [c.name for c in communities_real]
+            fig_distance_matrices(results3_real['rds_matrix'],
+                                  results3_real['kl_matrix'],
+                                  results3_real['emb_matrix'], names)
+            fig_exp3_persistence(communities_real,
+                                 results3_real.get('tda_results', {}))
+        except Exception as e:
+            print(f"  Real Reddit experiment failed: {e}")
+            print("  Falling back to synthetic...")
+            results3, communities = run_exp3(use_synthetic=True, seed=42)
+            names = [c.name for c in communities]
+            fig_distance_matrices(results3['rds_matrix'], results3['kl_matrix'],
+                                  results3['emb_matrix'], names)
+            fig_exp3_persistence(communities, results3.get('tda_results', {}))
+    else:
+        results3, communities = run_exp3(use_synthetic=True, seed=42)
+        names = [c.name for c in communities]
+        fig_distance_matrices(results3['rds_matrix'], results3['kl_matrix'],
+                              results3['emb_matrix'], names)
+        fig_exp3_persistence(communities, results3.get('tda_results', {}))
 
     print("\n" + "=" * 60)
     print("All figures generated.")
@@ -804,6 +1231,8 @@ def generate_all_figures():
     print("  1. fig_framework_overview.pdf")
     print("  2. fig_exp1_combined.pdf")
     print("  3. fig_exp2_curvature.pdf")
+    if use_real:
+        print("  3b. fig_exp2_real_summary.pdf")
     print("  4. fig_exp3_distances.pdf")
     print("  5. fig_exp3_persistence.pdf")
     print("=" * 60)
