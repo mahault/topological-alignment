@@ -608,7 +608,7 @@ def run_experiment(seed: int = 42, n_steps: int = 10000, d: int = 5):
     else:
         ratio_fr = float('inf')
     print(f"\n  Persistence ratio (Flexible/Rigid): {ratio_fr:.2f}")
-    print(f"  → Flexible attractors {ratio_fr:.1f}x more topologically complex")
+    print(f"  Flexible attractors {ratio_fr:.1f}x more topologically complex")
 
     results['h1_persistence_stats'] = group_persistence_stats
     results['h1_persistence_ratio'] = ratio_fr
