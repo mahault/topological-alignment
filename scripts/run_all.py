@@ -84,6 +84,15 @@ def run_exp3(use_real=False, data_dir=None):
     return results, communities
 
 
+def run_exp4():
+    print("\n" + "=" * 60)
+    print("EXPERIMENT 4: Fisher Geodesics + Gromov-Wasserstein Alignment")
+    print("=" * 60)
+    from exp4_geodesic_alignment import run_experiment
+    results = run_experiment(seed=42)
+    return results
+
+
 def run_figures(use_real=False, data_dir=None):
     print("\n" + "=" * 60)
     print("GENERATING FIGURES")
@@ -97,6 +106,8 @@ def main():
     parser.add_argument('--exp1', action='store_true', help='Run Experiment 1')
     parser.add_argument('--exp2', action='store_true', help='Run Experiment 2')
     parser.add_argument('--exp3', action='store_true', help='Run Experiment 3')
+    parser.add_argument('--exp4', action='store_true',
+                        help='Run Experiment 4 (geodesics + GW alignment)')
     parser.add_argument('--figures', action='store_true', help='Generate figures')
     parser.add_argument('--all', action='store_true', help='Run everything')
     parser.add_argument('--real', action='store_true',
@@ -105,8 +116,9 @@ def main():
                         help='Base directory for real data files')
     args = parser.parse_args()
 
-    if args.all or not any([args.exp1, args.exp2, args.exp3, args.figures]):
-        args.exp1 = args.exp2 = args.exp3 = args.figures = True
+    if args.all or not any([args.exp1, args.exp2, args.exp3, args.exp4,
+                            args.figures]):
+        args.exp1 = args.exp2 = args.exp3 = args.exp4 = args.figures = True
 
     data_dir = args.data_dir if args.real else None
 
@@ -116,6 +128,8 @@ def main():
         run_exp2(data_dir=data_dir)
     if args.exp3:
         run_exp3(use_real=args.real, data_dir=data_dir)
+    if args.exp4:
+        run_exp4()
     if args.figures:
         run_figures(use_real=args.real, data_dir=data_dir)
 
