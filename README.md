@@ -14,6 +14,9 @@ the present hypotheses, and proposed experiments, see the
 For the dependency-ordered questions, formal proof obligations, experiment sequence,
 go/no-go gates, and paradigm-level failure conditions, see
 [Proving Out the Paradigm](docs/PARADIGM_PROOF_OBLIGATIONS.md).
+For a claim-by-claim review of whether meaning, semantic alignment, cooperation, and
+the moral predicates genuinely follow from VFE/EFE dynamics, see the
+[VFE/EFE Semantics and Cooperation Literature Audit](docs/VFE_EFE_SEMANTICS_COOPERATION_LITERATURE_AUDIT.md).
 The standards and toolchain for accepting mathematical theorems are specified in
 [Mathematical Proof Validation](docs/MATHEMATICAL_PROOF_VALIDATION.md).
 The ordered milestones, exit criteria, and current status are maintained in the
@@ -84,14 +87,15 @@ joint achievement and its allocation. Dependence alone cannot define it, because
 coercion and exploitation are also statistically joint. The formal account must add
 complementarity or joint achievement plus the moral constraints developed below.
 
-These objects must arise inside the active-inference dynamics. VFE minimization learns
-posterior beliefs and agent-specific semantic mappings to shared latent causes; EFE
-generates protentions and joint policy posteriors. Semantic processability is measured
-from those learned predictive maps. Candidate cooperative organization is measured by
-irreducible joint-policy dependence and joint EFE surplus over an explicit independent
-counterfactual. The terms are therefore extracted from the equations rather than
-attached as behavioural labels. Normative constraints subsequently determine whether
-that emergent coordination is good rather than coercive or exploitative.
+These objects must arise inside the active-inference dynamics. VFE minimization can
+learn posterior beliefs and agent-specific semantic mappings to shared latent causes;
+EFE generates protentions and policy posteriors. Semantic processability can be
+measured from learned predictive maps when overlap mappings are included in the
+generative model. Total correlation and a matched joint-EFE contrast are useful
+baselines, but neither defines cooperation. The next model must test
+partial-information or coalition interaction measures of complementarity inside one
+fixed generative model. Normative constraints then determine whether emergent
+coordination is good rather than coercive or exploitative.
 
 ## Virtue as a metastable control regime
 

@@ -115,32 +115,47 @@ G(\boldsymbol\pi)
 \right].
 \]
 
-For a declared factorization this can expose, without inventing new labels:
+For a declared factorization this can expose, without inventing new labels, the
+extrinsic-value minus epistemic-value decomposition:
 
 \[
 G(\boldsymbol\pi)
 =\underbrace{\mathbb E_Q[-\log P_C(o)]}_{\text{pragmatic cost}}
--\underbrace{I_Q(s,z;o\mid\boldsymbol\pi)}_{\text{epistemic value}}
-+\underbrace{R_{\mathrm{amb}}(Q,P)}_{\text{formulation-dependent residual}},
+-\underbrace{I_Q(s,z;o\mid\boldsymbol\pi)}_{\text{epistemic value}}.
 \]
 
-where the final term is included only when entailed by the chosen decomposition. The
-shared latent \(z\) makes social epistemic value explicit: actions can be valuable
-because they disambiguate intentions and consequences for more than one agent.
+Under the corresponding state-preference factorization, the same fixed root may admit
+the risk-plus-ambiguity decomposition
 
-The descriptive candidate for cooperative organization is then a contrast internal to
-these dynamics. For a commensurably defined independent-policy counterfactual
-\(G_{\mathrm{ind}}\), define joint EFE surplus
+\[
+G(\boldsymbol\pi)
+=\underbrace{D_{\mathrm{KL}}[Q(s,z\mid\boldsymbol\pi)\|P_C(s,z)]}_{\text{risk}}
++\underbrace{\mathbb E_{Q(s,z\mid\boldsymbol\pi)}
+[H(P(o\mid s,z))]}_{\text{ambiguity}}.
+\]
+
+These displays are not unconditional identities across all EFE formulations. The root
+definition, preference representation, factorization, and approximations must be
+fixed. Any approximation residual must be derived rather than introduced as a
+canonical term. The shared latent \(z\) makes social epistemic value explicit: actions
+can be valuable because they disambiguate intentions and consequences for more than
+one agent.
+
+One exploratory candidate for cooperative advantage is a contrast internal to these
+dynamics. For an independent-coupling intervention defined *inside the same model*,
+with identical variables, preferences, horizon, base measure, and normalization,
+define the project-specific EFE contrast
 
 \[
 \Delta_G(\boldsymbol\pi)
 =G_{\mathrm{ind}}(\boldsymbol\pi)-G(\boldsymbol\pi).
 \]
 
-Positive \(\Delta_G\) means that modelling and acting jointly reduces expected free
-energy beyond the declared independent counterfactual. Its pragmatic and epistemic
-components show whether this comes from expected consequences, shared information,
-or both. The associated posterior dependence
+Positive \(\Delta_G\) then means only that retaining the declared couplings reduces
+EFE relative to that matched intervention. Without these commensurability conditions,
+the subtraction is undefined or misleading. Its pragmatic and epistemic components
+may be compared only when both are derived from the same root EFE. Posterior dependence
+can additionally be described by total correlation
 
 \[
 \mathcal T_Q(\boldsymbol\pi)
@@ -150,15 +165,29 @@ Q(\pi_1,\ldots,\pi_n)\;\middle\|\;
 \right)
 \]
 
-measures irreducible joint policy organization. Neither \(\Delta_G>0\) nor
-\(\mathcal T_Q>0\) is morally sufficient: coercion can also create efficient,
-non-factorizing coordination. They supply the endogenous dynamical substrate to which
-the non-domination, capability-floor, and plural-improvement predicates are applied.
+which measures departure from factorization, not cooperation or synergy. It is neither
+necessary nor sufficient: deterministic coordination can have \(\mathcal T_Q=0\),
+while common causes, coercion, or redundant imitation can make it positive. Partial
+information decomposition or a coalition interaction index is needed to distinguish
+outcome-relevant synergy from redundancy.
+
+A safer project hypothesis defines, within one model, a coalition value
+
+\[
+v(S)=-\min_{\pi_S}
+G^{do(\text{couplings outside }S=0)}(\pi_S)
+\]
+
+and extracts Harsanyi, Shapley-interaction, or partial-information terms. This remains
+a proposed diagnostic, not an established active-inference definition of cooperation.
+All such descriptive terms are substrates to which non-domination, capability-floor,
+and plural-improvement predicates may be applied.
 
 Thus the framework has two sharply separated claims:
 
-1. meaning, semantic compatibility, and cooperative organization must be estimated
-   from VFE learning and EFE policy dynamics; and
+1. meaning, semantic compatibility, and candidate cooperative organization should be
+   estimated from VFE learning and EFE policy dynamics, with novel diagnostics labelled
+   as hypotheses; and
 2. whether the resulting organization is morally good remains a constrained
    normative judgment over its joint posterior-predictive consequences.
 

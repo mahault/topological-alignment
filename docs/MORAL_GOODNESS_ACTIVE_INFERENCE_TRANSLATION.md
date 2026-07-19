@@ -76,15 +76,16 @@ section of a shared-protention sheaf. Write this condition as
 \bigl(m_{1,c}(\boldsymbol\pi),\ldots,m_{n,c}(\boldsymbol\pi)\bigr),
 \]
 
-where \(\mathcal I\) declares what must survive translation. The gluing residual is
-computed from posterior-predictive maps learned by the VFE dynamics; it is not a
-separate agreement label or an extra optimization force. This distinguishes
-shared semantics from agreement, preference convergence, or identical world models.
+where \(\mathcal I\) declares what must survive translation. If overlap observations
+and restriction maps are part of the generative model, their consistency error appears
+in the VFE accuracy term and gluing can be computed from learned posterior-predictive
+maps. Otherwise gluing is an external diagnostic; ordinary VFE does not automatically
+learn a sheaf. This distinguishes shared semantics from agreement, preference
+convergence, or identical world models.
 
-Cooperative organization is consequently a property derived from joint EFE dynamics,
-not a primitive property of one agent's action. Its descriptive substrate consists of
-(i) irreducible dependence in the joint policy posterior and (ii) positive joint EFE
-surplus relative to a commensurable independent-policy counterfactual:
+Cooperative organization must be investigated through joint EFE dynamics, not read
+from one agent's action label. Two exploratory diagnostics are total correlation of
+the joint policy posterior and a matched within-model EFE contrast:
 
 \[
 \mathcal T_Q(\boldsymbol\pi)
@@ -93,12 +94,13 @@ surplus relative to a commensurable independent-policy counterfactual:
 \Delta_G(\boldsymbol\pi)=G_{\mathrm{ind}}(\boldsymbol\pi)-G(\boldsymbol\pi).
 \]
 
-The pragmatic and epistemic decomposition of \(\Delta_G\) states whether the joint
-advantage comes from expected consequences, shared information gain, or both. A moral
-cooperation predicate then requires learned semantic processability,
-\(\mathcal T_Q>0\), \(\Delta_G>0\), and the independently justified relational
-constraints. Statistical dependence or EFE efficiency alone is insufficient:
-domination and exploitation can also generate tightly coupled, efficient dynamics.
+Neither quantity defines cooperation. Total correlation is neither necessary nor
+sufficient, and \(\Delta_G\) is meaningful only when the independent case is an
+intervention within the same model with matched variables, preferences, horizons, and
+normalization. Partial-information or coalition interaction terms are better
+candidates for complementarity, but remain insufficient for moral cooperation.
+Pragmatic benefit, epistemic benefit, learned semantic processability, and the
+independently justified relational constraints must be tested separately.
 
 ## Semantic lifting of every category
 
@@ -737,7 +739,6 @@ holds exactly when:
 \begin{aligned}
 &\operatorname{StandingScopeComplete}(Q,m,N)\\
 &\land\operatorname{SemanticGluing}_{F}(m_{1:n},\phi_{1:n},\mathcal I)\\
-&\land\operatorname{JointOrganization}_{G}(\boldsymbol\pi,Q)\\
 &\land\operatorname{RobustFlourishing}(Q,m,N)\\
 &\land\operatorname{CapabilityFloors}(Q,m,N)\\
 &\land\operatorname{NonExternalizing}(Q,Q_0,m,N)\\
@@ -754,9 +755,8 @@ holds exactly when:
 where \(Q=Q_e^{\boldsymbol\pi}\),
 \(Q_0=Q_e^{\boldsymbol\pi_0}\),
 \(m_i=I_{i,c}^{\phi_i}(Q)\), and \(m^{\mathrm{sh}}\) is their shared content as
-recovered from the learned posterior-predictive maps. Here
-\(\operatorname{JointOrganization}_{G}\) records the declared thresholds and
-counterfactual for \(\mathcal T_Q\) and \(\Delta_G\). The
+recovered from learned posterior-predictive maps when the required overlap model is
+identified. The
 semantic-gluing conjunct means that an interpersonal claim is well-defined; it is not
 itself evidence that the claim is morally good.
 
