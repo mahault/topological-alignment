@@ -14,7 +14,8 @@ The focal generative model has:
 
 - hidden states (s\in\{\text{viable},\text{non-viable}\});
 - observations (o\in\{\text{reward},\text{loss}\});
-- policies (\pi\in\{\text{cooperate},\text{externalize}\});
+- policies (\pi\in\{\text{joint-preserving},\text{cost-shifting}\}), retained in
+  the implementation under the historical names `cooperate` and `externalize`;
 - prior state belief (q(s)=(0.5,0.5));
 - likelihood
 
@@ -108,7 +109,14 @@ The adopted capability floor is
 P(s_{\mathrm{affected}}'=\text{viable})\ge0.5.
 \]
 
-Thus cooperation is admissible and externalization is not.
+Thus the joint-preserving policy is admissible and the cost-shifting policy is not.
+
+This example does **not** define cooperation. It stipulates two intervention outcomes
+and proves that a focal EFE calculation cannot distinguish them when the affected
+agent is omitted. Cooperation must instead be evaluated over a joint trajectory
+distribution and a shared interpretation of its expected relational consequences;
+mere statistical dependence is not sufficient. The historical policy names remain in
+code only to preserve reproducibility of the audited numerical result.
 
 ## Policy posterior
 

@@ -34,6 +34,163 @@ For each category, the ledger distinguishes:
 No moral category in this document is wholly derivable from variational free-energy
 minimization.
 
+## Semantic and joint-distribution precondition
+
+The moral predicates below must not be applied directly to action labels such as
+`cooperate`, `courageous`, or `humble`. Those labels acquire content through predicted
+consequences and their interpretation by affected agents. Let a joint policy be
+
+\[
+\boldsymbol\pi=(\pi_1,\ldots,\pi_n)
+\]
+
+and let the social generative model induce the joint posterior predictive distribution
+
+\[
+Q^{\boldsymbol\pi}_e
+=q_M(s_{1:n,0:T},o_{1:n,1:T},a_{1:n,0:T-1},r_{0:T}
+\mid\boldsymbol\pi,e).
+\]
+
+Each agent interprets this distribution through a phenotype- and context-relative map
+
+\[
+I_{i,c}:Q^{\boldsymbol\pi}_e\longmapsto m_{i,c}(\boldsymbol\pi),
+\]
+
+where the resulting meaning includes anticipated affordances, harms, dependencies,
+obligations, and possibilities for joint action. Meaning is therefore neither a bare
+outcome nor a private label: it is the inferential and pragmatic role of a policy in a
+field of expected consequences.
+
+For these meanings to be shared, they need not be identical. There must instead be
+context-sensitive alignment maps on overlapping content that preserve declared
+morally relevant invariants. In the stronger formulation developed in the sibling
+`shared-protention-alignment` project, compatible local anticipations glue to a global
+section of a shared-protention sheaf. Write this condition as
+
+\[
+\operatorname{Glue}_{\mathcal I}
+\bigl(m_{1,c}(\boldsymbol\pi),\ldots,m_{n,c}(\boldsymbol\pi)\bigr),
+\]
+
+where \(\mathcal I\) declares what must survive translation. This distinguishes
+shared semantics from agreement, preference convergence, or identical world models.
+
+Cooperation is consequently a predicate of a joint distribution under a shared
+interpretation, not a primitive property of one agent's action:
+
+\[
+\operatorname{Coop}(\boldsymbol\pi\mid e,\mathcal I,N)
+\iff
+\operatorname{Glue}_{\mathcal I}(m_{1,c},\ldots,m_{n,c})
+\land
+\operatorname{JointlyRealizes}_{N}(Q^{\boldsymbol\pi}_e,\mathcal I).
+\]
+
+The second conjunct must specify the relevant cooperative achievement: for example,
+a jointly attainable outcome, complementary contribution, reciprocal uncertainty
+reduction, or preservation of a genuinely joint capability. Statistical dependence
+alone is insufficient: domination, collision, and exploitation also produce
+non-factorizing joint distributions.
+
+## Semantic lifting of every category
+
+The whole definition must be evaluated only after the same three-stage construction:
+
+\[
+\boldsymbol\pi
+\xmapsto{M,e} Q^{\boldsymbol\pi}_e
+\xmapsto{I_{1:n,c}} (m_{1,c},\ldots,m_{n,c})
+\xmapsto{\operatorname{Glue}_{\mathcal I}} m_c^{\mathrm{sh}}.
+\]
+
+The first arrow predicts consequences, the second makes them meaningful from situated
+perspectives, and the third establishes the shared content on which interpersonal
+claims can be made. A normative interpretation \(N\) then evaluates that content.
+Accordingly, every term in the adopted definition is a derived predicate:
+
+1. **Affected centre of vulnerability:**
+   \(\operatorname{Affected}_i(Q,m,N)\) holds when intervention on the joint policy
+   changes consequences that, under a warranted interpretation of phenotype \(i\),
+   can alter its flourishing or protected functioning. Causal exposure alone is not
+   standing; exclusion from the shared vocabulary cannot erase actual effects.
+
+2. **Phenotype-relative flourishing:**
+   \(\operatorname{Flourish}_i(Q,m_i,N)=F_i(I_{i,c}(Q),P_i,N)\). Viability,
+   recovery, learning, relationship, and option trajectories become flourishing only
+   through a phenotype-sensitive account of what they enable. The same physical
+   consequence can therefore have different pragmatic meanings without making every
+   interpretation equally warranted.
+
+3. **Robustness:**
+   \(\operatorname{Robust}(\boldsymbol\pi)=\inf_{e,M,I\in\mathcal U}
+   \operatorname{Adequate}_{N}(Q^{\boldsymbol\pi}_{e,M},m_I)\). Robustness ranges
+   over uncertainty in dynamics *and* interpretation. Success under one convenient
+   semantic coding of harm, agency, or achievement is not robust success.
+
+4. **Capability floors:**
+   \(\operatorname{Floor}_i(Q,m_i,N)=
+   \mathbf 1\{C_i(I_{i,c}(Q),P_i,N)\succeq c_i^{\min}\}\). Reachable states count
+   as capabilities only if they are meaningful, exercisable, and socially available.
+   An option the agent cannot understand, afford, safely choose, or have recognized is
+   not yet a capability.
+
+5. **Non-externalization:** \(\operatorname{NonExt}(Q,m,N)\) holds only when the
+   joint model includes every causally affected standpoint and no loss is hidden by
+   marginalization or failed semantic translation. The comparison is between full
+   joint distributions interpreted across affected phenotypes, not one focal agent's
+   expected values.
+
+6. **Non-domination:**
+   \(\operatorname{NonDom}(Q,m^{\mathrm{sh}},N)=
+   D_N(\{Q^{do(\pi_j)}\}_j,m^{\mathrm{sh}})\). Intervention distributions identify
+   asymmetric control; shared semantics identifies which changes concern authority,
+   voice, exit, dependence, and arbitrariness. Influence becomes domination only under
+   this relational interpretation.
+
+7. **Public or affected-party justifiability:**
+   \(\operatorname{Just}(Q,m_{1:n},m^{\mathrm{sh}},N)\) holds when reasons about
+   expected consequences are translatable across affected standpoints, relevant
+   objections survive gluing, and the declared procedure licenses the result. Shared
+   semantics enables justification but does not guarantee it.
+
+8. **Contestability:** \(\operatorname{Contest}(Q,m,N)\) is the probability that a
+   semantically recognized challenge produces an institutional review or revision
+   state. The challenger and institution must coordinate on what the challenge means,
+   and the joint distribution must contain feasible revision paths with bounded cost
+   and retaliation.
+
+9. **Epistemic responsiveness:**
+   \(\operatorname{Resp}(Q,m,N)=R_N(m^{\mathrm{sh}}_{t+1}-m^{\mathrm{sh}}_t,
+   Q_{t+1}-Q_t)\). Responsiveness requires appropriate revision of both empirical
+   beliefs and shared interpretations when consequences disconfirm them. Updating
+   probabilities inside a fixed but exclusionary vocabulary is insufficient.
+
+10. **Repairability and reversibility:** \(\operatorname{Repair}_i(Q,m_i,
+    m^{\mathrm{sh}},N)\) holds when feasible joint trajectories reach conditions the
+    harmed party can recognize as adequate repair, under a mutually processable
+    account of the harm and future relation. Restoring only the controller's preferred
+    state does not qualify.
+
+11. **Plural improvement:** \(\operatorname{Improve}(Q^{\boldsymbol\pi},
+    Q^{\boldsymbol\pi_0},m_{1:n},N)\) holds when interpreted consequence vectors
+    improve under each warranted phenotype-relative ordering, subject to floors and
+    without forcing incomparable meanings into an unlicensed scalar. Shared language
+    enables comparison; it does not erase plural goods.
+
+12. **Legitimate selection:** \(\operatorname{LegitSelect}(\boldsymbol\pi,Q,
+    m_{1:n},m^{\mathrm{sh}},N)\) holds when selection is from the admissible joint set
+    through a procedure whose roles, reasons, and consequences are mutually
+    processable and whose allocation of voice and authority satisfies \(N\).
+    Coordination or consensus alone is not legitimacy.
+
+Virtue is a higher-order operator over this entire construction. It regulates which
+consequences are anticipated, which distinctions become salient, how agents translate
+one another, which joint policies become available, and how all of these are revised.
+Calling it good asserts that its realizations repeatedly satisfy the semantically
+lifted moral predicate; goodness is not inferred from metastability or shared uptake.
+
 ## 1. Centre of vulnerable flourishing
 
 ### Normative meaning
@@ -85,16 +242,18 @@ survival, preference satisfaction, or local stability.
 
 ### Active-inference representation
 
-For agent \(i\), infer a posterior predictive distribution under joint policy \(\pi\):
+For agent \(i\), marginalize the joint posterior predictive distribution under joint
+policy \(\boldsymbol\pi\):
 
 \[
-q_M(s_{i,0:T},o_{i,1:T}\mid\pi,e,P_i).
+Q^{\boldsymbol\pi}_{i,e}
+=q_M(s_{i,0:T},o_{i,1:T}\mid\boldsymbol\pi,e,P_i).
 \]
 
 Evaluate a vector rather than a scalar:
 
 \[
-\mathbf J_i(\pi,e)=
+\mathbf J_i(\boldsymbol\pi,e)=
 (V_i,R_i,O_i,E_i,L_i),
 \]
 
@@ -506,37 +665,48 @@ answer.
 
 ### Normative meaning
 
-A virtue is a reliably good, context-sensitive organization of perception, affect,
-inference, action, and revision—not a fixed action or merely stable trait.
+A virtue is a reliably good function of socially processable meaning: a
+context-sensitive organization of perception, affect, inference, action, and revision
+whose identity depends on the expected relational consequences it makes salient and
+on the shared semantic practices through which those consequences are interpreted.
+It is not a fixed action, a merely stable trait, or an uninterpreted parameter region.
 
 ### Active-inference representation
 
-Let \(\Theta_V\) be a region of slow generative-model parameters governing preferences,
-salience, transition beliefs, policy priors, precision, temporal depth, models of
-others, and learning. A local realization is
+Let \(\mathcal V_t\) be a historically stabilized but revisable social-semantic schema,
+and let \(\Theta_{i,V}\) be the corresponding region of slow generative-model
+parameters in agent \(i\), governing preferences, salience, transition beliefs, policy
+priors, precision, temporal depth, models of others, and learning. A local realization
+is a mapping from shared schema, context, phenotype, and expected joint consequences:
 
 \[
-R_{c,i}(\Theta_V)
-\mapsto
-q_i(s,\pi,\theta\mid o,c,P_i).
+R_{c,i}\!:
+(\mathcal V_t,\Theta_{i,V},P_i,Q^{\boldsymbol\pi}_e)
+\longmapsto
+m_{i,c}^{V}(\boldsymbol\pi).
 \]
 
-It counts as a successful realization only if its resulting policy passes the moral-
-goodness predicate above. This makes goodness constitutive of virtue while allowing
-the same virtue concept to produce different pragmatic meanings and actions across
-phenotypes and contexts.
+Candidate local meanings must be mutually processable on morally relevant overlaps,
+but they need not be identical. A candidate counts as a successful realization of the
+virtue only if (i) it is licensed by this shared semantic structure and (ii) the joint
+policy it organizes passes the moral-goodness predicate below. This makes goodness
+constitutive of virtue while allowing one virtue concept to generate different
+pragmatic meanings and actions across phenotypes, relationships, and contexts.
 
 ### Operational test
 
-Fit hierarchical models and test whether a shared slow regime predicts different
-context-appropriate policies, moral-category outcomes, perturbation recovery, and
-revision better than trait-only, situation-only, and unconstrained active-inference
-models.
+Fit hierarchical multi-agent models and test whether the combination of (a) expected
+joint consequences, (b) learned semantic alignment maps, and (c) a shared slow schema
+predicts context-appropriate policy profiles, participants' virtue classifications,
+moral-category outcomes, perturbation recovery, and revision better than trait-only,
+situation-only, private-consequence-only, and unconstrained active-inference models.
 
 ### Non-equivalence warning
 
-A stable prior, deep attractor, precise policy prior, or low-EFE habit is not a virtue
-unless its situated realizations satisfy the independent moral-goodness criteria.
+A stable prior, deep attractor, precise policy prior, low-EFE habit, or culturally
+shared label is not a virtue unless its situated joint realizations satisfy the
+independent moral-goodness criteria. Nor does semantic agreement establish goodness:
+a community can share a coherent interpretation of an exploitative practice.
 
 ### Status
 
@@ -545,47 +715,61 @@ unless its situated realizations satisfy the independent moral-goodness criteria
 ## 14. Consolidated formal predicate
 
 For active-inference model \(M\), phenotype family \(P_I\), environment class
-\(\mathcal E\), normative interpretation \(N\), and baseline \(\pi_0\):
+\(\mathcal E\), interpretation maps \(I_{1:n,c}\), shared invariant specification
+\(\mathcal I\), normative interpretation \(N\), and baseline joint policy
+\(\boldsymbol\pi_0\):
 
 \[
-\operatorname{MG}(\pi\mid M,P_I,\mathcal E,N,\pi_0)
+\operatorname{MG}(\boldsymbol\pi\mid
+M,P_I,\mathcal E,I_{1:n,c},\mathcal I,N,\boldsymbol\pi_0)
 \]
 
 holds exactly when:
 
 \[
 \begin{aligned}
-&\operatorname{StandingScopeComplete}(I)\\
-&\land\operatorname{RobustFlourishing}(\pi)\\
-&\land\operatorname{CapabilityFloors}(\pi)\\
-&\land\operatorname{NonExternalizing}(\pi,\pi_0)\\
-&\land\operatorname{NonDominating}(\pi)\\
-&\land\operatorname{Justifiable}(\pi)\\
-&\land\operatorname{Contestable}(\pi)\\
-&\land\operatorname{EpistemicallyResponsive}(\pi)\\
-&\land\operatorname{Repairable}(\pi)\\
-&\land\operatorname{PluralImprovement}(\pi,\pi_0)\\
-&\land\operatorname{LegitimatelySelected}(\pi).
+&\operatorname{StandingScopeComplete}(Q,m,N)\\
+&\land\operatorname{SemanticGluing}(m_{1:n},\mathcal I)\\
+&\land\operatorname{RobustFlourishing}(Q,m,N)\\
+&\land\operatorname{CapabilityFloors}(Q,m,N)\\
+&\land\operatorname{NonExternalizing}(Q,Q_0,m,N)\\
+&\land\operatorname{NonDominating}(Q,m^{\mathrm{sh}},N)\\
+&\land\operatorname{Justifiable}(Q,m_{1:n},m^{\mathrm{sh}},N)\\
+&\land\operatorname{Contestable}(Q,m,N)\\
+&\land\operatorname{EpistemicallyResponsive}(Q,m,N)\\
+&\land\operatorname{Repairable}(Q,m,N)\\
+&\land\operatorname{PluralImprovement}(Q,Q_0,m,N)\\
+&\land\operatorname{LegitimatelySelected}(\boldsymbol\pi,Q,m,N),
 \end{aligned}
 \]
 
-The posterior predictive distribution generated by active inference supplies the
-facts on which these predicates operate. The normative theory supplies their moral
-interpretation, thresholds, protected dimensions, and legitimate decision rules.
+where \(Q=Q_e^{\boldsymbol\pi}\),
+\(Q_0=Q_e^{\boldsymbol\pi_0}\),
+\(m_i=I_{i,c}(Q)\), and \(m^{\mathrm{sh}}\) is their glued shared content. The
+semantic-gluing conjunct means that an interpersonal claim is well-defined; it is not
+itself evidence that the claim is morally good.
+
+The joint posterior predictive distribution generated by active inference supplies
+the expected relational consequences. Agent-relative interpretation maps and their
+gluing supply shared semantic content. The normative theory supplies the moral
+invariants, thresholds, protected dimensions, and legitimate decision rules. None of
+these three layers can be silently substituted for another.
 
 ## 15. Order of implementation
 
 The categories should be formalized in this order:
 
-1. standing scope and explicit affected-agent indexing;
-2. phenotype-relative flourishing and robustness;
-3. capability floors and non-externalization;
-4. causal non-domination;
-5. epistemic responsiveness and contestability;
-6. repair reachability;
-7. plural improvement;
-8. public justification and legitimate selection; and
-9. virtue-regime identification across contexts.
+1. explicit joint policies, joint trajectory distributions, and affected-agent scope;
+2. agent-relative consequence-to-meaning maps;
+3. shared-semantic processability and gluing on declared invariants;
+4. phenotype-relative flourishing and robustness;
+5. capability floors and non-externalization;
+6. causal non-domination;
+7. epistemic responsiveness and contestability;
+8. repair reachability;
+9. plural improvement;
+10. public justification and legitimate selection; and
+11. virtue-schema identification across contexts.
 
 The first six admit increasingly rich computational models. Public justification and
 legitimate selection require formal procedures but cannot be reduced to posterior

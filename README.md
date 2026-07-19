@@ -66,8 +66,23 @@ virtue / character
 ```
 
 A virtue is therefore neither a fixed rule nor a preferred behavioural output. It is
-a higher-order, metastable organization of the processes through which an agent
-perceives, evaluates, and acts.
+a higher-order, metastable organization of the processes through which agents make
+sense of expected relational consequences and perceive, evaluate, coordinate, act,
+and revise. Its content is partly socially stabilized: the same word does not denote
+the same virtue merely because different agents utter it.
+
+More precisely, a virtue is a reliably good function of meaning; meaning is the
+inferential and pragmatic role produced by expected consequences under an agent's
+generative model; and shared meaning exists when heterogeneous interpretations remain
+mutually processable on morally relevant overlaps. This permits different internal
+representations and actions. It is stronger than verbal agreement and weaker than
+convergence on one world model.
+
+Likewise, cooperation is not an atomic action label. It is a property of the joint
+trajectory distribution induced by a joint policy, under shared semantics about the
+joint achievement and its allocation. Dependence alone cannot define it, because
+coercion and exploitation are also statistically joint. The formal account must add
+complementarity or joint achievement plus the moral constraints developed below.
 
 ## Virtue as a metastable control regime
 
