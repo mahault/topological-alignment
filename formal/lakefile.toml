@@ -1,0 +1,6 @@
+name = "topological_alignment"
+version = "0.1.0"
+defaultTargets = ["TopologicalAlignment"]
+
+[[lean_lib]]
+name = "TopologicalAlignment"
