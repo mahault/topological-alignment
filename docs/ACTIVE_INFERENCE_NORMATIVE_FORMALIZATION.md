@@ -58,6 +58,110 @@ F_i[q_i]
 This is an epistemic objective: it scores an approximate posterior relative to a
 declared generative model. It is not a moral-value function.
 
+### Endogenous semantics and joint organization
+
+Semantic content and cooperation cannot enter this model as labels attached after
+inference. Extend the latent state with a shared but uncertain semantic variable
+\(z_t\), communicative acts \(u_{i,t}\), and learnable agent-specific interpretation
+parameters \(\phi_i\):
+
+\[
+\begin{aligned}
+p(o,u,s,z,\boldsymbol\pi,\theta,\phi)
+={}&p(\theta,\phi)p(\boldsymbol\pi\mid\theta)
+\prod_t p(s_t,z_t\mid s_{t-1},z_{t-1},\boldsymbol\pi,\theta)\\
+&\times\prod_i
+p_i(o_{i,t},u_{-i,t}\mid s_t,z_t,\phi_i).
+\end{aligned}
+\]
+
+Here \(z_t\) is not a predefined word meaning. It is the shared latent cause whose
+posterior makes agents' observations, signals, and anticipated consequences jointly
+intelligible. Each \(\phi_i\) specifies how that latent cause appears in agent \(i\)'s
+sensorium and action repertoire.
+
+The coupled variational objective is the ordinary free energy of this joint model:
+
+\[
+F[q,\phi]
+=\mathbb E_q[log q(s,z,\theta,\phi)-log p(o,u,s,z,\theta,\phi)].
+\]
+
+Under a structured mean-field approximation, this objective contains likelihood and
+complexity terms for each local interpretation together with consistency terms induced
+by their common latent cause. Gradient flow
+
+\[
+\dot q=-\Gamma_q\nabla_qF,
+\qquad
+\dot\phi=-\Gamma_\phi\nabla_\phi F
+\]
+
+therefore performs perceptual inference and learns translation maps. A shared meaning
+is an equivalence class of posterior-predictive consequences that remains recoverable
+through the learned \(\phi_i\), not an analyst-provided category. The sheaf-gluing
+residual used elsewhere in the project must consequently be computed from these
+learned posterior-predictive maps. It is a diagnostic of the VFE solution, not an
+additional force.
+
+Joint policies are evaluated from a fixed root expected-free-energy definition:
+
+\[
+G(\boldsymbol\pi)
+=\mathbb E_{Q(o,s,z\mid\boldsymbol\pi)}
+\left[
+\log Q(s,z\mid\boldsymbol\pi)-
+\log P(o,s,z)
+\right].
+\]
+
+For a declared factorization this can expose, without inventing new labels:
+
+\[
+G(\boldsymbol\pi)
+=\underbrace{\mathbb E_Q[-\log P_C(o)]}_{\text{pragmatic cost}}
+-\underbrace{I_Q(s,z;o\mid\boldsymbol\pi)}_{\text{epistemic value}}
++\underbrace{R_{\mathrm{amb}}(Q,P)}_{\text{formulation-dependent residual}},
+\]
+
+where the final term is included only when entailed by the chosen decomposition. The
+shared latent \(z\) makes social epistemic value explicit: actions can be valuable
+because they disambiguate intentions and consequences for more than one agent.
+
+The descriptive candidate for cooperative organization is then a contrast internal to
+these dynamics. For a commensurably defined independent-policy counterfactual
+\(G_{\mathrm{ind}}\), define joint EFE surplus
+
+\[
+\Delta_G(\boldsymbol\pi)
+=G_{\mathrm{ind}}(\boldsymbol\pi)-G(\boldsymbol\pi).
+\]
+
+Positive \(\Delta_G\) means that modelling and acting jointly reduces expected free
+energy beyond the declared independent counterfactual. Its pragmatic and epistemic
+components show whether this comes from expected consequences, shared information,
+or both. The associated posterior dependence
+
+\[
+\mathcal T_Q(\boldsymbol\pi)
+=D_{\mathrm{KL}}\!\left(
+Q(\pi_1,\ldots,\pi_n)\;\middle\|\;
+\prod_i Q(\pi_i)
+\right)
+\]
+
+measures irreducible joint policy organization. Neither \(\Delta_G>0\) nor
+\(\mathcal T_Q>0\) is morally sufficient: coercion can also create efficient,
+non-factorizing coordination. They supply the endogenous dynamical substrate to which
+the non-domination, capability-floor, and plural-improvement predicates are applied.
+
+Thus the framework has two sharply separated claims:
+
+1. meaning, semantic compatibility, and cooperative organization must be estimated
+   from VFE learning and EFE policy dynamics; and
+2. whether the resulting organization is morally good remains a constrained
+   normative judgment over its joint posterior-predictive consequences.
+
 ## 2. Phenotype-relative practical good
 
 For each agent or moral patient \(i\), declare a phenotype model

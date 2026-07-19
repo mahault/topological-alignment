@@ -84,6 +84,15 @@ joint achievement and its allocation. Dependence alone cannot define it, because
 coercion and exploitation are also statistically joint. The formal account must add
 complementarity or joint achievement plus the moral constraints developed below.
 
+These objects must arise inside the active-inference dynamics. VFE minimization learns
+posterior beliefs and agent-specific semantic mappings to shared latent causes; EFE
+generates protentions and joint policy posteriors. Semantic processability is measured
+from those learned predictive maps. Candidate cooperative organization is measured by
+irreducible joint-policy dependence and joint EFE surplus over an explicit independent
+counterfactual. The terms are therefore extracted from the equations rather than
+attached as behavioural labels. Normative constraints subsequently determine whether
+that emergent coordination is good rather than coercive or exploitative.
+
 ## Virtue as a metastable control regime
 
 The motivating phenomenological model treats virtues as complementary tendencies
