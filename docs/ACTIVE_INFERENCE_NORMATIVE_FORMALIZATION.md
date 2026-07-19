@@ -75,10 +75,12 @@ p_i(o_{i,t},u_{-i,t}\mid s_t,z_t,\phi_i).
 \end{aligned}
 \]
 
-Here \(z_t\) is not a predefined word meaning. It is the shared latent cause whose
-posterior makes agents' observations, signals, and anticipated consequences jointly
-intelligible. Each \(\phi_i\) specifies how that latent cause appears in agent \(i\)'s
-sensorium and action repertoire.
+Here \(z_t\) is not a predefined word meaning. It is a learned shared sign whose
+posterior helps predict agents' observations, signals, and anticipated consequences.
+Each \(\phi_i\) specifies how that sign appears in agent \(i\)'s sensorium and action
+repertoire. Naming-game and federated-inference results support this narrower claim;
+they do not establish that one latent variable exhausts the meaning of a thick moral
+concept.
 
 The coupled variational objective is the ordinary free energy of this joint model:
 
@@ -88,8 +90,8 @@ F[q,\phi]
 \]
 
 Under a structured mean-field approximation, this objective contains likelihood and
-complexity terms for each local interpretation together with consistency terms induced
-by their common latent cause. Gradient flow
+complexity terms for each local interpretation together with dependencies induced by
+their common latent sign. Gradient flow
 
 \[
 \dot q=-\Gamma_q\nabla_qF,
@@ -97,12 +99,38 @@ by their common latent cause. Gradient flow
 \dot\phi=-\Gamma_\phi\nabla_\phi F
 \]
 
-therefore performs perceptual inference and learns translation maps. A shared meaning
-is an equivalence class of posterior-predictive consequences that remains recoverable
-through the learned \(\phi_i\), not an analyst-provided category. The sheaf-gluing
-residual used elsewhere in the project must consequently be computed from these
-learned posterior-predictive maps. It is a diagnostic of the VFE solution, not an
-additional force.
+therefore performs perceptual inference and parameter learning within the declared
+model class. It does not guarantee a socially or morally correct ontology. Candidate
+structures are compared by approximate evidence and held-out predictive calibration:
+
+\[
+q(m\mid D)\propto p(m)\exp[-F_m^*],
+\qquad F_m^*=\min_{q_m}F[q_m;m].
+\]
+
+For a sign \(v\) and context \(c\), the operational semantic-pragmatic profile is
+
+\[
+\mathfrak M_i(v,c)=
+\left(
+Q_i(s_{1:H},o_{1:H}\mid\pi,z_v,c),
+Q_i(\pi\mid z_v,c),
+P_i(\pi\mid o^d,c),
+Q_i(\theta_i\mid z_v,c),
+\gamma_i(c)
+\right).
+\]
+
+It includes prospective consequences, induced policies, learned deontic cue mappings,
+parameter beliefs, and precision. This is an operational profile, not a claim to have
+reduced all meaning to consequences.
+
+Translation and sheaf objects are second-stage diagnostics. Fit a fixed channel
+\(T_{ij}\) between held-out protention streams and report normalized directed
+processability; then use \(\|\delta x\|\) to test compatibility of local sections.
+Unless the restriction maps occur as parameters in an explicit overlap likelihood,
+the sheaf residual is not a term automatically learned by VFE. The equations and
+implementations are indexed in `SUPPORTED_REPLACEMENTS_LEDGER.md`.
 
 Joint policies are evaluated from a fixed root expected-free-energy definition:
 
@@ -141,21 +169,23 @@ canonical term. The shared latent \(z\) makes social epistemic value explicit: a
 can be valuable because they disambiguate intentions and consequences for more than
 one agent.
 
-One exploratory candidate for cooperative advantage is a contrast internal to these
-dynamics. For an independent-coupling intervention defined *inside the same model*,
-with identical variables, preferences, horizon, base measure, and normalization,
-define the project-specific EFE contrast
+For a coupling intervention defined *inside the same model*, with identical variables,
+horizon, base measure, and agent-specific preference representation, retain separate
+agent-local EFE contrasts:
 
 \[
-\Delta_G(\boldsymbol\pi)
-=G_{\mathrm{ind}}(\boldsymbol\pi)-G(\boldsymbol\pi).
+\Delta_i^{\mathrm{cpl}}(\boldsymbol\pi)
+=G_i^{do(C=0)}(\boldsymbol\pi)-G_i(\boldsymbol\pi),
+\qquad
+\boldsymbol\Delta^{\mathrm{cpl}}
+=(\Delta_1^{\mathrm{cpl}},\ldots,\Delta_n^{\mathrm{cpl}}).
 \]
 
-Positive \(\Delta_G\) then means only that retaining the declared couplings reduces
-EFE relative to that matched intervention. Without these commensurability conditions,
-the subtraction is undefined or misleading. Its pragmatic and epistemic components
-may be compared only when both are derived from the same root EFE. Posterior dependence
-can additionally be described by total correlation
+Positive \(\Delta_i^{\mathrm{cpl}}\) means only that retaining the declared coupling
+reduces agent \(i\)'s EFE relative to that intervention. The vector is not summed
+unless a common trajectory space and justified social functional make the components
+commensurable. Posterior dependence can additionally be described by total
+correlation
 
 \[
 \mathcal T_Q(\boldsymbol\pi)
@@ -167,27 +197,36 @@ Q(\pi_1,\ldots,\pi_n)\;\middle\|\;
 
 which measures departure from factorization, not cooperation or synergy. It is neither
 necessary nor sufficient: deterministic coordination can have \(\mathcal T_Q=0\),
-while common causes, coercion, or redundant imitation can make it positive. Partial
-information decomposition or a coalition interaction index is needed to distinguish
-outcome-relevant synergy from redundancy.
+while common causes, coercion, or redundant imitation can make it positive.
 
-A safer project hypothesis defines, within one model, a coalition value
+Candidate cooperative coordination is therefore represented by a diagnostic vector,
+not a replacement scalar:
 
 \[
-v(S)=-\min_{\pi_S}
-G^{do(\text{couplings outside }S=0)}(\pi_S)
+\mathbf C(\boldsymbol\pi)=
+\left(
+Q(Y\in Y^*\mid\boldsymbol\pi),
+\operatorname{Proc}_{\leftrightarrow},
+\operatorname{Read}_{\leftrightarrow},
+\operatorname{Syn}_Y,
+\operatorname{CIF}_{1:n\to Y},
+\boldsymbol\Delta^{\mathrm{cpl}}
+\right).
 \]
 
-and extracts Harsanyi, Shapley-interaction, or partial-information terms. This remains
-a proposed diagnostic, not an established active-inference definition of cooperation.
-All such descriptive terms are substrates to which non-domination, capability-floor,
-and plural-improvement predicates may be applied.
+These entries distinguish joint achievement, cross-frame semantic processability,
+reciprocal model-based readability, outcome-relevant PID or interaction structure,
+intervention-based causal contribution, and per-agent changes in EFE. Each is computed
+from the generative or causal model, but none alone defines cooperation. A blinded
+external validation criterion determines whether the vector tracks cooperative
+coordination. Non-domination, capability-floor, and plural-improvement predicates then
+determine whether that coordination is morally admissible.
 
 Thus the framework has two sharply separated claims:
 
-1. meaning, semantic compatibility, and candidate cooperative organization should be
-   estimated from VFE learning and EFE policy dynamics, with novel diagnostics labelled
-   as hypotheses; and
+1. shared signs should be learned through explicit Bayesian or variational dynamics,
+   while semantic compatibility and candidate cooperative organization are evaluated
+   by distinct held-out diagnostics derived from those dynamics; and
 2. whether the resulting organization is morally good remains a constrained
    normative judgment over its joint posterior-predictive consequences.
 
@@ -232,13 +271,28 @@ convention must be fixed before implementation.
 
 This gives a process interpretation of **good for phenotype \(i\)**: policies expected
 to protect independently validated viability and capability dimensions while
-maintaining epistemic access to relevant uncertainty. It does not yet give moral
+maintaining epistemic access to relevant uncertainty. The empirical assessment should
+keep three quantities distinct: intervention-tested viability value of information,
+allostatic recovery after perturbation, and constrained empowerment or reachable
+control. Robust claims must additionally range over a posterior model ensemble or a
+declared distributional ambiguity set. None of these quantities yet gives moral
 goodness.
 
-## 3. Virtue as a higher-order inference regime
+## 3. Virtue as a slow hierarchical latent regime
 
-An abstract virtue \(V\) is not one preferred observation or one action. Represent it
-as a constrained region of slow model parameters:
+An abstract virtue \(V\) is not one preferred observation, one action, or a new EFE
+component. Represent the candidate construct as a latent regime \(r_t\) with a slower
+transition timescale than situated state inference:
+
+\[
+p(r_{1:T},\theta_{1:T},s_{1:T},o_{1:T})
+=p(r_1)\prod_t
+p(r_t\mid r_{t-1})
+p(\theta_t\mid r_t)
+p(s_t,o_t\mid s_{t-1},\theta_t,c_t).
+\]
+
+The regime's support is a constrained region of model parameters:
 
 \[
 \Theta_V\subseteq
@@ -279,6 +333,18 @@ first-order inference is inadequate:
 
 This remains a testable model family, not an established identification of
 *phronesis* with precision control.
+
+The virtue-regime interpretation is retained only if its approximate evidence and
+held-out predictions beat trait-only, situation-only, and action-frequency models:
+
+\[
+\log BF_{V,k}\approx F_k^*-F_V^*.
+\]
+
+It must predict when action changes while the relevant semantic-pragmatic organization
+persists, and it must fail the virtue label when the resulting policy violates the
+moral-goodness predicate. Stability or predictive fit alone cannot make a regime
+virtuous.
 
 ## 4. Moral admissibility as constraints on policy inference
 
@@ -369,14 +435,17 @@ two-stage construction:
 \operatorname{Nondominated}_{\pi\in\Pi_{\mathrm{eligible}}}
 \left(
 G_1(\pi),\ldots,G_n(\pi),
--E_{\mathrm{joint}}(\pi),
+-\operatorname{Emp}_1(\pi),\ldots,-\operatorname{Emp}_n(\pi),
+-Q(Y\in Y^*\mid\pi),
 \rho(\pi)
 \right),
 \]
 
-where \(E_{\mathrm{joint}}\) is genuinely shared capability and \(\rho\) is residual
-risk or irreversibility. A legitimate conflict procedure chooses among nondominated
-eligible policies; the mathematics need not force a complete ordering.
+where each empowerment term is constrained by that affected party's viability and
+capability floors, \(Y^*\) is a semantically validated joint achievement, and \(\rho\)
+is residual risk or irreversibility. This avoids hiding a disputed common good inside
+one “joint empowerment” scalar. A legitimate conflict procedure chooses among
+nondominated eligible policies; the mathematics need not force a complete ordering.
 
 This yields the formal distinction:
 

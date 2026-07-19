@@ -55,6 +55,11 @@ VFE minimization.
 socially correct ontology. It learns whichever latent structure best trades accuracy
 and complexity under the chosen model class, data, priors, and approximation.
 
+**Replacement:** compare candidate structures with approximate model evidence,
+held-out posterior-predictive score, calibration, and interventions; retain an
+ensemble when the structure is not identified. See
+`SUPPORTED_REPLACEMENTS_LEDGER.md`, section 1.
+
 ## 2. Meaning as a shared latent variable
 
 ### Literature
@@ -87,6 +92,11 @@ inferential role, but do not exhaust meaning. Historical practice, embodiment,
 attention, affect, and normative use must also enter the generative process if the
 model is intended to represent virtue concepts.
 
+**Replacement:** represent meaning operationally as an agent-indexed
+semantic-pragmatic profile containing protentions, induced policies, deontic
+cue-to-policy mappings, parameter beliefs, and precision, connected to other agents
+through a learned shared sign. See `SUPPORTED_REPLACEMENTS_LEDGER.md`, section 2.
+
 ## 3. Shared semantics without identical beliefs
 
 ### Literature
@@ -107,6 +117,12 @@ of the same VFE dynamics. The shared-protentions paper presents the categorical
 framework, while discourse-sheaf diffusion has its own sheaf-Laplacian dynamics. The
 literature does not prove that ordinary VFE minimization automatically yields the
 required sheaf.
+
+**Replacement:** learn shared signs and local likelihood mappings through a naming
+game or federated inference; evaluate held-out directed processability and sheaf
+consistency afterward. Put restriction maps in an overlap likelihood only when the
+experiment is explicitly testing endogenous map learning. See
+`SUPPORTED_REPLACEMENTS_LEDGER.md`, section 3.
 
 ### Valid route to an endogenous term
 
@@ -155,6 +171,10 @@ root EFE definition under stated factorization and approximation assumptions.
 as a general EFE decomposition. If an approximation creates a residual, it must be
 derived for that approximation; it is not a canonical EFE term.
 
+**Replacement:** use one fixed root EFE and derive only the decomposition licensed by
+its factorization and preference representation. See
+`SUPPORTED_REPLACEMENTS_LEDGER.md`, section 4.
+
 ## 5. Multi-agent and joint active inference
 
 ### Literature
@@ -190,6 +210,11 @@ bottom-up emergence of the concept *cooperation* from unlabeled joint consequenc
 The proposed experiment must therefore withhold cooperation labels from inference and
 use them, if at all, only for blinded external validation.
 
+**Replacement:** retain agent-local EFE objectives and a free-energy-equilibrium
+baseline. Use joint minimization only as an explicitly aggregated counterfactual, and
+report a Pareto set when EFEs are not commensurable. See
+`SUPPORTED_REPLACEMENTS_LEDGER.md`, sections 5 and 6.
+
 ## 6. Total correlation of the joint policy posterior
 
 The proposed quantity
@@ -214,6 +239,11 @@ is standard total correlation. It measures departure from factorization.
 It remains usable as an exploratory dependence statistic, not as
 \(\operatorname{Coop}\).
 
+**Replacement:** use a diagnostic vector containing joint outcome attainment,
+mutual semantic processability, reciprocal readability, a named PID or interaction
+term, intervention-based causal contribution, and per-agent coupling contrasts. See
+`SUPPORTED_REPLACEMENTS_LEDGER.md`, section 5.
+
 ## 7. Synergy and complementarity
 
 ### Literature
@@ -233,6 +263,10 @@ information unavailable from the parts.
 
 **Not sufficient for moral cooperation:** synergistic predation and coordinated
 oppression are still synergistic.
+
+**Replacement:** synergy is one component of the coordination vector and is always
+crossed with the admissibility predicates. No information decomposition receives a
+moral interpretation by itself.
 
 ## 8. Joint EFE “surplus”
 
@@ -260,6 +294,11 @@ then evaluates complementarity through Harsanyi or Shapley interaction terms. Th
 related to cooperative-game information decompositions, but its use with EFE is novel
 and requires proofs of invariance and finite counterexamples.
 
+**Replacement:** compute the matched coupling contrast separately for each agent,
+\(\Delta_i^{\mathrm{cpl}}=G_i^{do(C=0)}-G_i\). Aggregate only under a declared common
+trajectory space and justified social functional. See
+`SUPPORTED_REPLACEMENTS_LEDGER.md`, section 6.
+
 ## 9. Virtue, affordances, and expected consequences
 
 ### Literature
@@ -280,6 +319,11 @@ policy dynamics. “Virtue is a function of meaning, expected consequences, and 
 semantics” should be presented as the paradigm's hypothesis, not attributed to active
 inference or ecological virtue theory as an existing theorem.
 
+**Replacement:** make the hypothesis a slow hierarchical latent-state model over
+ordinary active-inference parameters and test its evidence against trait-only,
+situation-only, and action-frequency baselines. See
+`SUPPORTED_REPLACEMENTS_LEDGER.md`, section 7.
+
 ## 10. Semantic information and viability
 
 [Kolchinsky and Wolpert](https://pmc.ncbi.nlm.nih.gov/articles/PMC6227811/) define
@@ -292,6 +336,11 @@ system's viability under interventions that scramble correlations.
 phenotype-relative viability. It does not supply linguistic shared meaning, moral
 standing, flourishing, or moral goodness. A system can carry viability-relevant
 semantic information while harming other systems.
+
+**Replacement:** combine causal viability value with allostatic recovery and
+viability-constrained empowerment, evaluated robustly over model and environment
+uncertainty. This establishes only phenotype-relative functional good. See
+`SUPPORTED_REPLACEMENTS_LEDGER.md`, section 8.
 
 ## 11. The other moral predicates
 
@@ -312,6 +361,10 @@ distributions; none is an ordinary term in VFE or EFE.
 | Repair | restorative-justice literature ([Sherman and Strang](https://dc.law.utah.edu/ulr/vol2003/iss1/2/)) | reachability, time, residual harm, recurrence, and institutional change | what counts as adequate repair and who decides |
 | Plural improvement | value pluralism and social choice ([overview](https://plato.stanford.edu/entries/value-pluralism/)) | vector outcomes, partial orders, Pareto sets, and uncertainty | warranted orderings and treatment of incomparability |
 | Legitimate selection | social choice, public reason, democratic legitimacy | feasible selection mechanisms and their predicted consequences | authority, inclusion, equality, and acceptable procedure |
+
+The executable model quantities replacing every empirical placeholder in this table,
+and the normative inputs that cannot be derived from active inference, are enumerated
+in `SUPPORTED_REPLACEMENTS_LEDGER.md`, section 9.
 
 ## 12. Correct architecture
 

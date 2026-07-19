@@ -88,9 +88,17 @@ content rather than redescribing flexible behaviour.
 4. **Adversarial benchmark v0.2 complete:** twelve conceptual matched-proxy pairs and
    six executable finite systems test whether relational and semantic decorations
    distinguish opposed moral cases. Independent construct review remains planned.
-5. Establish parameter recovery and compare against simpler reinforcement-learning,
+5. **Supported-replacement design complete:** every construct rejected or qualified
+   by the VFE/EFE literature audit now has an explicit replacement equation, source,
+   non-equivalence warning, and acceptance rule in
+   `SUPPORTED_REPLACEMENTS_LEDGER.md`. Finite implementations and adversarial checks
+   for total correlation, signed interaction, directed processability, reciprocal
+   readability, intervention effects, and per-agent coupling contrasts are in
+   `benchmarks/coordination_diagnostics.py` and
+   `benchmarks/validate_coordination_diagnostics.py`.
+6. Establish parameter recovery and compare against simpler reinforcement-learning,
    trait-by-situation, and heuristic models.
-6. Test practical wisdom as model and precision governance in expert/novice tasks.
+7. Test practical wisdom as model and precision governance in expert/novice tasks.
 
 **Gate 4:** retain active inference only if its parameters are recoverable and it
 improves held-out prediction or intervention response.
@@ -123,6 +131,12 @@ semantic and ordinary dynamical baselines on held-out adversarial cases.
    and precautionary policy rules. Extend next to domination and multi-step repair.
 5. Formalize affected-agent indexing and standing uncertainty.
 6. Add a locked computational environment before confirmatory experiments.
+7. Extend the finite diagnostic implementation into one identified multi-agent
+   generative model with agent-local EFEs, randomized coupling interventions, a named
+   PID, and blinded cooperation outcomes. The present unit checks cover deterministic
+   zero-TC coordination, redundant common dependence, XOR complementarity, scale-
+   mismatched readability, intervention separation, and conflicting agent-local
+   coupling effects; full coercion and synergistic-harm scenarios remain next.
 
 ## Reproducible checks
 
@@ -130,6 +144,7 @@ semantic and ordinary dynamical baselines on held-out adversarial cases.
 cd formal
 lake build
 python counterexamples\empowerment_not_reachability.py
+python ..\benchmarks\validate_coordination_diagnostics.py
 ```
 
 Every completed formal milestone must build without `sorry` or `admit`. Every

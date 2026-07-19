@@ -17,6 +17,9 @@ go/no-go gates, and paradigm-level failure conditions, see
 For a claim-by-claim review of whether meaning, semantic alignment, cooperation, and
 the moral predicates genuinely follow from VFE/EFE dynamics, see the
 [VFE/EFE Semantics and Cooperation Literature Audit](docs/VFE_EFE_SEMANTICS_COOPERATION_LITERATURE_AUDIT.md).
+The corresponding equation-by-equation replacements for every unsupported construct
+are recorded in the
+[Supported Replacements Ledger](docs/SUPPORTED_REPLACEMENTS_LEDGER.md).
 The standards and toolchain for accepting mathematical theorems are specified in
 [Mathematical Proof Validation](docs/MATHEMATICAL_PROOF_VALIDATION.md).
 The ordered milestones, exit criteria, and current status are maintained in the
@@ -68,34 +71,36 @@ virtue / character
         -> learning and transformation of character
 ```
 
-A virtue is therefore neither a fixed rule nor a preferred behavioural output. It is
-a higher-order, metastable organization of the processes through which agents make
-sense of expected relational consequences and perceive, evaluate, coordinate, act,
-and revise. Its content is partly socially stabilized: the same word does not denote
-the same virtue merely because different agents utter it.
+A virtue is therefore neither a fixed rule nor a preferred behavioural output. The
+testable model treats it as a slow hierarchical latent regime over preferences,
+likelihood and transition beliefs, policy priors, precision, and temporal depth. It
+organizes how agents make sense of expected relational consequences and perceive,
+evaluate, coordinate, act, and revise. Its content is partly socially stabilized:
+the same word does not denote the same virtue merely because different agents utter
+it.
 
-More precisely, a virtue is a reliably good function of meaning; meaning is the
-inferential and pragmatic role produced by expected consequences under an agent's
-generative model; and shared meaning exists when heterogeneous interpretations remain
-mutually processable on morally relevant overlaps. This permits different internal
-representations and actions. It is stronger than verbal agreement and weaker than
-convergence on one world model.
+More precisely, a virtue is hypothesized to be a reliably good function of meaning.
+We operationalize meaning as an agent-indexed semantic-pragmatic profile containing
+anticipated consequences, induced policies, learned deontic cue mappings, parameter
+beliefs, and precision. Shared meaning exists when agents infer a shared sign and
+their heterogeneous profiles remain mutually processable on relevant overlaps. This
+permits different internal representations and actions. It is stronger than verbal
+agreement and weaker than convergence on one world model.
 
-Likewise, cooperation is not an atomic action label. It is a property of the joint
-trajectory distribution induced by a joint policy, under shared semantics about the
-joint achievement and its allocation. Dependence alone cannot define it, because
-coercion and exploitation are also statistically joint. The formal account must add
-complementarity or joint achievement plus the moral constraints developed below.
+Likewise, cooperation is not an atomic action label or a single statistic. Candidate
+cooperative coordination is evaluated through a vector: joint achievement, mutual
+semantic processability, reciprocal readability, outcome-relevant synergy, causal
+contribution, and each agent's matched coupling contrast. Dependence alone cannot
+define it, because coercion and exploitation are also statistically joint. Moral
+cooperation additionally requires the constraints developed below.
 
-These objects must arise inside the active-inference dynamics. VFE minimization can
-learn posterior beliefs and agent-specific semantic mappings to shared latent causes;
-EFE generates protentions and policy posteriors. Semantic processability can be
-measured from learned predictive maps when overlap mappings are included in the
-generative model. Total correlation and a matched joint-EFE contrast are useful
-baselines, but neither defines cooperation. The next model must test
-partial-information or coalition interaction measures of complementarity inside one
-fixed generative model. Normative constraints then determine whether emergent
-coordination is good rather than coercive or exploitative.
+These objects must arise from explicit inference, prediction, or intervention. Shared
+signs and local likelihood mappings are learned first; processability, sheaf
+consistency, causal contribution, and readability are then measured as distinct
+diagnostics. EFE generates protentions and policy posteriors, but agent-local EFEs
+remain a vector unless a common aggregation rule is justified. Total correlation is
+retained only as a dependence baseline. Normative constraints then determine whether
+emergent coordination is good rather than coercive or exploitative.
 
 ## Virtue as a metastable control regime
 

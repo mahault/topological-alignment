@@ -52,28 +52,38 @@ Q^{\boldsymbol\pi}_e
 \mid\boldsymbol\pi,e).
 \]
 
-Each agent interprets this distribution through a phenotype- and context-relative map
+Each agent constructs a phenotype- and context-relative semantic-pragmatic profile
 
 \[
-I_{i,c}:Q^{\boldsymbol\pi}_e\longmapsto m_{i,c}(\boldsymbol\pi),
+\mathfrak M_i(v,c)=
+\left(
+Q_i(s,o\mid\pi,z_v,c),
+Q_i(\pi\mid z_v,c),
+P_i(\pi\mid o^d,c),
+Q_i(\theta_i\mid z_v,c),
+\gamma_i(c)
+\right).
 \]
 
-The map \(I_{i,c}\) is not stipulated. It is induced by posterior inference and
-learning of semantic parameters \(\phi_i\) through minimization of joint variational
-free energy \(F[q,\phi]\). Thus the resulting meaning includes anticipated affordances, harms, dependencies,
-obligations, and possibilities for joint action. Meaning is therefore neither a bare
-outcome nor a private label: it is the inferential and pragmatic role of a policy in a
-field of expected consequences.
+The shared sign \(z_v\) and local parameters can be inferred through a naming game,
+federated inference, or a declared joint variational model. The profile includes
+anticipated consequences, induced policies, deontic cue mappings, parameter beliefs,
+and precision. It operationalizes inferential and pragmatic role without claiming
+that predicted consequences exhaust the full meaning of a thick moral concept.
 
-For these meanings to be shared, they need not be identical. There must instead be
-context-sensitive alignment maps on overlapping content that preserve declared
-morally relevant invariants. In the stronger formulation developed in the sibling
-`shared-protention-alignment` project, compatible local anticipations glue to a global
-section of a shared-protention sheaf. Write this condition as
+For these profiles to be shared, they need not be identical. First require posterior
+evidence for a common sign. Then fit context-sensitive alignment maps on held-out
+overlapping content and report directed processability. The stronger sheaf diagnostic
+from the sibling `shared-protention-alignment` project asks whether compatible local
+anticipations glue to a global section. Write the combined diagnostic as
 
 \[
-\operatorname{Glue}_{\mathcal I}
-\bigl(m_{1,c}(\boldsymbol\pi),\ldots,m_{n,c}(\boldsymbol\pi)\bigr),
+\operatorname{SemCompat}_{\mathcal I}
+=\left(
+q(z_v\mid o_{1:n},u_{1:n}),
+\operatorname{Proc}_{i\to j},
+\|\delta x\|
+\right).
 \]
 
 where \(\mathcal I\) declares what must survive translation. If overlap observations
@@ -83,24 +93,27 @@ maps. Otherwise gluing is an external diagnostic; ordinary VFE does not automati
 learn a sheaf. This distinguishes shared semantics from agreement, preference
 convergence, or identical world models.
 
-Cooperative organization must be investigated through joint EFE dynamics, not read
-from one agent's action label. Two exploratory diagnostics are total correlation of
-the joint policy posterior and a matched within-model EFE contrast:
+Cooperative organization must be investigated through joint predictions and
+interventions, not read from one agent's action label. Use the diagnostic vector
 
 \[
-\mathcal T_Q(\boldsymbol\pi)
-=D_{\mathrm{KL}}\!\left(Q(\pi_1,\ldots,\pi_n)\middle\|\prod_iQ(\pi_i)\right),
-\qquad
-\Delta_G(\boldsymbol\pi)=G_{\mathrm{ind}}(\boldsymbol\pi)-G(\boldsymbol\pi).
+\mathbf C(\boldsymbol\pi)=
+\left(
+Q(Y\in Y^*\mid\boldsymbol\pi),
+\operatorname{Proc}_{\leftrightarrow},
+\operatorname{Read}_{\leftrightarrow},
+\operatorname{Syn}_Y,
+\operatorname{CIF}_{1:n\to Y},
+\boldsymbol\Delta^{\mathrm{cpl}}
+\right),
 \]
 
-Neither quantity defines cooperation. Total correlation is neither necessary nor
-sufficient, and \(\Delta_G\) is meaningful only when the independent case is an
-intervention within the same model with matched variables, preferences, horizons, and
-normalization. Partial-information or coalition interaction terms are better
-candidates for complementarity, but remain insufficient for moral cooperation.
-Pragmatic benefit, epistemic benefit, learned semantic processability, and the
-independently justified relational constraints must be tested separately.
+where \(\Delta_i^{\mathrm{cpl}}=G_i^{do(C=0)}-G_i\) is retained separately for every
+agent. Total correlation is recorded only as a dependence baseline. The vector
+separates joint achievement, semantic processability, reciprocal readability,
+outcome-relevant interaction, causal contribution, and agent-local EFE effects. It is
+still insufficient for moral cooperation: pragmatic benefit, epistemic benefit, and
+the independently justified relational constraints must be tested separately.
 
 ## Semantic lifting of every category
 
@@ -109,14 +122,19 @@ The whole definition must be evaluated only after the same three-stage construct
 \[
 \boldsymbol\pi
 \xmapsto{M,e} Q^{\boldsymbol\pi}_e
-\xmapsto{I_{1:n,c}} (m_{1,c},\ldots,m_{n,c})
-\xmapsto{\operatorname{Glue}_{\mathcal I}} m_c^{\mathrm{sh}}.
+\xmapsto{\mathrm{infer}} (z_v,\mathfrak M_{1,c},\ldots,\mathfrak M_{n,c})
+\xmapsto{\operatorname{SemCompat}_{\mathcal I}}
+(\operatorname{Proc}_{\leftrightarrow},\|\delta x\|).
 \]
 
 The first arrow is generated by EFE-conditioned policy dynamics, the second by
-VFE-based inference and semantic learning, and the third is a residual computed from
-the learned maps. None is an analyst-attached label. A normative interpretation \(N\)
-then evaluates that endogenous content.
+Bayesian or VFE-based sign and parameter learning, and the third comprises held-out
+diagnostics computed from the learned maps. None is an analyst-attached action label.
+A normative interpretation \(N\) then evaluates that endogenous content.
+For compactness in the predicates below, write \(m_i:=\mathfrak M_i(v,c)\), and write
+\(m^{\mathrm{sh}}\) only for a fused overlap projection whose processability and
+sheaf-consistency diagnostics have passed. This notation does not imply identical
+private beliefs.
 Accordingly, every term in the adopted definition is a derived predicate:
 
 1. **Affected centre of vulnerability:**
@@ -126,7 +144,7 @@ Accordingly, every term in the adopted definition is a derived predicate:
    standing; exclusion from the shared vocabulary cannot erase actual effects.
 
 2. **Phenotype-relative flourishing:**
-   \(\operatorname{Flourish}_i(Q,m_i,N)=F_i(I_{i,c}(Q),P_i,N)\). Viability,
+   \(\operatorname{Flourish}_i(Q,m_i,N)=F_i(\mathfrak M_i(v,c;Q),P_i,N)\). Viability,
    recovery, learning, relationship, and option trajectories become flourishing only
    through a phenotype-sensitive account of what they enable. The same physical
    consequence can therefore have different pragmatic meanings without making every
@@ -140,7 +158,7 @@ Accordingly, every term in the adopted definition is a derived predicate:
 
 4. **Capability floors:**
    \(\operatorname{Floor}_i(Q,m_i,N)=
-   \mathbf 1\{C_i(I_{i,c}(Q),P_i,N)\succeq c_i^{\min}\}\). Reachable states count
+   \mathbf 1\{C_i(\mathfrak M_i(v,c;Q),P_i,N)\succeq c_i^{\min}\}\). Reachable states count
    as capabilities only if they are meaningful, exercisable, and socially available.
    An option the agent cannot understand, afford, safely choose, or have recognized is
    not yet a capability.
@@ -194,11 +212,11 @@ Accordingly, every term in the adopted definition is a derived predicate:
     processable and whose allocation of voice and authority satisfies \(N\).
     Coordination or consensus alone is not legitimacy.
 
-Virtue is a higher-order operator over this entire construction. It regulates which
-consequences are anticipated, which distinctions become salient, how agents translate
-one another, which joint policies become available, and how all of these are revised.
-Calling it good asserts that its realizations repeatedly satisfy the semantically
-lifted moral predicate; goodness is not inferred from metastability or shared uptake.
+Virtue is tested as a slow hierarchical latent regime over this construction. It
+changes distributions over preferences, likelihood and transition beliefs, policy
+priors, precision, and temporal depth. Calling it good asserts that its realizations
+repeatedly satisfy the semantically lifted moral predicate; goodness is not inferred
+from metastability, evidence, deontic conformity, or shared uptake.
 
 ## 1. Centre of vulnerable flourishing
 
@@ -263,12 +281,13 @@ Evaluate a vector rather than a scalar:
 
 \[
 \mathbf J_i(\boldsymbol\pi,e)=
-(V_i,R_i,O_i,E_i,L_i),
+(V_i,R_i,\operatorname{Emp}_i,E_i,L_i),
 \]
 
-where \(V_i\) is viability margin, \(R_i\) recovery, \(O_i\) meaningful options,
+where \(V_i\) is intervention-tested viability margin, \(R_i\) allostatic recovery,
+\(\operatorname{Emp}_i\) viability-constrained empowerment over meaningful options,
 \(E_i\) epistemic access or calibration, and \(L_i\) capacity for learning and
-development.
+development. These quantities are non-equivalent and remain separately reported.
 
 ### Operational test
 
@@ -295,16 +314,18 @@ perturbation.
 
 ### Active-inference representation
 
-Let \(\mathcal E\) be a declared environment or model-uncertainty class. Require
+Let \(\mathcal U\) be a declared joint class of environments, model structures,
+parameters, and semantic mappings. Require
 
 \[
-\inf_{e\in\mathcal E}
+\inf_{(e,M,\theta,I)\in\mathcal U}
 \Pr_{q_M^\pi}
 [\mathbf J_i(\pi,e)\succeq\mathbf J_i^{\min}]
 \ge 1-\epsilon_i,
 \]
 
-or use a declared distributionally robust alternative.
+or use a declared distributionally robust free-energy objective. EFE's likelihood
+entropy or “ambiguity” term is not uncertainty over alternative generative models.
 
 ### Operational test
 
@@ -738,7 +759,7 @@ holds exactly when:
 \[
 \begin{aligned}
 &\operatorname{StandingScopeComplete}(Q,m,N)\\
-&\land\operatorname{SemanticGluing}_{F}(m_{1:n},\phi_{1:n},\mathcal I)\\
+&\land\operatorname{SemanticCompatibility}(z_v,m_{1:n},\mathcal I)\\
 &\land\operatorname{RobustFlourishing}(Q,m,N)\\
 &\land\operatorname{CapabilityFloors}(Q,m,N)\\
 &\land\operatorname{NonExternalizing}(Q,Q_0,m,N)\\
@@ -754,15 +775,16 @@ holds exactly when:
 
 where \(Q=Q_e^{\boldsymbol\pi}\),
 \(Q_0=Q_e^{\boldsymbol\pi_0}\),
-\(m_i=I_{i,c}^{\phi_i}(Q)\), and \(m^{\mathrm{sh}}\) is their shared content as
-recovered from learned posterior-predictive maps when the required overlap model is
-identified. The
-semantic-gluing conjunct means that an interpersonal claim is well-defined; it is not
-itself evidence that the claim is morally good.
+\(m_i=\mathfrak M_i(v,c;Q,\phi_i)\), and \(m^{\mathrm{sh}}\) is a fused overlap
+projection used only when shared-sign evidence, held-out processability, and sheaf
+consistency pass their declared criteria. The semantic-compatibility conjunct means
+that an interpersonal claim is empirically translatable on the tested overlaps; it is
+not itself evidence that the claim is morally good.
 
 The joint posterior predictive distribution generated by active inference supplies
-the expected relational consequences. Agent-relative interpretation maps and their
-gluing supply shared semantic content. The normative theory supplies the moral
+the expected relational consequences. Learned shared signs, local semantic-pragmatic
+profiles, and held-out compatibility diagnostics supply evidence of shared semantic
+content. The normative theory supplies the moral
 invariants, thresholds, protected dimensions, and legitimate decision rules. None of
 these three layers can be silently substituted for another.
 
@@ -771,8 +793,8 @@ these three layers can be silently substituted for another.
 The categories should be formalized in this order:
 
 1. explicit joint policies, joint trajectory distributions, and affected-agent scope;
-2. agent-relative consequence-to-meaning maps;
-3. shared-semantic processability and gluing on declared invariants;
+2. learned shared signs and agent-relative semantic-pragmatic profiles;
+3. held-out processability and sheaf consistency on declared overlaps;
 4. phenotype-relative flourishing and robustness;
 5. capability floors and non-externalization;
 6. causal non-domination;
