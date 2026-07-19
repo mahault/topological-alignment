@@ -137,6 +137,19 @@ Version 0.1 contains twelve conceptual pairs. It passes structural validation wh
 python benchmarks\validate_moral_proxy_pairs.py
 ```
 
-This is a design benchmark, not yet an empirical dataset. The next version should add
-formal finite systems for robustness, capability, externalization, domination,
-contestability, and repair, followed by preregistered human construct review.
+Version 0.2 adds executable finite systems for robustness, capability,
+externalization, domination, contestability, and repair:
+
+```powershell
+python benchmarks\validate_finite_causal_systems.py
+```
+
+The finite systems make the base proxy equality exact using rational or integer
+values. Their decorated evaluators must recover the opposed provisional labels. This
+demonstrates representational separation, not empirical construct validity: the
+decorations and moral labels are currently authored together and therefore cannot be
+treated as an out-of-sample prediction result.
+
+The benchmark remains a design artifact, not yet an empirical dataset. The next
+version should add independently reviewed labels, held-out variants, and preregistered
+human construct review.

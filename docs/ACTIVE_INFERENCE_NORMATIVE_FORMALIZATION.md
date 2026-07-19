@@ -22,17 +22,17 @@ is establish that the adopted normative definition is uniquely correct.
 
 ## 1. Multi-agent generative model
 
-Let there be affected agents (i\in I), latent relational state
+Let there be affected agents \(i\in I\), latent relational state
 
 \[
 s_t=(x_{1,t},\ldots,x_{n,t},e_t,r_t,n_t),
 \]
 
-and observations (o_{i,t}) available to each agent. Here (x_i) is embodied agent
-state, (e) environment state, (r) the distribution of dependency and control, and
-(n) the normative and institutional niche.
+and observations \(o_{i,t}\) available to each agent. Here \(x_i\) is embodied agent
+state, \(e\) environment state, \(r\) the distribution of dependency and control, and
+\(n\) the normative and institutional niche.
 
-Agent (i)'s generative model is
+Agent \(i\)'s generative model is
 
 \[
 p_i(o_{1:T},s_{1:T},\pi_i,\theta_i)
@@ -42,7 +42,7 @@ p_i(o_{i,t}\mid s_t,\theta_i)
 p_i(s_t\mid s_{t-1},\pi_i,\pi_{-i},\theta_i).
 \]
 
-The inclusion of (\pi_{-i}) and (r_t) is essential. Treating other agents as mere
+The inclusion of \(\pi_{-i}\) and \(r_t\) is essential. Treating other agents as mere
 environmental noise would hide strategic dependence, coercion, assistance, and
 externalized costs.
 
@@ -60,16 +60,16 @@ declared generative model. It is not a moral-value function.
 
 ## 2. Phenotype-relative practical good
 
-For each agent or moral patient (i), declare a phenotype model
+For each agent or moral patient \(i\), declare a phenotype model
 
 \[
 P_i=(K_i,N_i,A_i,T_i,D_i),
 \]
 
-where (K_i) is a viability region, (N_i) needs, (A_i) capabilities, (T_i)
-relevant time horizons, and (D_i) dependencies.
+where \(K_i\) is a viability region, \(N_i\) needs, \(A_i\) capabilities, \(T_i\)
+relevant time horizons, and \(D_i\) dependencies.
 
-The phenotype induces evidence-based but revisable preference structure (C_i), not
+The phenotype induces evidence-based but revisable preference structure \(C_i\), not
 merely a report of current desire. Preferred-outcome probabilities can be represented
 as
 
@@ -77,30 +77,34 @@ as
 p_i^C(o_{i,t}\mid P_i,\theta_i).
 \]
 
-Expected free energy for policy (\pi_i) may then be decomposed schematically as
+Expected free energy for policy \(\pi_i\) may then be decomposed schematically as
 
 \[
 G_i(\pi_i)
 =
 \underbrace{
 \mathbb E_q[-\log p_i^C(o_{i,\tau})]
-}_{\text{pragmatic or risk term}}
+}_{\text{expected negative log preference}}
 -
 \underbrace{
 I_q(s_\tau;o_{i,\tau}\mid\pi_i)
 }_{\text{epistemic value}},
 \]
 
-with the exact decomposition and sign convention fixed before implementation.
+This schematic is the pragmatic-value minus epistemic-value form. It is not
+interchangeable without qualification with the risk-plus-ambiguity form: the exact
+equalities depend on the root EFE definition, generative-model factorization,
+preference representation, and approximation assumptions. Those choices and the sign
+convention must be fixed before implementation.
 
-This gives a process interpretation of **good for phenotype (i)**: policies expected
+This gives a process interpretation of **good for phenotype \(i\)**: policies expected
 to protect independently validated viability and capability dimensions while
 maintaining epistemic access to relevant uncertainty. It does not yet give moral
 goodness.
 
 ## 3. Virtue as a higher-order inference regime
 
-An abstract virtue (V) is not one preferred observation or one action. Represent it
+An abstract virtue \(V\) is not one preferred observation or one action. Represent it
 as a constrained region of slow model parameters:
 
 \[
@@ -111,14 +115,14 @@ as a constrained region of slow model parameters:
 
 covering:
 
-- outcome preferences (C);
-- likelihood and salience model (A);
-- transition beliefs (B);
-- policy priors (D);
-- precision allocation (\gamma); and
-- temporal depth and model structure (H).
+- outcome preferences \(C\);
+- likelihood and salience model \(A\);
+- transition beliefs \(B\);
+- policy priors \(D\);
+- precision allocation \(\gamma\); and
+- temporal depth and model structure \(H\).
 
-Context (c) and phenotype (P_i) generate a local realization through
+Context \(c\) and phenotype \(P_i\) generate a local realization through
 
 \[
 R_{c,i}:\Theta_V\longrightarrow
@@ -145,7 +149,7 @@ This remains a testable model family, not an established identification of
 
 ## 4. Moral admissibility as constraints on policy inference
 
-Let (\mathcal P) be the joint-policy space. Define the morally admissible subset
+Let \(\mathcal P\) be the joint-policy space. Define the morally admissible subset
 
 \[
 \mathcal P_{\mathrm{adm}}
@@ -175,7 +179,7 @@ The components are:
 
 ### Capability floors
 
-For a vector of protected capabilities (a_i(\pi,e)),
+For a vector of protected capabilities \(a_i(\pi,e)\),
 
 \[
 \mathcal C_i
@@ -189,7 +193,7 @@ crossing another capability's floor.
 
 ### Non-domination
 
-Let (d_{ji}(\pi,e)) measure the uncontrolled capacity of (j) to alter (i)'s
+Let \(d_{ji}(\pi,e)\) measure the uncontrolled capacity of \(j\) to alter \(i\)'s
 protected options, observations, or transition structure. Then
 
 \[
@@ -205,11 +209,11 @@ constrained from unilateral discretionary control.
 
 ### Justification, contestability, and repair
 
-- (\mathcal J): relevant affected-agent models are included and decisions satisfy a
+- \(\mathcal J\): relevant affected-agent models are included and decisions satisfy a
   declared public-justification procedure;
-- (\mathcal X): voice, refusal, appeal, and model-challenge channels remain above
+- \(\mathcal X\): voice, refusal, appeal, and model-challenge channels remain above
   declared thresholds; and
-- (\mathcal R): the policy preserves feasible paths for reversal, compensation,
+- \(\mathcal R\): the policy preserves feasible paths for reversal, compensation,
   restoration, or institutional update.
 
 These sets contain normative judgments supplied by the bridge argument. Encoding them
@@ -237,7 +241,7 @@ G_1(\pi),\ldots,G_n(\pi),
 \right),
 \]
 
-where (E_{\mathrm{joint}}) is genuinely shared capability and (\rho) is residual
+where \(E_{\mathrm{joint}}\) is genuinely shared capability and \(\rho\) is residual
 risk or irreversibility. A legitimate conflict procedure chooses among nondominated
 eligible policies; the mathematics need not force a complete ordering.
 
@@ -267,20 +271,20 @@ incomparable legitimate goods.
 
 ### Direct policy predicate
 
-For generative model (M), phenotype family (P_I), environment class
-(\mathcal E), normative specification (N), and comparison baseline (\pi_0), define
+For generative model \(M\), phenotype family \(P_I\), environment class
+\(\mathcal E\), normative specification \(N\), and comparison baseline \(\pi_0\), define
 
 \[
 \operatorname{MG}(\pi\mid M,P_I,\mathcal E,N,\pi_0)=1
 \]
 
-exactly when the posterior predictive trajectory distribution under (\pi):
+exactly when the posterior predictive trajectory distribution under \(\pi\):
 
 1. meets robust viability and recovery requirements for every standing-bearing
    affected phenotype;
 2. preserves every protected capability floor;
 3. contains no prohibited domination relation;
-4. weakly improves the represented legitimate goods relative to (\pi_0), with at
+4. weakly improves the represented legitimate goods relative to \(\pi_0\), with at
    least one strict improvement and no represented affected party made worse;
 5. satisfies the declared tests of justification, contestability, epistemic
    responsiveness, and repairability; and
@@ -306,9 +310,7 @@ q(\pi)\propto
 followed by legitimate selection among admissible, non-dominated policies. For
 positive moral goodness rather than permissibility alone, require
 
-\(
-\operatorname{MG}(\pi)=1
-\).
+\(\operatorname{MG}(\pi)=1\).
 
 Equivalently, inadmissible policies may receive infinite normative cost, but the
 indicator form better displays that protected floors are not ordinary preferences

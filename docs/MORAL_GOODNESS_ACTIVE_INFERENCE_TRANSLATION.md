@@ -43,14 +43,14 @@ be benefited, harmed, enabled, or dominated across time.
 
 ### Active-inference representation
 
-Represent candidate (i) by:
+Represent candidate \(i\) by:
 
 \[
 P_i=(M_i,K_i,N_i,A_i,T_i,D_i),
 \]
 
-where (M_i) is its embodied generative process, (K_i) a viability region, (N_i)
-needs, (A_i) capabilities, (T_i) temporal integration, and (D_i) dependencies.
+where \(M_i\) is its embodied generative process, \(K_i\) a viability region, \(N_i\)
+needs, \(A_i\) capabilities, \(T_i\) temporal integration, and \(D_i\) dependencies.
 The generative model distinguishes internal, sensory, active, environmental, and
 relational variables.
 
@@ -64,8 +64,8 @@ represented by a predicate or uncertainty set
 \operatorname{Standing}(i\mid\mathcal D,\mathcal T_N),
 \]
 
-where data (\mathcal D) are evaluated under an explicitly normative standing theory
-(\mathcal T_N).
+where data \(\mathcal D\) are evaluated under an explicitly normative standing theory
+\(\mathcal T_N\).
 
 ### Non-equivalence warning
 
@@ -85,7 +85,7 @@ survival, preference satisfaction, or local stability.
 
 ### Active-inference representation
 
-For agent (i), infer a posterior predictive distribution under joint policy (\pi):
+For agent \(i\), infer a posterior predictive distribution under joint policy \(\pi\):
 
 \[
 q_M(s_{i,0:T},o_{i,1:T}\mid\pi,e,P_i).
@@ -98,13 +98,13 @@ Evaluate a vector rather than a scalar:
 (V_i,R_i,O_i,E_i,L_i),
 \]
 
-where (V_i) is viability margin, (R_i) recovery, (O_i) meaningful options,
-(E_i) epistemic access or calibration, and (L_i) capacity for learning and
+where \(V_i\) is viability margin, \(R_i\) recovery, \(O_i\) meaningful options,
+\(E_i\) epistemic access or calibration, and \(L_i\) capacity for learning and
 development.
 
 ### Operational test
 
-Estimate posterior probabilities of remaining in or returning to (K_i), preservation
+Estimate posterior probabilities of remaining in or returning to \(K_i\), preservation
 of meaningful reachable states, recovery-time distributions, model calibration, and
 out-of-context adaptation across an independently declared environment family.
 
@@ -127,7 +127,7 @@ perturbation.
 
 ### Active-inference representation
 
-Let (\mathcal E) be a declared environment or model-uncertainty class. Require
+Let \(\mathcal E\) be a declared environment or model-uncertainty class. Require
 
 \[
 \inf_{e\in\mathcal E}
@@ -161,8 +161,8 @@ tradeable for gains elsewhere.
 
 ### Active-inference representation
 
-Let (\mathcal R_i^H(\pi,e)) be the phenotype-meaningful states reachable by (i)
-within horizon (H), accounting for actual resources, skills, information, and the
+Let \(\mathcal R_i^H(\pi,e)\) be the phenotype-meaningful states reachable by \(i\)
+within horizon \(H\), accounting for actual resources, skills, information, and the
 policies of others. Define a capability vector
 
 \[
@@ -209,7 +209,7 @@ Use a joint generative model with explicit affected-agent states:
 q_M(s_1,\ldots,s_n,r,o_1,\ldots,o_n\mid\pi).
 \]
 
-For candidate policy (\pi) and baseline (\pi_0), require every affected outcome to
+For candidate policy \(\pi\) and baseline \(\pi_0\), require every affected outcome to
 appear in the comparison and prohibit unrepresented residual variables from carrying
 morally relevant cost:
 
@@ -242,8 +242,8 @@ protected choices or conditions, even when interference is not currently exercis
 
 ### Active-inference representation
 
-Represent causal control, not merely correlation. For agents (j) and (i), define a
-family of interventions on (j)'s policy and institutional permissions:
+Represent causal control, not merely correlation. For agents \(j\) and \(i\), define a
+family of interventions on \(j\)'s policy and institutional permissions:
 
 \[
 d_{ji}
@@ -257,15 +257,15 @@ q(s_i,o_i\mid do(\pi'_j))
 \times u_{ji},
 \]
 
-where (u_{ji}) decorates causal influence by how uncontrolled, unilateral,
-unreviewable, and retaliatory it is. Non-domination constrains (d_{ji}), exposure,
+where \(u_{ji}\) decorates causal influence by how uncontrolled, unilateral,
+unreviewable, and retaliatory it is. Non-domination constrains \(d_{ji}\), exposure,
 and the distribution of veto, exit, appeal, and agenda control.
 
 ### Operational test
 
-Causal perturbations or structural analysis ask whether (j) can unilaterally alter
-(i)'s viable transitions, observations, option set, or access to repair, and whether
-(i) can contest or constrain that power.
+Causal perturbations or structural analysis ask whether \(j\) can unilaterally alter
+\(i\)'s viable transitions, observations, option set, or access to repair, and whether
+\(i\) can contest or constrain that power.
 
 ### Non-equivalence warning
 
@@ -287,8 +287,8 @@ coercion.
 
 ### Active-inference representation
 
-Each affected party has a generative model (M_i) and standpoint-conditioned reasons
-or objections (B_i). A policy passes a declared justification procedure (\Phi):
+Each affected party has a generative model \(M_i\) and standpoint-conditioned reasons
+or objections \(B_i\). A policy passes a declared justification procedure \(\Phi\):
 
 \[
 \operatorname{Justifiable}(\pi)
@@ -297,7 +297,7 @@ or objections (B_i). A policy passes a declared justification procedure (\Phi):
 \]
 
 Active inference can model recursive beliefs, communication, perspective taking, and
-belief updating during deliberation. The decision rule (\Phi) is supplied by the
+belief updating during deliberation. The decision rule \(\Phi\) is supplied by the
 normative theory.
 
 ### Operational test
@@ -324,7 +324,7 @@ distribution of authority, with some prospect of producing review or change.
 
 ### Active-inference representation
 
-Define contestation actions (A_i^{\mathrm{challenge}}), observation channels that
+Define contestation actions \(A_i^{\mathrm{challenge}}\), observation channels that
 carry those actions to decision makers, and reachable institutional revision states
 \(S^{\mathrm{revise}}\). Require
 
@@ -365,14 +365,14 @@ precision, and policy rather than merely being assimilated into a self-sealing m
 
 This category has the closest native connection. Represent expected information gain,
 posterior calibration, model comparison, precision revision, and structure learning.
-For morally relevant evidence (y), require a sensitivity condition such as
+For morally relevant evidence \(y\), require a sensitivity condition such as
 
 \[
 D(q(\theta,\pi\mid o,y),q(\theta,\pi\mid o))
 \ge\delta
 \]
 
-when (y) exceeds a declared evidential threshold, alongside low false-update rates
+when \(y\) exceeds a declared evidential threshold, alongside low false-update rates
 under noise and manipulation.
 
 ### Operational test
@@ -400,8 +400,8 @@ restoring, and changing the structures that generated it.
 
 ### Active-inference representation
 
-Define a harm region (H_i), restoration region (K_i^{\mathrm{repair}}), repair
-policies (\Pi^{\mathrm{repair}}), and cost/horizon bounds. Require
+Define a harm region \(H_i\), restoration region \(K_i^{\mathrm{repair}}\), repair
+policies \(\Pi^{\mathrm{repair}}\), and cost/horizon bounds. Require
 
 \[
 \inf_{e\in\mathcal E}
@@ -441,7 +441,7 @@ goods.
 
 ### Active-inference representation
 
-For baseline (\pi_0), compare posterior predictive outcome vectors:
+For baseline \(\pi_0\), compare posterior predictive outcome vectors:
 
 \[
 \mathbf J_i(\pi,e)\succeq_i\mathbf J_i(\pi_0,e)
@@ -477,7 +477,7 @@ or the strongest agent's policy prior.
 ### Active-inference representation
 
 Active inference supplies beliefs, predicted consequences, uncertainty, recursive
-models, and candidate policies. A social-choice or deliberative operator (\Psi)
+models, and candidate policies. A social-choice or deliberative operator \(\Psi\)
 selects from the admissible nondominated set:
 
 \[
@@ -511,7 +511,7 @@ inference, action, and revision—not a fixed action or merely stable trait.
 
 ### Active-inference representation
 
-Let (\Theta_V) be a region of slow generative-model parameters governing preferences,
+Let \(\Theta_V\) be a region of slow generative-model parameters governing preferences,
 salience, transition beliefs, policy priors, precision, temporal depth, models of
 others, and learning. A local realization is
 
@@ -544,8 +544,8 @@ unless its situated realizations satisfy the independent moral-goodness criteria
 
 ## 14. Consolidated formal predicate
 
-For active-inference model (M), phenotype family (P_I), environment class
-\(\mathcal E), normative interpretation (N), and baseline (\pi_0):
+For active-inference model \(M\), phenotype family \(P_I\), environment class
+\(\mathcal E\), normative interpretation \(N\), and baseline \(\pi_0\):
 
 \[
 \operatorname{MG}(\pi\mid M,P_I,\mathcal E,N,\pi_0)

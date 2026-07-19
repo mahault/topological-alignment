@@ -85,9 +85,9 @@ content rather than redescribing flexible behaviour.
 3. **Translation ledger complete:** each moral category now has a normative meaning,
    candidate active-inference object, operational test, non-equivalence warning, and
    epistemic status in `MORAL_GOODNESS_ACTIVE_INFERENCE_TRANSLATION.md`.
-4. **Adversarial benchmark v0.1 complete:** twelve matched-proxy pairs test whether
-   relational and semantic decorations distinguish opposed moral cases. Construct
-   review and finite-system implementations remain planned.
+4. **Adversarial benchmark v0.2 complete:** twelve conceptual matched-proxy pairs and
+   six executable finite systems test whether relational and semantic decorations
+   distinguish opposed moral cases. Independent construct review remains planned.
 5. Establish parameter recovery and compare against simpler reinforcement-learning,
    trait-by-situation, and heuristic models.
 6. Test practical wisdom as model and precision governance in expert/novice tasks.
@@ -112,15 +112,14 @@ semantic and ordinary dynamical baselines on held-out adversarial cases.
 
 ## Immediate work queue
 
-1. Draft the moral-standing bridge argument; do not encode it as though it were a
-   mathematical consequence.
-2. Assemble hard cases involving domination, adaptive preference, paternalism,
-   sacrifice, emergencies, and conflicts among genuine goods.
-3. Specify which capability floors are universal, phenotype-relative, or
-   institutionally contestable.
-4. Extend the finite kernel to stochastic transitions only after the normative
-   distinctions are stable.
-5. Prepare construct-validation materials for Experiment 0.
+1. Bind all empirical statistics and figures to data hashes, commit ID, environment,
+   and serialized result ledgers; real-data results are currently unreproduced.
+2. Obtain independent, blinded construct review for benchmark labels and decorations.
+3. Add held-out adversarial variants rather than evaluating authored flags directly.
+4. Build one genuine finite probabilistic active-inference counterexample with an
+   explicit likelihood, transition model, preferences, posterior, and EFE.
+5. Formalize affected-agent indexing and standing uncertainty.
+6. Add a locked computational environment before confirmatory experiments.
 
 ## Reproducible checks
 

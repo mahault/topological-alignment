@@ -141,8 +141,11 @@ and stochastic work can safely build.
 
 ## 8. Reproducibility
 
-The repository pins the Lean toolchain in `formal/lean-toolchain` and Mathlib in the
-Lake configuration. Formal checks should run with:
+The repository pins the Lean toolchain in `formal/lean-toolchain`. The current Lake
+manifest has no external packages because two Mathlib checkout attempts failed on
+2026-07-19. The deterministic core therefore uses Lean's standard library only;
+topological, measure-theoretic, and probabilistic extensions remain blocked on a
+successful Mathlib installation. Current formal checks run with:
 
 ```powershell
 cd formal

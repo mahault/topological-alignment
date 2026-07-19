@@ -1,0 +1,71 @@
+{
+  "audit_date": "2026-07-19",
+  "baseline_commit": "f71ee61c8b438dad0ce1f1d77b06189da84fe4d1",
+  "environment": {
+    "python": "3.12.10",
+    "numpy": "2.4.6",
+    "scipy": "1.18.0",
+    "scikit_learn": "1.9.0",
+    "lean": "4.32.0",
+    "z3": "4.16.0"
+  },
+  "synthetic_experiment_1": {
+    "command": "python scripts/run_all.py --exp1",
+    "seed": 42,
+    "n_steps": 10000,
+    "status": "passed",
+    "persistence": {
+      "rigid_mean": 0.0081,
+      "flexible_mean": 0.0305,
+      "mixed_mean": 0.0191,
+      "flexible_rigid_ratio_printed": 3.79
+    },
+    "group_bottleneck_distance": {
+      "rigid_flexible": 1.0953,
+      "rigid_mixed": 0.3348,
+      "flexible_mixed": 0.9105
+    },
+    "rds_distance": {
+      "rigid_flexible": 0.0225,
+      "rigid_mixed": 0.0296,
+      "flexible_mixed": 0.0434
+    },
+    "kl_divergence": {
+      "rigid_flexible": 15.2659,
+      "rigid_mixed": 37.6863,
+      "flexible_mixed": 23.2399
+    },
+    "prior_precision_perturbation": {
+      "direction_cosine": 0.4483,
+      "direction_change": 0.5517
+    },
+    "limitations": [
+      "Values are rounded from console output rather than serialized directly by the experiment.",
+      "Constructed group differences make this a pipeline test, not a validation of psychological interpretation.",
+      "The persistence ratio differs from the manuscript's pre-audit value of 2.43."
+    ]
+  },
+  "real_data": {
+    "status": "not_rerun",
+    "reason": "No data directory exists in the audited checkout.",
+    "affected_claims": [
+      "cryptocurrency between/within topological distance",
+      "EEG curvature-condition correlations",
+      "Reddit community persistence hierarchy"
+    ]
+  },
+  "formal_and_benchmark_checks": {
+    "lean_build_jobs": 9,
+    "lean_build": "passed",
+    "lean_placeholders_or_project_axioms": 0,
+    "z3_counterexample": "passed",
+    "conceptual_proxy_pairs": 12,
+    "conceptual_proxy_validation": "passed",
+    "finite_computed_proxy_pairs": 6,
+    "finite_computed_proxy_validation": "passed",
+    "static_repository_audit": "passed",
+    "manuscript_compile": "passed with microtype expansion disabled",
+    "manuscript_pages": 24,
+    "manuscript_warnings": "overfull boxes, PDF bookmark token warning, MiKTeX update warning"
+  }
+}
