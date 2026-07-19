@@ -220,7 +220,8 @@ token, float placement, and MiKTeX update status; none prevented output.
    likelihood, transition, preference, posterior, EFE, and intervention semantics.
    **Completed after this audit:** see `FINITE_ACTIVE_INFERENCE_COUNTEREXAMPLE.md`.
 6. Formalize affected-agent indexing and standing uncertainty before expanding the
-   moral-goodness theorem name or claims.
+   moral-goodness theorem name or claims. **Finite uncertainty model completed after
+   this audit; population indexing and empirical standing evidence remain open.**
 7. Retry Mathlib only when the first probabilistic or topological theorem has an exact
    typed statement.
 

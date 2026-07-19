@@ -165,6 +165,71 @@ unchanged.
 6. It does not yet represent voice, domination, contestability, or repair.
 7. It verifies arithmetic numerically, not in Lean.
 
+## Is this a good result?
+
+It is a good **separation result** for four reasons:
+
+1. both policies share the complete focal likelihood, transition model, preferences,
+   predicted outcomes, EFE, and prior;
+2. the two standard EFE decompositions are checked independently;
+3. only the affected-agent causal consequence differs; and
+4. the difference in constrained policy selection is therefore traceable to expanded
+   relational scope and the capability floor rather than to focal optimization.
+
+It is not yet a strong **positive theory of moral cognition**:
+
+- equality of focal models is constructed rather than estimated;
+- the example has only one step and two states;
+- the standing judgment and floor are supplied;
+- hard filtering is only one possible response to moral uncertainty; and
+- no human judgment, behaviour, or institutional process is predicted.
+
+The warranted claim is therefore:
+
+> Agent-relative EFE is insufficient for moral evaluation whenever morally relevant
+> consequences fall outside the evaluated generative-model scope.
+
+The unwarranted claim would be:
+
+> Active inference plus our chosen floor constitutes a complete or uniquely correct
+> theory of moral goodness.
+
+## Extension: uncertain standing and capability floors
+
+The companion model removes perfect normative classification. It assigns a posterior
+over four joint hypotheses:
+
+| Standing | Floor | Probability |
+|---|---:|---:|
+| yes | `0.50` | `0.42` |
+| yes | `0.05` | `0.18` |
+| no | `0.50` | `0.28` |
+| no | `0.05` | `0.12` |
+
+The externalizing policy has affected viability `0.10`, so it violates the strict
+standing-bearing hypothesis only. Its posterior violation probability is therefore
+`0.42`; cooperation's is `0`.
+
+Three selection rules then diverge:
+
+| Rule | Cooperate | Externalize |
+|---|---:|---:|
+| focal EFE only | `0.500` | `0.500` |
+| weight by probability of admissibility | `0.633` | `0.367` |
+| precautionary risk limit `0.10` | `1.000` | `0.000` |
+
+The uncertainty-weighted rule treats posterior admissibility as a multiplicative
+policy weight. This is mathematically coherent but normatively permissive: sufficiently
+large focal benefits could compensate for moral-risk probability. The precautionary
+rule instead treats violation risk above a declared limit as disqualifying. Active
+inference can compute the posteriors and predicted consequences, but it does not decide
+which risk rule has moral authority.
+
+Additional implementation:
+
+- `benchmarks/uncertain_standing_model.py`
+- `benchmarks/validate_uncertain_standing_model.py`
+
 ## Reproduction
 
 Implementation:
@@ -176,6 +241,7 @@ Run:
 
 ```powershell
 python benchmarks\validate_finite_active_inference_model.py
+python benchmarks\validate_uncertain_standing_model.py
 ```
 
 The validator checks Bayesian normalization, matched focal predictions, equality of

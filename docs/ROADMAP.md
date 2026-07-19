@@ -119,7 +119,8 @@ semantic and ordinary dynamical baselines on held-out adversarial cases.
 4. **Complete:** the first finite probabilistic active-inference counterexample has an
    explicit likelihood, transition model, preferences, Bayesian posterior, two EFE
    decompositions, affected-agent intervention, and constrained policy posterior.
-   Extend it to standing uncertainty, domination, and multi-step repair.
+   Standing and floor uncertainty are also implemented with both uncertainty-weighted
+   and precautionary policy rules. Extend next to domination and multi-step repair.
 5. Formalize affected-agent indexing and standing uncertainty.
 6. Add a locked computational environment before confirmatory experiments.
 
