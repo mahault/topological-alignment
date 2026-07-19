@@ -85,9 +85,12 @@ content rather than redescribing flexible behaviour.
 3. **Translation ledger complete:** each moral category now has a normative meaning,
    candidate active-inference object, operational test, non-equivalence warning, and
    epistemic status in `MORAL_GOODNESS_ACTIVE_INFERENCE_TRANSLATION.md`.
-4. Establish parameter recovery and compare against simpler reinforcement-learning,
+4. **Adversarial benchmark v0.1 complete:** twelve matched-proxy pairs test whether
+   relational and semantic decorations distinguish opposed moral cases. Construct
+   review and finite-system implementations remain planned.
+5. Establish parameter recovery and compare against simpler reinforcement-learning,
    trait-by-situation, and heuristic models.
-5. Test practical wisdom as model and precision governance in expert/novice tasks.
+6. Test practical wisdom as model and precision governance in expert/novice tasks.
 
 **Gate 4:** retain active inference only if its parameters are recoverable and it
 improves held-out prediction or intervention response.

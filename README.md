@@ -26,6 +26,8 @@ specified in
 [A Normatively Constrained Active-Inference Interpretation](docs/ACTIVE_INFERENCE_NORMATIVE_FORMALIZATION.md).
 The category-by-category translation ledger is
 [Translating Moral Goodness into Active-Inference Terms](docs/MORAL_GOODNESS_ACTIVE_INFERENCE_TRANSLATION.md).
+Its initial adversarial test suite is documented in the
+[Active-Inference Moral Translation Audit](docs/ACTIVE_INFERENCE_TRANSLATION_AUDIT.md).
 
 This perspective also suggests a synthesis of virtue ethics, consequentialism, and
 active inference.

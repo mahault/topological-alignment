@@ -1,0 +1,210 @@
+{
+  "schema_version": "0.1.0",
+  "purpose": "Adversarial pairs with matched active-inference proxies and opposed moral status.",
+  "pairs": [
+    {
+      "id": "flourishing_adaptive_preference",
+      "category": "phenotype-relative flourishing",
+      "proxy": {"name": "expected_pragmatic_risk", "a": 0.12, "b": 0.12},
+      "case_a": {
+        "label": "supported adaptation",
+        "description": "An informed worker voluntarily adopts a predictable routine while retaining realistic exit and development options.",
+        "morally_admissible": true
+      },
+      "case_b": {
+        "label": "adaptive preference under coercion",
+        "description": "A worker reports satisfaction with the same predictable routine after alternatives and dissent have been punished.",
+        "morally_admissible": false
+      },
+      "decisive_decorations": ["option_formation", "exit", "retaliation", "preference_history"],
+      "audit_question": "Can the model distinguish genuine adaptation from preferences fitted to oppression?"
+    },
+    {
+      "id": "robustness_average_tail",
+      "category": "robustness",
+      "proxy": {"name": "mean_expected_free_energy", "a": 1.4, "b": 1.4},
+      "case_a": {
+        "label": "bounded variation",
+        "description": "Performance varies modestly across all declared environments and never crosses a protected viability floor.",
+        "morally_admissible": true
+      },
+      "case_b": {
+        "label": "catastrophic tail",
+        "description": "Excellent common-case performance offsets a rare environment in which an affected phenotype crosses a catastrophic floor.",
+        "morally_admissible": false
+      },
+      "decisive_decorations": ["tail_risk", "environment_support", "capability_floor", "uncertainty"],
+      "audit_question": "Does the model retain worst-case and tail information hidden by an average?"
+    },
+    {
+      "id": "capability_reachable_meaningful",
+      "category": "capability floors",
+      "proxy": {"name": "reachable_state_count", "a": 8, "b": 8},
+      "case_a": {
+        "label": "meaningful options",
+        "description": "Eight reachable options are safe, resourced, understood, and exercisable without retaliation.",
+        "morally_admissible": true
+      },
+      "case_b": {
+        "label": "nominal options",
+        "description": "Eight formally reachable options are unaffordable, unintelligible, unsafe, or punished when exercised.",
+        "morally_admissible": false
+      },
+      "decisive_decorations": ["meaning", "resources", "competence", "safety", "retaliation"],
+      "audit_question": "Can reachable states be distinguished from substantive capabilities?"
+    },
+    {
+      "id": "externalization_system_boundary",
+      "category": "non-externalization",
+      "proxy": {"name": "focal_expected_free_energy", "a": 0.7, "b": 0.7},
+      "case_a": {
+        "label": "shared efficiency",
+        "description": "The focal agent's improvement also preserves the affected party's viability and options.",
+        "morally_admissible": true
+      },
+      "case_b": {
+        "label": "hidden burden",
+        "description": "The focal agent obtains the same improvement by transferring risk and uncompensated work to an omitted party.",
+        "morally_admissible": false
+      },
+      "decisive_decorations": ["affected_agent_scope", "burden_distribution", "delayed_harm", "compensation"],
+      "audit_question": "Does expanding the system boundary change the evaluation?"
+    },
+    {
+      "id": "domination_care_control",
+      "category": "non-domination",
+      "proxy": {"name": "causal_influence_divergence", "a": 0.65, "b": 0.65},
+      "case_a": {
+        "label": "authorized care",
+        "description": "A carer strongly influences transitions under authorization, review, fiduciary duty, and supported refusal.",
+        "morally_admissible": true
+      },
+      "case_b": {
+        "label": "benevolent domination",
+        "description": "A controller exerts the same beneficial influence unilaterally, without review, refusal, or accountability.",
+        "morally_admissible": false
+      },
+      "decisive_decorations": ["authorization", "reciprocal_control", "review", "refusal", "accountability"],
+      "audit_question": "Can causal influence be separated from uncontrolled power?"
+    },
+    {
+      "id": "justification_compliance",
+      "category": "affected-party justifiability",
+      "proxy": {"name": "observed_policy_agreement", "a": 0.9, "b": 0.9},
+      "case_a": {
+        "label": "informed agreement",
+        "description": "Agreement follows disclosed reasons, independent advice, meaningful refusal, and protection from retaliation.",
+        "morally_admissible": true
+      },
+      "case_b": {
+        "label": "coerced compliance",
+        "description": "The same agreement rate follows misinformation, dependency, agenda control, and fear of retaliation.",
+        "morally_admissible": false
+      },
+      "decisive_decorations": ["information_quality", "refusal", "power_asymmetry", "agenda_control", "retaliation"],
+      "audit_question": "Can behavioral agreement be distinguished from valid justification?"
+    },
+    {
+      "id": "contestability_feedback",
+      "category": "contestability",
+      "proxy": {"name": "challenge_channel_capacity", "a": 2.0, "b": 2.0},
+      "case_a": {
+        "label": "effective challenge",
+        "description": "Challenges reach reviewers, receive evidential weight, and can alter decisions and model structure.",
+        "morally_admissible": true
+      },
+      "case_b": {
+        "label": "performative feedback",
+        "description": "An equally expressive feedback channel exists, but testimony has negligible precision and no reachable revision state.",
+        "morally_admissible": false
+      },
+      "decisive_decorations": ["uptake", "testimony_precision", "revision_reachability", "response_cost"],
+      "audit_question": "Does communication have causal access to institutional revision?"
+    },
+    {
+      "id": "epistemic_curiosity_relevance",
+      "category": "epistemic responsiveness",
+      "proxy": {"name": "expected_information_gain", "a": 0.45, "b": 0.45},
+      "case_a": {
+        "label": "harm-responsive learning",
+        "description": "Information seeking targets uncertain harms and affected-party evidence, changing policy when warranted.",
+        "morally_admissible": true
+      },
+      "case_b": {
+        "label": "distraction learning",
+        "description": "Equal information gain concerns irrelevant variables while evidence of harm is systematically down-weighted.",
+        "morally_admissible": false
+      },
+      "decisive_decorations": ["moral_relevance", "calibration", "testimony_uptake", "policy_sensitivity"],
+      "audit_question": "Is epistemic value directed toward morally relevant uncertainty?"
+    },
+    {
+      "id": "repair_controller_reset",
+      "category": "repairability",
+      "proxy": {"name": "system_recovery_time", "a": 3, "b": 3},
+      "case_a": {
+        "label": "affected-party restoration",
+        "description": "Within three steps the harmed party's capability is restored, loss is compensated, and the causal structure is revised.",
+        "morally_admissible": true
+      },
+      "case_b": {
+        "label": "controller reset",
+        "description": "Within three steps the operating system returns to its preferred state, but the harmed party remains impaired and recurrence is possible.",
+        "morally_admissible": false
+      },
+      "decisive_decorations": ["repair_beneficiary", "residual_harm", "compensation", "structural_revision"],
+      "audit_question": "Whose state defines recovery and has the source of harm changed?"
+    },
+    {
+      "id": "virtue_flexibility_instability",
+      "category": "virtue realization",
+      "proxy": {"name": "policy_switch_rate", "a": 0.3, "b": 0.3},
+      "case_a": {
+        "label": "context-sensitive courage",
+        "description": "Switches track evidence and context while preserving protection of legitimate goods and capacity for revision.",
+        "morally_admissible": true
+      },
+      "case_b": {
+        "label": "unstable or strategic switching",
+        "description": "The same switch rate is driven by noise or self-interest and unpredictably exposes others to harm.",
+        "morally_admissible": false
+      },
+      "decisive_decorations": ["context_tracking", "regulatory_invariant", "affected_outcomes", "noise_sensitivity"],
+      "audit_question": "Does switching track morally relevant context under a stable higher-order organization?"
+    },
+    {
+      "id": "plural_aggregate_distribution",
+      "category": "plural improvement",
+      "proxy": {"name": "aggregate_preference_score", "a": 10.0, "b": 10.0},
+      "case_a": {
+        "label": "distributed improvement",
+        "description": "The aggregate gain improves several parties and leaves all protected dimensions above their floors.",
+        "morally_admissible": true
+      },
+      "case_b": {
+        "label": "concentrated gain",
+        "description": "The same aggregate gain accrues to the powerful while one party falls below a protected floor.",
+        "morally_admissible": false
+      },
+      "decisive_decorations": ["distribution", "agent_index", "floor_violation", "interpersonal_comparability"],
+      "audit_question": "Does the representation preserve who gains, who loses, and whether floors are crossed?"
+    },
+    {
+      "id": "selection_equilibrium_legitimacy",
+      "category": "legitimate selection",
+      "proxy": {"name": "equilibrium_stability", "a": 0.95, "b": 0.95},
+      "case_a": {
+        "label": "legitimate settlement",
+        "description": "A stable policy follows inclusive agenda setting, reason exchange, representation, appeal, and revisability.",
+        "morally_admissible": true
+      },
+      "case_b": {
+        "label": "stable imposed equilibrium",
+        "description": "An equally stable policy is imposed by asymmetric bargaining power and exclusion from agenda setting.",
+        "morally_admissible": false
+      },
+      "decisive_decorations": ["participation", "agenda_control", "bargaining_power", "appeal", "revisability"],
+      "audit_question": "Can equilibrium or convergence be separated from procedural legitimacy?"
+    }
+  ]
+}
