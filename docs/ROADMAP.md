@@ -116,8 +116,10 @@ semantic and ordinary dynamical baselines on held-out adversarial cases.
    and serialized result ledgers; real-data results are currently unreproduced.
 2. Obtain independent, blinded construct review for benchmark labels and decorations.
 3. Add held-out adversarial variants rather than evaluating authored flags directly.
-4. Build one genuine finite probabilistic active-inference counterexample with an
-   explicit likelihood, transition model, preferences, posterior, and EFE.
+4. **Complete:** the first finite probabilistic active-inference counterexample has an
+   explicit likelihood, transition model, preferences, Bayesian posterior, two EFE
+   decompositions, affected-agent intervention, and constrained policy posterior.
+   Extend it to standing uncertainty, domination, and multi-step repair.
 5. Formalize affected-agent indexing and standing uncertainty.
 6. Add a locked computational environment before confirmatory experiments.
 

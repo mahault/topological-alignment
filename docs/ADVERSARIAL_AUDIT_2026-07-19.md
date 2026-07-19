@@ -218,6 +218,7 @@ token, float placement, and MiKTeX update status; none prevented output.
 4. Add held-out adversarial variants so evaluators cannot simply read authored flags.
 5. Build one genuine finite probabilistic active-inference pair with explicit
    likelihood, transition, preference, posterior, EFE, and intervention semantics.
+   **Completed after this audit:** see `FINITE_ACTIVE_INFERENCE_COUNTEREXAMPLE.md`.
 6. Formalize affected-agent indexing and standing uncertainty before expanding the
    moral-goodness theorem name or claims.
 7. Retry Mathlib only when the first probabilistic or topological theorem has an exact
