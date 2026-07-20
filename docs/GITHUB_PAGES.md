@@ -22,7 +22,8 @@ artifact:
 No datasets, source code, local settings, or other repository files are copied into
 the web artifact. Both HTML files are self-contained exports with embedded plots;
 the detailed guide also embeds offline-playable pedagogical animations. Equations are
-pre-rendered as embedded SVGs, so they display without MathJax or network access.
+pre-rendered as literal inline SVG markup, so they display without image fallbacks,
+MathJax, or network access.
 
 The deployment runs when either HTML export or the workflow changes on `main` or
 `virtue-pragmatics-active-inference`. It can also be started manually from the GitHub

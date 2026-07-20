@@ -25,8 +25,8 @@ python -m jupyter nbconvert --to html notebooks/where_we_are.ipynb --output wher
 python -B notebooks/render_static_math.py notebooks/where_we_are.html
 ```
 
-The final step converts every display and table equation to an embedded SVG. The
+The final step converts every display and table equation to literal inline SVG markup. The
 notebook retains editable TeX, while the standalone HTML renders mathematics without
-MathJax, a CDN, JavaScript execution, or network access.
+MathJax, data-URI images, a CDN, JavaScript execution, or network access.
 
 `RESEARCH_DASHBOARD.ipynb` and its HTML rendering are the shorter dashboard view.

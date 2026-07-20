@@ -223,10 +223,12 @@ def research_guide_errors() -> list[str]:
     html = html_path.read_text("utf-8")
     if html.count("function Animation(frames") < 2:
         errors.append("research guide: fewer than two embedded animations")
-    if 'name="static-math-renderer"' not in html:
-        errors.append("research guide: equations are not statically rendered")
-    if html.count('class="static-math ') < 30:
-        errors.append("research guide: fewer than thirty embedded equation SVGs")
+    if 'content="matplotlib-mathtext-inline-svg-v2"' not in html:
+        errors.append("research guide: equations are not rendered as inline SVG")
+    if html.count('<svg class="static-math ') < 30:
+        errors.append("research guide: fewer than thirty inline equation SVGs")
+    if '<img class="static-math ' in html:
+        errors.append("research guide: equation rendering still uses fallible image elements")
     if "cdnjs.cloudflare.com/ajax/libs/mathjax" in html:
         errors.append("research guide: still depends on remote MathJax")
     for heading in ("What counts as a proof here?", "Master claim register", "Experiment genealogy and setup"):
