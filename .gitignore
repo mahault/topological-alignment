@@ -22,4 +22,5 @@ figures/*.png
 *.npy
 *.npz
 .DS_Store
+.claude/
 data/
