@@ -451,18 +451,18 @@ character change.
     code(r"""
 mapping=pd.DataFrame([
  ['Phenotype / form of life',r'$P=(K_P,A_P,N_P,T_P,D_P)$','Viability bounds, capacities, needs, horizons, dependencies','Indexes whose functioning is evaluated'],
- ['Functional goodness',r'$\\operatorname{En}_P$','Counterfactual change under removal or scrambling','Independent calibration target'],
+ ['Functional goodness',r'$\operatorname{En}_P$','Counterfactual change under removal or scrambling','Independent calibration target'],
  ['Felt goodness',r'$g_t$','EFE contrast or learned embodied prediction','Fallible practical heuristic'],
  ['Situated construal',r'$w_t$','Fast semantic weights','What the present context appears to mean'],
  ['Character / disposition',r'$r_t$','Slow learned centre','Cross-situational persistence and retained learning'],
- ['Evidence sensitivity',r'$\\rho_t$','Observation/evidence precision','Resistance to noise without indifference to evidence'],
+ ['Evidence sensitivity',r'$\rho_t$','Observation/evidence precision','Resistance to noise without indifference to evidence'],
  ['Practical relevance',r'$d_t$','Diagnosticity weighting','Whether evidence should revise the slow regime'],
- ['Context sensitivity',r'$x(c)\\otimes x(\\mathrm{support})$','Context-feature interactions','Why the same virtue may reverse its action'],
- ['Explicit attraction candidate',r'$\\kappa\\lVert w_t-r_t\\rVert^2$','Fast pull toward slow centre','Candidate mechanism; not necessary in current ablation'],
+ ['Context sensitivity',r'$x(c)\otimes x(\mathrm{support})$','Context-feature interactions','Why the same virtue may reverse its action'],
+ ['Explicit attraction candidate',r'$\kappa\lVert w_t-r_t\rVert^2$','Fast pull toward slow centre','Candidate mechanism; not necessary in current ablation'],
  ['Practical meaning',r'$M_i(V,c)$','Consequences, policies, affordances, affect, cue mappings, beliefs, precision','Content of the virtue for agent i in context c'],
- ['Action selection',r'$q_i(\\pi)\\propto e^{-\\gamma_iG_i(\\pi)}$','Policy posterior under a declared EFE formulation','Contextual pragmatic enactment'],
- ['Shared meaning',r'$\\operatorname{Proc}_{i\\leftrightarrow j}$','Held-out translation of anticipatory streams','Compatibility without identical beliefs'],
- ['Cooperative organization',r'$Q(\\pi_1,\\pi_2,Y)$ plus interventions','Joint outcomes, causal coupling, readability, complementarity','Joint success without collapsing agent-local effects'],
+ ['Action selection',r'$q_i(\pi)\propto e^{-\gamma_iG_i(\pi)}$','Policy posterior under a declared EFE formulation','Contextual pragmatic enactment'],
+ ['Shared meaning',r'$\operatorname{Proc}_{i\leftrightarrow j}$','Held-out translation of anticipatory streams','Compatibility without identical beliefs'],
+ ['Cooperative organization',r'$Q(\pi_1,\pi_2,Y)$ plus interventions','Joint outcomes, causal coupling, readability, complementarity','Joint success without collapsing agent-local effects'],
  ['Moral admissibility','Bridge constraints outside bare VFE/EFE','Standing, symmetry, floors, non-domination, contestability, repair','Why functional success is not yet moral rightness'],
 ],columns=['Philosophical role','Model object','Operational reading','What the mapping contributes'])
 display(mapping.style.hide(axis='index').set_properties(**{'text-align':'left'}))
