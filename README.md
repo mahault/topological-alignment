@@ -41,6 +41,10 @@ The standards and toolchain for accepting mathematical theorems are specified in
 [Mathematical Proof Validation](docs/MATHEMATICAL_PROOF_VALIDATION.md).
 The ordered milestones, exit criteria, and current status are maintained in the
 [Research and Verification Roadmap](docs/ROADMAP.md).
+The exact stopping point after the V2/V3 robustness and mechanism-ablation work,
+including the claims that survived, the central negative result, and the V4 restart
+specification, is recorded in the
+[Experiment Status Checkpoint of 2026-07-20](docs/EXPERIMENT_STATUS_CHECKPOINT_2026-07-20.md).
 The explicit philosophical passage from phenotype-relative functional good to moral
 standing and admissibility is developed in
 [From Phenotype-Relative Good to Moral Goodness](docs/NORMATIVE_BRIDGE.md).

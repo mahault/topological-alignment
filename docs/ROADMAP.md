@@ -91,14 +91,18 @@ calibrated to enabling relations.
 | 3.2 Pilot and parameter recovery | V0 simulation passed | M0--M7 are identifiable on simulated and pilot data; current result covers the V0 measurement subset |
 | 3.3 Felt-goodness mechanism simulation | V1 passed; human study deferred | VFE/EFE mapping, enabling manipulations, adversarial capture, and phenotype reversal are explicit |
 | 3.4 Held-out context test | Planned | nested transformed-regime model beats proxy, trait, situation, and fixed-regime baselines |
-| 3.5 Perturbation test | Single constructed setting passed | recovery after noise and retained revision after diagnostic harm evidence are distinguished; sweep/ablation pending |
-| 3.6 Dyadic semantics/cooperation study | Planned | joint outcomes and randomized coupling identify shared meaning separately from dependence |
+| 3.5 Perturbation and robustness test | Constructed setting and sweep passed; mechanism claim narrowed | recovery after noise and retained revision after diagnostic harm evidence are distinguished across a non-vacuous parameter region; explicit pull and EFE necessity remain unidentified |
+| 3.6 Dyadic semantics/cooperation study | V4 designed; not run | joint outcomes and randomized coupling identify shared meaning separately from dependence and affected-party enablingness |
 
-V2/V3 now passes the perturbation logic for one constructed parameter setting: the
-calibrated regime recovers after low-precision noise and retains a context-dependent
-meaning transformation after diagnostic evidence. Phase 3 remains in progress until
-parameter sweeps, ablations, latent-context inference, and vector-valued learning show
-that this is a robust regime rather than a hand-tuned point.
+V2/V3 now passes the perturbation logic in one constructed setting and in 41/48
+sampled configurations across three generated environments. The ablations identify
+slow-centre learning, precision gating, context interactions, and goodness grounding
+as necessary for the tested signature inside this model. They do not identify the
+explicit attractor-pull term or EFE policy mapping as necessary. Phase 3 therefore
+remains in progress until V4 supplies an identified multi-agent test and later work
+adds latent-context inference, vector-valued learning, and comparisons against simpler
+learning and control models. See `EXPERIMENT_STATUS_CHECKPOINT_2026-07-20.md` for the
+evidence boundary at the current pause.
 
 Primary protocol: `FIRST_EXPERIMENT_REGULATORY_INVARIANCE.md`.
 
@@ -160,8 +164,9 @@ semantic and ordinary dynamical baselines on held-out adversarial cases.
    justification, evidence reveal, and revision and passes adversarial simulations.
    Next, implement the human item pilot.
 3. **Complete for the finite model:** V1 computes multi-scale enabling interventions,
-   VFE updates, EFE contrasts, capture failures, and phenotype reversal. Next extend
-   the simulation to slow virtue regimes, adaptive recovery, and dogmatic return.
+   VFE updates, EFE contrasts, capture failures, and phenotype reversal. Its planned
+   slow-regime extension was implemented in V2/V3; the next change in unit of analysis
+   is the V4 multi-agent experiment.
 4. **Constructed robustness complete, claim narrowed:** V2/V3 implements virtue as
    selective stability of meaning relative to goodness. Its signature replicated in
    41/48 sampled configurations across three environments. Ablations require slow
