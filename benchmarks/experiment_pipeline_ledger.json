@@ -91,7 +91,16 @@
       "disposition": ["simulation_complete", "human_test_deferred"],
       "evidence_status": "finite_model_gates_passed_no_human_data",
       "permitted_claim": "Within the declared finite model, VFE-minimizing inference and nested EFE contrasts can track counterfactual enablingness while captured priors and preferences generate systematic failure.",
-      "blockers": ["slow_virtue_dynamics", "multiagent_affected_set", "parameter_recovery", "human_validation"]
+      "blockers": ["multiagent_affected_set", "parameter_recovery", "human_validation"]
+    },
+    {
+      "id": "V2-V3",
+      "kind": "constructed_dynamical_simulation",
+      "artifact": "docs/V2_VIRTUE_ATTRACTOR_CALIBRATION_SIMULATION.md",
+      "disposition": ["single_setting_passed", "robustness_sweep_required"],
+      "evidence_status": "selective_stability_gates_passed_no_human_data",
+      "permitted_claim": "Within one declared parameterization, slow semantic regulation can combine recovery after noise with retained transformation after diagnostic evidence and can be distinguished from constructed dogmatic, unstable, and opportunistic regimes.",
+      "blockers": ["parameter_sweep", "mechanism_ablation", "latent_context_inference", "vector_learning", "shared_semantics"]
     },
     {
       "id": "P-REAL",

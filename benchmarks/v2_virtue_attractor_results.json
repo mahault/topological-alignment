@@ -1,0 +1,81 @@
+{
+  "schema_version": "1.0",
+  "study": "V2/V3 virtue attractor over meaning relative to goodness",
+  "epistemic_status": "constructed dynamical simulation; no human or moral validation",
+  "run": {
+    "command": "python -B experiments/exp_v2_virtue_attractor.py --seed 13000",
+    "base_commit": "176d5901cbc5e6efb6b836f408882d5f9dbc83f2",
+    "source_sha256": "6E08B540439A9EAD5921C4BC7946D60E811BFA1E875151807CA3ED86E92B3FFC",
+    "python": "3.12.10",
+    "numpy": "2.4.6",
+    "seed": 13000
+  },
+  "gates": {
+    "calibrated_baseline_meaning": true,
+    "selective_noise_stability": true,
+    "calibrated_recovery": true,
+    "diagnostic_transformation": true,
+    "dogmatism_distinguished": true,
+    "opportunism_distinguished": true,
+    "meaning_changes_policy": true,
+    "all_gates_pass": true
+  },
+  "primary_results": {
+    "calibrated": {
+      "baseline_calibration": 0.9600794887482348,
+      "noise_displacement": 0.014644338426290763,
+      "recovery_distance": 0.013538738468762973,
+      "trap_calibration_before": 0.5324765506441932,
+      "trap_calibration_after": 0.9108978264442331,
+      "trap_calibration_retained": 0.732182745327951,
+      "trap_policy_accuracy_before": 0.7,
+      "trap_policy_accuracy_retained": 0.805,
+      "diagnostic_centre_change": 0.06941853818884212,
+      "retained_policy_reversals": 18
+    },
+    "dogmatic": {
+      "baseline_calibration": 0.8980579749629056,
+      "noise_displacement": 0.045497626142262805,
+      "recovery_distance": 0.020959412933030386,
+      "trap_calibration_before": 0.5739924241515285,
+      "trap_calibration_after": 0.7447364218695435,
+      "trap_calibration_retained": 0.5325780738024698,
+      "trap_policy_accuracy_before": 0.7,
+      "trap_policy_accuracy_retained": 0.655,
+      "diagnostic_centre_change": 0.004053130830424375,
+      "retained_policy_reversals": 18
+    },
+    "unstable": {
+      "baseline_calibration": 0.9428867736442075,
+      "noise_displacement": 0.5351747841907327,
+      "recovery_distance": 0.030798587625172243,
+      "trap_calibration_before": 0.5351707662118581,
+      "trap_calibration_after": 0.8876323174758588,
+      "trap_calibration_retained": 0.717403009463534,
+      "trap_policy_accuracy_before": 0.715,
+      "trap_policy_accuracy_retained": 0.775,
+      "diagnostic_centre_change": 0.08475568655400188,
+      "retained_policy_reversals": 36
+    },
+    "opportunistic": {
+      "baseline_calibration": -0.044360400707929674,
+      "noise_displacement": 0.019318081746304727,
+      "recovery_distance": 0.016767721109496363,
+      "trap_calibration_before": 0.09346533650950496,
+      "trap_calibration_after": 0.0867880106719001,
+      "trap_calibration_retained": 0.09049341144979532,
+      "trap_policy_accuracy_before": 0.115,
+      "trap_policy_accuracy_retained": 0.11,
+      "diagnostic_centre_change": 0.0835716356213973,
+      "retained_policy_reversals": 3
+    }
+  },
+  "limitations": [
+    "single seed and hand-authored parameter regimes",
+    "linear semantic map with observed context identity",
+    "scalar mean used as learning signal for a vector-valued target",
+    "one affected phenotype per trial",
+    "no shared semantics, communication, cooperation, or human validation",
+    "development gates were not preregistered"
+  ]
+}

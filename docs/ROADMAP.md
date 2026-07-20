@@ -91,8 +91,14 @@ calibrated to enabling relations.
 | 3.2 Pilot and parameter recovery | V0 simulation passed | M0--M7 are identifiable on simulated and pilot data; current result covers the V0 measurement subset |
 | 3.3 Felt-goodness mechanism simulation | V1 passed; human study deferred | VFE/EFE mapping, enabling manipulations, adversarial capture, and phenotype reversal are explicit |
 | 3.4 Held-out context test | Planned | nested transformed-regime model beats proxy, trait, situation, and fixed-regime baselines |
-| 3.5 Perturbation test | Planned | recovery after noise and revision after diagnostic harm evidence are distinguished |
+| 3.5 Perturbation test | Single constructed setting passed | recovery after noise and retained revision after diagnostic harm evidence are distinguished; sweep/ablation pending |
 | 3.6 Dyadic semantics/cooperation study | Planned | joint outcomes and randomized coupling identify shared meaning separately from dependence |
+
+V2/V3 now passes the perturbation logic for one constructed parameter setting: the
+calibrated regime recovers after low-precision noise and retains a context-dependent
+meaning transformation after diagnostic evidence. Phase 3 remains in progress until
+parameter sweeps, ablations, latent-context inference, and vector-valued learning show
+that this is a robust regime rather than a hand-tuned point.
 
 Primary protocol: `FIRST_EXPERIMENT_REGULATORY_INVARIANCE.md`.
 
@@ -156,16 +162,20 @@ semantic and ordinary dynamical baselines on held-out adversarial cases.
 3. **Complete for the finite model:** V1 computes multi-scale enabling interventions,
    VFE updates, EFE contrasts, capture failures, and phenotype reversal. Next extend
    the simulation to slow virtue regimes, adaptive recovery, and dogmatic return.
-4. Add held-out adversarial variants rather than evaluating authored flags directly.
-5. **Complete:** the first finite probabilistic active-inference counterexample has an
+4. **Complete for one constructed setting:** V2/V3 implements virtue as selective
+   stability of meaning relative to goodness and distinguishes calibrated, dogmatic,
+   unstable, and opportunistic regimes. Next run parameter sweeps and mechanism
+   ablations before proceeding to shared semantics.
+5. Add held-out adversarial variants rather than evaluating authored flags directly.
+6. **Complete:** the first finite probabilistic active-inference counterexample has an
    explicit likelihood, transition model, preferences, Bayesian posterior, two EFE
    decompositions, affected-agent intervention, and constrained policy posterior.
    Standing and floor uncertainty are also implemented with both uncertainty-weighted
    and precautionary policy rules. Extend next to domination and multi-step repair.
-6. Formalize affected-phenotype and scale indexing, attainable metastability, and a
+7. Formalize affected-phenotype and scale indexing, attainable metastability, and a
    finite counterfactual enabling operator; retain standing uncertainty.
-7. Add a locked computational environment before confirmatory experiments.
-8. Extend the finite diagnostic implementation into one identified multi-agent
+8. Add a locked computational environment before confirmatory experiments.
+9. Extend the finite diagnostic implementation into one identified multi-agent
    generative model with agent-local EFEs, randomized coupling interventions, a named
    PID, and blinded cooperation outcomes. The present unit checks cover deterministic
    zero-TC coordination, redundant common dependence, XOR complementarity, scale-
@@ -181,6 +191,7 @@ python counterexamples\empowerment_not_reachability.py
 python ..\benchmarks\validate_coordination_diagnostics.py
 python ..\benchmarks\validate_v0_measurement_identification.py
 python ..\benchmarks\validate_v1_multiscale_enabling.py
+python ..\benchmarks\validate_v2_virtue_attractor.py
 ```
 
 Every completed formal milestone must build without `sorry` or `admit`. Every

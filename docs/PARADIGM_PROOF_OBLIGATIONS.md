@@ -400,6 +400,19 @@ Questions:
 
 ### Q14. What exactly in the generative model corresponds to virtue?
 
+The current answer is not merely “a slow latent state.” It is the metastable
+closed-loop regulation of semantic-pragmatic meaning relative to the independently
+computed goodness target:
+
+\[
+\operatorname{En}_{P,t}\to g_t\to M_t(V,c)\to q(\pi)\to o_{t+1}
+\to(g_{t+1},M_{t+1}).
+\]
+
+The V2/V3 constructed simulation operationalizes selective stability: recovery after
+low-precision noise, but slow meaning transformation after diagnostic evidence that
+reduces calibration error. One parameter setting passes; robustness is not yet shown.
+
 Virtue should not be assigned to one parameter without evidence. Candidate components
 include:
 

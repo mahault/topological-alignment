@@ -47,6 +47,9 @@ are documented in the
 The first finite mechanism test connecting counterfactual phenotype dynamics, VFE
 updates, EFE-derived feeling, and captured institutional priors is
 [V1 Multi-Scale Enablingness and EFE Calibration](docs/V1_MULTISCALE_ENABLING_EFE_SIMULATION.md).
+The next constructed dynamical test—virtue as selective stability of meaning relative
+to goodness—is documented in
+[V2/V3 Virtue-Attractor Simulation](docs/V2_VIRTUE_ATTRACTOR_CALIBRATION_SIMULATION.md).
 The first explicit probabilistic model is the
 [Finite Active-Inference Externalization Counterexample](docs/FINITE_ACTIVE_INFERENCE_COUNTEREXAMPLE.md).
 
@@ -514,6 +517,11 @@ V1 then shows that, inside a declared finite model, nested EFE contrasts can be
 calibrated to separately computed counterfactual enablingness, while approval-captured
 priors and preferences systematically accept institution-preserving harms. This is a
 mechanism and adversarial test, not moral or human validation.
+
+V2/V3 adds slow semantic organization. It tests the sharper claim that virtue is an
+attractor of the closed-loop calibration of meaning to goodness: recovery after
+low-precision noise, transformation after diagnostic evidence, and persistence of
+that transformation across later ordinary contexts.
 
 The resulting view treats ethical agency as a circular, multiscale process:
 

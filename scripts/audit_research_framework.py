@@ -143,6 +143,26 @@ def v1_result_errors() -> list[str]:
     return errors
 
 
+def v2_result_errors() -> list[str]:
+    errors: list[str] = []
+    result_path = ROOT / "benchmarks" / "v2_virtue_attractor_results.json"
+    result = json.loads(result_path.read_text("utf-8"))
+    expected_status = "constructed dynamical simulation; no human or moral validation"
+    if result.get("epistemic_status") != expected_status:
+        errors.append("V2 result ledger overstates its epistemic status")
+    gates = result.get("gates", {})
+    component_gates = {key: value for key, value in gates.items() if key != "all_gates_pass"}
+    if not component_gates or gates.get("all_gates_pass") != all(component_gates.values()):
+        errors.append("V2 result ledger gate summary is inconsistent")
+    source = ROOT / "experiments" / "exp_v2_virtue_attractor.py"
+    normalized = source.read_text("utf-8").replace("\r\n", "\n").encode("utf-8")
+    actual_hash = hashlib.sha256(normalized).hexdigest().upper()
+    expected_hash = result.get("run", {}).get("source_sha256")
+    if actual_hash != expected_hash:
+        errors.append("V2 result ledger source hash does not match simulation source")
+    return errors
+
+
 def run() -> list[str]:
     return [
         *markdown_link_errors(),
@@ -152,6 +172,7 @@ def run() -> list[str]:
         *experiment_ledger_errors(),
         *v0_result_errors(),
         *v1_result_errors(),
+        *v2_result_errors(),
     ]
 
 

@@ -191,6 +191,52 @@ virtue realization therefore requires all three relational properties:
 This is a programme for operationalization, not yet a theorem. “Calibrated” and
 “enabling” need measurement under perturbation and counterfactual intervention.
 
+### The attractor is relative to goodness
+
+“Attractor over meaning” is insufficiently precise. Meaning dynamics can stabilize
+dogmatism, conformity, and vice. The intended object is the closed-loop calibration of
+meaning to a goodness target:
+
+\[
+\operatorname{En}_{P,t}
+\longrightarrow
+g_{i,t}
+\longrightarrow
+M_i(V,c_t)
+\longrightarrow
+q_i(\pi\mid V,c_t)
+\longrightarrow
+o_{t+1}
+\longrightarrow
+(g_{i,t+1},M_i(V,c_{t+1})).
+\]
+
+Here actual enablingness is the independent counterfactual target, felt goodness is
+its fallible estimate, and meaning organizes the consequences, policies, affordances,
+and revisions associated with the virtue. The virtue attractor is the metastable
+organization of this loop, not meaning considered alone.
+
+Let calibration error be
+
+\[
+\varepsilon_{i,t}
+=d\!\left(\widehat{\operatorname{En}}_{i,t},
+\operatorname{En}_{P_i,t}\right).
+\]
+
+A candidate virtue should resist low-precision, non-diagnostic perturbations while
+changing its semantic-pragmatic organization when reliable evidence reveals error:
+
+\[
+\mathbb E[\varepsilon_{i,t+k}\mid\text{diagnostic evidence}]
+<\varepsilon_{i,t}.
+\]
+
+Thus stability is selective. Dogmatism returns after both noise and correction;
+instability changes after both; opportunism follows reward or approval; virtue
+recovers after noise but transforms when transformation improves calibration to
+actual enablingness.
+
 ## 6. Practical wisdom and justification
 
 **Practical wisdom** is meta-regulation of the whole inference-to-action process. It
