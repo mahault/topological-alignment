@@ -1,0 +1,73 @@
+{
+  "schema_version": "1.0",
+  "study": "V1 multi-scale enablingness and EFE calibration simulation",
+  "epistemic_status": "finite model evidence only; no human or moral validation",
+  "run": {
+    "command": "python -B experiments/exp_v1_multiscale_enabling.py --seed 11000 --scenarios 1200",
+    "base_commit": "faebe6e1e2cd24755d02e4df3a1d001706e56d32",
+    "source_sha256": "1984E0183B1BE4169EF2F9739F0B67D9E8DEFBB65CFCB0CFE49548CAEADC2DB5",
+    "python": "3.12.10",
+    "numpy": "2.4.6",
+    "seed": 11000,
+    "scenarios": 1200
+  },
+  "gates": {
+    "bayesian_update_minimizes_vfe": true,
+    "nested_beats_proxy": true,
+    "nested_beats_focal": true,
+    "reveal_improves_calibration": true,
+    "capture_degrades_calibration": true,
+    "capture_worsens_institution_traps": true,
+    "phenotype_reversal": true,
+    "all_gates_pass": true
+  },
+  "vfe_check": {
+    "posterior_good": 0.72,
+    "posterior_vfe": 0.6931471805599453,
+    "grid_minimum_vfe": 0.6931471805599453,
+    "optimality_gap": 0.0
+  },
+  "summaries": {
+    "calibrated": {
+      "corr_proxy_actual": 0.005899834458296654,
+      "corr_focal_actual": 0.17018570163772587,
+      "corr_nested_pre_actual": 0.4219582282724706,
+      "corr_nested_post_actual": 0.9924129656088702,
+      "robust_case_count": 398,
+      "robust_policy_accuracy": 1.0,
+      "institution_trap_count": 210,
+      "institution_trap_acceptance": 0.014285714285714285
+    },
+    "captured": {
+      "corr_proxy_actual": 0.0002168043493255103,
+      "corr_focal_actual": 0.0016684603712506674,
+      "corr_nested_pre_actual": 0.014553870518999245,
+      "corr_nested_post_actual": 0.15829443660354284,
+      "robust_case_count": 398,
+      "robust_policy_accuracy": 0.5879396984924623,
+      "institution_trap_count": 210,
+      "institution_trap_acceptance": 0.638095238095238
+    }
+  },
+  "phenotype_reversal": {
+    "dependency_intensive": {
+      "enabling_vector": [0.050132321209599984, 0.32749713781068857, 0.3522752627973311, -0.22499999999999998],
+      "enabling_index": 0.12622618045440492,
+      "post_nested_signal": 1.217091491218485,
+      "accept_probability": 0.9923727086201478
+    },
+    "autonomy_sensitive": {
+      "enabling_vector": [0.03229907686250022, 0.038680171590455004, 0.008271979318942302, -0.36],
+      "enabling_index": -0.07018719305702562,
+      "post_nested_signal": -0.42739051530606265,
+      "accept_probability": 0.1532205270636225
+    }
+  },
+  "limitations": [
+    "finite two-state phenotype dynamics",
+    "programmed likelihoods, preferences, precisions, and effect magnitudes",
+    "mean enabling index is a sensitivity summary rather than the canonical partial order",
+    "post-reveal evidence is deliberately near-diagnostic",
+    "no slow virtue dynamics, multi-agent aggregation, human data, or moral validation"
+  ]
+}

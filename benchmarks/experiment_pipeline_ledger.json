@@ -86,12 +86,12 @@
     },
     {
       "id": "V1",
-      "kind": "planned_human_experiment",
-      "artifact": "docs/FIRST_EXPERIMENT_REGULATORY_INVARIANCE.md",
-      "disposition": ["plan"],
-      "evidence_status": "not_run",
-      "permitted_claim": "No empirical claim.",
-      "blockers": ["V0", "matched_enabling_interventions", "model_simulation", "preregistration"]
+      "kind": "finite_simulation_and_planned_human_experiment",
+      "artifact": "docs/V1_MULTISCALE_ENABLING_EFE_SIMULATION.md",
+      "disposition": ["simulation_complete", "human_test_deferred"],
+      "evidence_status": "finite_model_gates_passed_no_human_data",
+      "permitted_claim": "Within the declared finite model, VFE-minimizing inference and nested EFE contrasts can track counterfactual enablingness while captured priors and preferences generate systematic failure.",
+      "blockers": ["slow_virtue_dynamics", "multiagent_affected_set", "parameter_recovery", "human_validation"]
     },
     {
       "id": "P-REAL",

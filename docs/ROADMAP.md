@@ -57,8 +57,8 @@ metastability.
 | 2A.1 Canonical definitions | Complete | ground, signal, disposition, calibration, and justification are non-circularly separated | `MULTISCALE_GOODNESS_AND_VIRTUE_ATTRACTORS.md` |
 | 2A.2 Repository-wide audit | Complete | every existing experiment and pipeline receives a keep/reinterpret/redesign/rerun decision | `EXPERIMENT_DEFINITION_PIPELINE_REVIEW_2026-07-19.md` |
 | 2A.3 Measurement model | Design recovery complete | adversarial simulation separates immediate feeling, expected consequence, approval, reasons, and reflective judgment; human pilot remains | `V0_FELT_GOODNESS_MEASUREMENT_PILOT.md` |
-| 2A.4 Enabling intervention set | Planned | matched manipulations identify individual and higher-scale contributions without using moral labels as outcomes |
-| 2A.5 Nested-enabling pilot | Planned | nested model is recoverable and discriminable from comfort, reward, conformity, and individual-viability baselines |
+| 2A.4 Enabling intervention set | Finite simulation complete | counterfactual dynamics identify individual and higher-scale contributions without moral outcome labels; richer simulation remains | `V1_MULTISCALE_ENABLING_EFE_SIMULATION.md` |
+| 2A.5 Nested-enabling pilot | Finite simulation passed | nested EFE beats reward, approval, and focal-only boundaries and fails under declared capture conditions | same plus `benchmarks/v1_multiscale_enabling_results.json` |
 
 **Gate 2A:** proceed to virtue-attractor claims only if pre-reflective feeling and its
 calibration to independently manipulated enabling relations can be measured, and a
@@ -89,7 +89,7 @@ calibrated to enabling relations.
 |---|---|---|
 | 3.1 Construct and temporal-order validation | Protocol complete; human pilot planned | virtue identity, feeling, predictions, reasons, and judgments are separately reliable |
 | 3.2 Pilot and parameter recovery | V0 simulation passed | M0--M7 are identifiable on simulated and pilot data; current result covers the V0 measurement subset |
-| 3.3 Preregistered felt-goodness study | Planned | enabling manipulations, exclusions, outcomes, and model comparison are frozen |
+| 3.3 Felt-goodness mechanism simulation | V1 passed; human study deferred | VFE/EFE mapping, enabling manipulations, adversarial capture, and phenotype reversal are explicit |
 | 3.4 Held-out context test | Planned | nested transformed-regime model beats proxy, trait, situation, and fixed-regime baselines |
 | 3.5 Perturbation test | Planned | recovery after noise and revision after diagnostic harm evidence are distinguished |
 | 3.6 Dyadic semantics/cooperation study | Planned | joint outcomes and randomized coupling identify shared meaning separately from dependence |
@@ -153,8 +153,9 @@ semantic and ordinary dynamical baselines on held-out adversarial cases.
 2. **Complete for design recovery:** V0 temporally separates feeling, prediction,
    justification, evidence reveal, and revision and passes adversarial simulations.
    Next, implement the human item pilot.
-3. Construct matched V1 multi-scale enabling interventions and obtain independent,
-   blinded review of scenarios, benchmark labels, and decorations.
+3. **Complete for the finite model:** V1 computes multi-scale enabling interventions,
+   VFE updates, EFE contrasts, capture failures, and phenotype reversal. Next extend
+   the simulation to slow virtue regimes, adaptive recovery, and dogmatic return.
 4. Add held-out adversarial variants rather than evaluating authored flags directly.
 5. **Complete:** the first finite probabilistic active-inference counterexample has an
    explicit likelihood, transition model, preferences, Bayesian posterior, two EFE
@@ -179,6 +180,7 @@ lake build
 python counterexamples\empowerment_not_reachability.py
 python ..\benchmarks\validate_coordination_diagnostics.py
 python ..\benchmarks\validate_v0_measurement_identification.py
+python ..\benchmarks\validate_v1_multiscale_enabling.py
 ```
 
 Every completed formal milestone must build without `sorry` or `admit`. Every

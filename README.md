@@ -44,6 +44,9 @@ the [Experiment, Definition, and Pipeline Review of 2026-07-19](docs/EXPERIMENT_
 The first redesigned study and its successful adversarial design-recovery simulation
 are documented in the
 [V0 Felt-Goodness Measurement Pilot](docs/V0_FELT_GOODNESS_MEASUREMENT_PILOT.md).
+The first finite mechanism test connecting counterfactual phenotype dynamics, VFE
+updates, EFE-derived feeling, and captured institutional priors is
+[V1 Multi-Scale Enablingness and EFE Calibration](docs/V1_MULTISCALE_ENABLING_EFE_SIMULATION.md).
 The first explicit probabilistic model is the
 [Finite Active-Inference Externalization Counterexample](docs/FINITE_ACTIVE_INFERENCE_COUNTEREXAMPLE.md).
 
@@ -506,6 +509,11 @@ The current executable milestone is V0. Its simulation shows that the proposed
 balanced, temporally separated measurement design can recover a programmed
 multi-scale signal and reject proxy-only, confounded, and prompt-contaminated cases.
 It is a design check, not human evidence.
+
+V1 then shows that, inside a declared finite model, nested EFE contrasts can be
+calibrated to separately computed counterfactual enablingness, while approval-captured
+priors and preferences systematically accept institution-preserving harms. This is a
+mechanism and adversarial test, not moral or human validation.
 
 The resulting view treats ethical agency as a circular, multiscale process:
 

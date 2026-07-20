@@ -221,6 +221,11 @@ Primary test: a nested-enabling model predicts initial feeling and evidence-sens
 revision beyond comfort, reward, approval, explicit consequential calculation, and
 trait/situation baselines.
 
+**Current status:** the finite VFE/EFE mechanism simulation passes all seven gates,
+including phenotype reversal and institutional-capture failures. Human testing is
+deferred. See
+[V1 Multi-Scale Enablingness and EFE Calibration](V1_MULTISCALE_ENABLING_EFE_SIMULATION.md).
+
 ### V2 — Context-transformed virtue attractor
 
 Across repeated decisions, test whether a slow latent regime predicts attention,
