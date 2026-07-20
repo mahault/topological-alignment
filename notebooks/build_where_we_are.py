@@ -435,14 +435,14 @@ The mapping is a chain of operational hypotheses. It is not an identity claim th
 Aristotle already meant these equations, nor that a parameter is literally a moral
 faculty.
 
-\[
+$$
 \operatorname{En}_{P,t}
 \rightarrow g_t
 \rightarrow M_i(V,c)_t
 \rightarrow q_i(\pi_t)
 \rightarrow o_{t+1}
 \rightarrow (g_{t+1},M_{i,t+1},r_{i,t+1}).
-\]
+$$
 
 The left side supplies the independent success condition. The middle supplies felt
 orientation, practical meaning, and action. The return arrow supplies learning and
@@ -528,9 +528,9 @@ for claim in CLAIMS:
 
 **Formal object.**
 
-\[
+$$
 {claim['formal']}
-\]
+$$
 
 **Assumptions / dependencies.** {claim['assumptions']} {dependencies}
 
@@ -687,12 +687,12 @@ Three logical cautions matter:
 
 The positive virtue mapping is therefore currently:
 
-\[
+$$
 \underbrace{r_t}_{\text{character}}
 +\underbrace{\rho_t d_t}_{\text{practical evidence sensitivity}}
 +\underbrace{M(V,c)}_{\text{contextual practical meaning}}
 +\underbrace{\operatorname{Cal}(g,\operatorname{En}_P)}_{\text{success condition}}.
-\]
+$$
 
 That combination explains why a virtue is stable without being rigid, adaptable
 without being fickle, context-sensitive without being empty, and good without being

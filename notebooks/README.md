@@ -5,6 +5,12 @@
 `where_we_are.ipynb` is the canonical claim-by-claim visual guide to the research
 programme. Its standalone, code-hidden rendering is `where_we_are.html`.
 
+The guide is also the GitHub Pages homepage. It includes the definition decision
+procedure, rejected shortcuts, philosophy-to-model mapping, experiment genealogy,
+stage-by-stage setups, and the interpretation of the mechanism ablations for virtue.
+Display equations use `$$...$$` delimiters so Markdown does not consume TeX
+subscripts before MathJax renders the exported HTML.
+
 The notebook is generated from `build_where_we_are.py`, then executed so every table,
 graph, and animation is embedded in both artifacts. Numerical evidence is read from
 the committed benchmark ledgers; pedagogical animations are explicitly labelled and
