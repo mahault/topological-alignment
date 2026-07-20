@@ -1,0 +1,115 @@
+{
+  "schema_version": "1.0",
+  "review_date": "2026-07-19",
+  "canonical_review": "docs/EXPERIMENT_DEFINITION_PIPELINE_REVIEW_2026-07-19.md",
+  "entries": [
+    {
+      "id": "E-C1",
+      "kind": "synthetic_experiment",
+      "artifact": "experiments/exp1_synthetic.py",
+      "disposition": ["keep", "reinterpret", "rerun"],
+      "evidence_status": "constructed_sanity_check",
+      "permitted_claim": "Separates some deliberately constructed synthetic update regimes.",
+      "blockers": ["unseeded_persistence_subsampling", "backend_semantic_variation", "koopman_basis_comparability", "misnamed_distance_and_reachable_dispersion"]
+    },
+    {
+      "id": "E-C2",
+      "kind": "real_and_synthetic_experiment",
+      "artifact": "experiments/exp2_eeg.py",
+      "disposition": ["keep_components", "retire_inference", "redesign", "rerun"],
+      "evidence_status": "real_results_unreproduced_and_design_confounded",
+      "permitted_claim": "Synthetic synchrony changes can be detected by the curvature pipeline.",
+      "blockers": ["condition_order_confound", "window_pseudoreplication", "posthoc_absolute_correlation", "missing_real_data_and_ledger"]
+    },
+    {
+      "id": "E-C3",
+      "kind": "real_and_synthetic_experiment",
+      "artifact": "experiments/exp3_social_media.py",
+      "disposition": ["keep_components", "reinterpret", "retire_h2", "redesign", "rerun"],
+      "evidence_status": "real_results_unreproduced",
+      "permitted_claim": "Persistent homology and distributional distances summarize embedding-cloud geometry.",
+      "blockers": ["insufficient_temporal_centroids", "authored_labels", "separate_pca_frames", "missing_real_data_and_ledger"]
+    },
+    {
+      "id": "E-C4",
+      "kind": "synthetic_experiment",
+      "artifact": "experiments/exp4_geodesic_alignment.py",
+      "disposition": ["keep", "reinterpret"],
+      "evidence_status": "mathematical_feasibility",
+      "permitted_claim": "Checks selected Fisher and Gromov-Wasserstein computations on constructed systems.",
+      "blockers": ["constructed_labels", "semantic_decoration_absent", "solver_sensitivity_not_reported"]
+    },
+    {
+      "id": "E-B1",
+      "kind": "finite_counterexample",
+      "artifact": "benchmarks/finite_active_inference_model.py",
+      "disposition": ["keep"],
+      "evidence_status": "validated_negative_result",
+      "permitted_claim": "Agent-local EFE need not account for costs to an unrepresented affected party.",
+      "blockers": []
+    },
+    {
+      "id": "E-B2",
+      "kind": "adversarial_benchmark",
+      "artifact": "benchmarks/moral_proxy_pairs.json",
+      "disposition": ["keep", "reinterpret"],
+      "evidence_status": "authored_counterexamples",
+      "permitted_claim": "The selected proxy pairs are formally non-equivalent in authored cases.",
+      "blockers": ["independent_blinded_construct_review"]
+    },
+    {
+      "id": "E-B3",
+      "kind": "diagnostic_benchmark",
+      "artifact": "benchmarks/coordination_diagnostics.py",
+      "disposition": ["keep", "integrate_later"],
+      "evidence_status": "mathematical_unit_tests",
+      "permitted_claim": "Distinct coordination diagnostics separate selected dependence and causal cases.",
+      "blockers": ["not_one_identified_generative_model", "synergistic_harm_controls_missing"]
+    },
+    {
+      "id": "E-F1",
+      "kind": "formal_verification",
+      "artifact": "formal/TopologicalAlignment",
+      "disposition": ["keep", "scope_restrict"],
+      "evidence_status": "finite_deterministic_theorems",
+      "permitted_claim": "Lean verifies the stated finite deterministic viability and relational lemmas.",
+      "blockers": ["no_stochastic_aif_proof", "no_enablingness_or_virtue_attractor_proof"]
+    },
+    {
+      "id": "V0",
+      "kind": "planned_human_experiment",
+      "artifact": "docs/FIRST_EXPERIMENT_REGULATORY_INVARIANCE.md",
+      "disposition": ["plan"],
+      "evidence_status": "not_run",
+      "permitted_claim": "No empirical claim.",
+      "blockers": ["measurement_design", "ethics_review", "preregistration"]
+    },
+    {
+      "id": "V1",
+      "kind": "planned_human_experiment",
+      "artifact": "docs/FIRST_EXPERIMENT_REGULATORY_INVARIANCE.md",
+      "disposition": ["plan"],
+      "evidence_status": "not_run",
+      "permitted_claim": "No empirical claim.",
+      "blockers": ["V0", "matched_enabling_interventions", "model_simulation", "preregistration"]
+    },
+    {
+      "id": "P-REAL",
+      "kind": "pipeline",
+      "artifact": "scripts/run_real_experiments.py",
+      "disposition": ["repair", "provenance_required"],
+      "evidence_status": "not_acceptance_ready",
+      "permitted_claim": "No real-data result is accepted from this pipeline yet.",
+      "blockers": ["immutable_data_manifest", "environment_lock", "result_schema", "atomic_failure_semantics"]
+    },
+    {
+      "id": "P-FIG",
+      "kind": "pipeline",
+      "artifact": "scripts/generate_real_figures.py",
+      "disposition": ["redesign"],
+      "evidence_status": "not_acceptance_ready",
+      "permitted_claim": "Existing figures are illustrative or historic only.",
+      "blockers": ["figures_not_bound_to_accepted_ledger"]
+    }
+  ]
+}

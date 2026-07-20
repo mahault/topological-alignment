@@ -2,6 +2,13 @@
 
 ## Status and purpose
 
+**2026-07-19 scope clarification:** the bridge below addresses standing, conflict,
+and publicly defensible moral admissibility. It is downstream of the project's new
+account of felt goodness as a fallible heuristic for multi-scale enabling relations.
+Its capability, domination, contestability, and repair conditions are error-correcting
+tests, not the phenomenological definition of “good.” See
+[Multi-Scale Goodness and Virtue Attractors](MULTISCALE_GOODNESS_AND_VIRTUE_ATTRACTORS.md).
+
 This document states the project's normative bridge. It is a philosophical argument,
 not a theorem derived from active inference, viability theory, evolution, topology,
 or the free-energy principle. The formal results establish conditional facts about

@@ -2,6 +2,16 @@
 
 ## Questions, dependencies, evidence, and failure conditions
 
+> **Canonical revision (2026-07-19).** Goodness is now modeled as a fallible felt
+> heuristic for phenotype-relative, multi-scale enabling relations. Virtue is a slow
+> context-transforming attractor regime that governs and calibrates that heuristic.
+> Capability, externalization, domination, contestability, repair, and plurality are
+> error-correcting diagnostics rather than the constitutive definition of felt
+> goodness. See
+> [Multi-Scale Goodness and Virtue Attractors](MULTISCALE_GOODNESS_AND_VIRTUE_ATTRACTORS.md)
+> and the
+> [experiment/pipeline review](EXPERIMENT_DEFINITION_PIPELINE_REVIEW_2026-07-19.md).
+
 **Status:** research roadmap
 **Date:** 2026-07-19
 
@@ -168,49 +178,63 @@ it become a defective attempt or a neighboring vice?
 \text{subjectively satisfying grip}.
 \]
 
+The word *virtue* is analytically success-implying, but that semantic fact does not
+show which stable dispositions actually succeed. The working empirical bridge is:
+
+\[
+\operatorname{VirtueRealization}(V,c,P)
+\Rightarrow
+\operatorname{AttractorRegime}(A_{V,c,P})
+\land
+\operatorname{Calibrated}(g_P,\operatorname{En}_P)
+\land
+\operatorname{EnablingRealization}(A_{V,c,P}).
+\]
+
 Questions:
 
-1. Is goodness analytically contained in the concept of virtue?
-2. What independent criteria determine whether an application succeeds?
-3. Can communities be systematically mistaken about what they call virtues?
-4. What makes a contested extension a legitimate development rather than corruption?
-5. How can criteria be independent enough to avoid defining virtue and goodness in a
-   circle?
+1. Can calibration between felt goodness and actual enablingness be measured without
+   using virtue judgments to define both sides?
+2. Can communities be systematically mistaken because approval stabilizes a captured
+   heuristic?
+3. Can a regime support its own or an institution's metastability while degrading the
+   attainable metastability of constituent phenotypes?
+4. What degree of calibration and robustness warrants the success term rather than a
+   merely well-intentioned or locally adaptive pattern?
+5. What makes a contested transformation a development of the attractor family rather
+   than drift into a neighboring vice?
 
 ## 5. Phenotype-relative functional goodness
 
-### Q6. What constitutes flourishing for phenotype \(P\)?
+### Q6. What constitutes attainable metastability and enablingness for phenotype \(P\)?
 
-A proposed functional is:
+Let \(\mathcal A_P\) be a partially ordered vector of viability, recovery,
+adaptability, evidence sensitivity, retained options, and enabling dependencies. For a
+process at scale \(\ell\), define the candidate enabling contribution:
 
 \[
-J_P(V;\mathcal E)
+\operatorname{En}_{P}^{(\ell)}
 =
-\mathbb E_{e\sim\mathcal E}
-\left[
-\int_0^T
-\left(
-w_v\mathrm{Viab}_P
-+w_e\mathrm{Epistemic}
-+w_r\mathrm{RelEmp}
--w_h\mathrm{Harm}
-\right)dt
--\lambda\tau_{\mathrm{recovery}}
-\right].
+\mathcal A_P
+-
+\mathcal A_P^{\operatorname{do}(X^{(\ell)}\ \mathrm{removed\ or\ scrambled})}.
 \]
 
 Every term raises a proof obligation:
 
-1. Why are these components included?
-2. Are they commensurable on a scalar scale?
-3. Who sets the weights?
-4. Should some terms be hard constraints instead of tradeable quantities?
-5. How is the relevant environment distribution \(\mathcal E\) selected?
-6. How sensitive are conclusions to the horizon \(T\)?
-7. How do we prevent overfitting the definition to preferred examples?
+1. Which dimensions of \(\mathcal A_P\) are independently constitutive of this
+   phenotype rather than inferred from its current preferences?
+2. What partial order compares gains and losses without arbitrary scalar weights?
+3. Which disruption, matched replacement, or mediation intervention identifies the
+   contribution without destroying the system's identity?
+4. Which affected phenotypes and scales belong in the estimand?
+5. How are delayed dependency loss and recovery represented?
+6. When do capability floors restrict otherwise positive contributions?
+7. How do we distinguish support for constituent phenotypes from the larger-scale
+   process's own persistence?
 
-**Preferred approach:** use a partially ordered vector of outcomes and capability
-floors before introducing any scalar aggregation.
+Scalar summaries may be reported for sensitivity analysis but are not the canonical
+definition.
 
 ### Q7. Why is metastability valuable?
 
@@ -545,17 +569,24 @@ models on held-out context families.
 
 ### E3. Do transformations affect phenomenology as well as action?
 
-Measure felt grip, salience, confidence, affect, perceived affordances, and reasons.
+Measure immediate felt goodness, grip, salience, confidence, affect, and perceived
+affordances before eliciting reasons. Then reveal diagnostic consequences and measure
+feeling, policy, and justification again. Their temporal and causal separation is part
+of the hypothesis.
 
 ### E4. Can competent realization be distinguished from counterfeit virtue?
 
 Contrast courage with recklessness, humility with servility, loyalty with complicity,
-and perseverance with rigidity using independent outcome and relational criteria.
+and perseverance with rigidity using independently manipulated multi-scale enabling
+relations. Moral diagnostics probe characteristic calibration failures; they do not
+define the felt signal by stipulation.
 
 ### E5. Does adaptive metastability predict flourishing?
 
 Test whether dwell times, switching, recovery, and perturbation response predict
-phenotype-relative outcomes beyond flexibility and variability baselines.
+phenotype-relative attainable metastability beyond flexibility and variability
+baselines. Diagnostic evidence should sometimes cause basin transformation rather
+than recovery, thereby separating resilience from dogmatism.
 
 ### E6. Are effects phenotype-relative?
 
@@ -565,12 +596,14 @@ different phenotypes.
 
 ### E7. Are costs externalized?
 
-Measure outcomes for every affected party, not only the focal decision maker.
+Measure outcomes for every affected party, not only the focal decision maker, and
+test whether adding affected-party evidence recalibrates feeling and policy.
 
 ### E8. Does practical wisdom resemble precision or model governance?
 
 Compare models in which experts differ only in precision with models that allow
-stakeholder representation, policy generation, temporal depth, and structure change.
+stakeholder and scale representation, policy generation, temporal depth,
+counterfactual inquiry, and structure change.
 
 ### E9. Does relational empowerment predict moral judgment and outcomes?
 
@@ -584,51 +617,70 @@ analogous virtues without confusing structurally similar vices.
 
 ## 10. Experiment sequence
 
-### Experiment 0 -- Construct and scenario validation
+### Experiment 0 -- Construct and temporal-order validation
 
-Establish that scenario pairs are understood as involving the same virtue concept but
-different actions or meanings. Triangulate expert, affected-party, and participant
-judgments. Do not interpret consensus as moral truth.
+Establish that immediate felt goodness, expected consequences, social approval,
+explicit reasons, virtue labels, and reflective judgments can be measured separately.
+Then establish that scenario pairs are understood as involving the same virtue
+concept but different actions or meanings. Do not interpret consensus as moral truth.
 
-### Experiment 1 -- Context-transformed virtue schema
+### Experiment 1 -- Felt goodness and hidden enabling dependencies
+
+Hold immediate reward and social approval constant while varying hidden consequences
+for individual, relational, institutional, and ecological enablingness. Measure
+feeling before reasons, reveal affected-party or counterfactual evidence, and measure
+revision. Compare nested enablingness against comfort, reward, conformity,
+individual-viability, and stated-consequence models.
+
+### Experiment 2 -- Context-transformed virtue attractor
 
 Run the sequential-decision study in
 [FIRST_EXPERIMENT_REGULATORY_INVARIANCE.md](FIRST_EXPERIMENT_REGULATORY_INVARIANCE.md).
-The primary result is out-of-context model comparison.
+The primary result is held-out context-family and evidence-intervention model
+comparison.
 
-### Experiment 2 -- Metastability and phenotype-relative outcome
+### Experiment 3 -- Perturbation, recovery, and adaptive revision
 
 Induce controlled perturbations and compare recovery, calibration, remaining options,
-and functioning across phenotype-relevant capacity profiles.
+and functioning across phenotype-relevant capacity profiles. Compare return after
+non-diagnostic noise with basin transformation after credible evidence of hidden harm.
 
-### Experiment 3 -- Counterfeit virtue discrimination
+### Experiment 4 -- Dyadic shared semantics and cooperation
+
+Randomize information and coupling in dyadic tasks. Measure agent-local semantic
+profiles, reciprocal prediction, joint achievement, contribution, affected-party
+outcomes, voice, and exit separately.
+
+### Experiment 5 -- Counterfeit virtue and scale conflict
 
 Construct cases in which surface behaviour and self-description match a virtue but
-relational consequences reveal recklessness, servility, domination, or complicity.
+multi-scale enabling consequences reveal recklessness, servility, domination,
+complicity, or institutional self-preservation at constituent expense.
 
-### Experiment 4 -- Relational empowerment
+### Experiment 6 -- Relational empowerment
 
 Use dyadic or small-group tasks in which total control and its distribution can be
 manipulated independently. Test whether joint capability, voice, exit, and
 non-domination outperform individual empowerment as predictors.
 
-### Experiment 5 -- Practical wisdom model comparison
+### Experiment 7 -- Practical wisdom model comparison
 
 Compare experts and novices in a domain such as clinical judgment. Manipulate evidence
 quality, urgency, affected-party testimony, and reversibility.
 
-### Experiment 6 -- Decorated topology adversarial test
+### Experiment 8 -- Longitudinal virtue learning
+
+Track how consequences, testimony, exemplars, and institutional cues update felt
+goodness, local policy, slow character parameters, and public concept use at distinct
+rates.
+
+### Experiment 9 -- Decorated topology adversarial test
 
 Create synthetic systems with identical topology and opposed meaning, different
 topology and equivalent function, flexibility through competence, and flexibility
 through instability. Bare topology should fail; the decorated metric must succeed.
 
-### Experiment 7 -- Longitudinal virtue learning
-
-Track how consequences, testimony, exemplars, and institutional cues update local
-policies, slow character parameters, and public concept use over time.
-
-### Experiment 8 -- Human--AI plural alignment
+### Experiment 10 -- Human--AI plural alignment
 
 Test whether a system can coordinate across heterogeneous human phenotype profiles
 without collapsing them into one preference distribution or exploiting their
@@ -638,13 +690,15 @@ adaptive preferences.
 
 ### Gate A -- Conceptual coherence
 
-Proceed only if virtue concept, local realization, phenotype, metastability,
-functional goodness, and moral goodness can be distinguished without circularity.
+Proceed only if virtue concept, local realization, phenotype, attainable
+metastability, enabling contribution, felt goodness, justification, and moral
+goodness can be distinguished without circularity.
 
 ### Gate B -- Measurement
 
-Proceed only if phenotype variables, local realizations, perturbation recovery, and
-relational outcomes can be measured with acceptable reliability.
+Proceed only if phenotype variables, pre-reflective feeling, expected consequences,
+justification, local realizations, perturbation recovery, and relational outcomes can
+be measured separately with acceptable reliability.
 
 ### Gate C -- Explanatory necessity
 
@@ -653,13 +707,16 @@ contexts better than simpler alternatives after complexity penalties.
 
 ### Gate D -- Functional value
 
-Proceed only if metastable measures predict independent flourishing outcomes rather
-than merely redescribing behavioural variability.
+Proceed only if counterfactual enabling measures predict independent viability,
+recovery, adaptability, and retained-option outcomes rather than merely redescribing
+stability or behavioural variability.
 
 ### Gate E -- Moral discrimination
 
-Proceed only if the framework distinguishes self-serving adaptation, domination, and
-counterfeit virtues from morally admissible co-flourishing.
+Proceed only if the framework distinguishes higher-scale self-persistence,
+self-serving adaptation, domination, and counterfeit virtues from relations that
+enable affected constituent phenotypes—and predicts correction when hidden costs are
+revealed.
 
 ### Gate F -- Topological value
 
@@ -695,9 +752,12 @@ The paradigm should be rejected or radically revised if:
 | Virtue application is context-sensitive | strong philosophical and psychological support | direct process measurements |
 | Moral expertise can be metastable optimal grip | established conceptual prior art | discriminating empirical model |
 | Virtue concepts transform meaning in application | plausible | held-out context-family prediction |
-| Metastability is good for a phenotype | conditional hypothesis | independent flourishing and perturbation evidence |
+| Felt goodness heuristically tracks enabling relations | new, untested central hypothesis | temporally separated feeling and counterfactual evidence study |
+| Higher-scale enablingness supports attainable metastability | formal proposal | identified intervention and independent phenotype outcomes |
+| Virtue is a calibrated attractor family | formal hypothesis | longitudinal slow-state and context-transformation advantage |
+| Metastability is good for a phenotype | rejected as stated; metastability is morally neutral | enabling contribution, calibration, and perturbation evidence |
 | Phenotype-relative good grounds moral standing | open normative bridge | explicit defended argument |
-| Moral goodness is non-dominating plural co-flourishing | working normative proposal | conflict cases and comparative defense |
+| Moral diagnostics detect captured goodness heuristics | working corrective proposal | blinded adversarial and affected-party tests |
 | Active inference models practical enactment | formally plausible | superiority to simpler process models |
 | Practical wisdom is model governance | novel hypothesis | expert/novice parameter recovery |
 | Relational empowerment improves moral analysis | promising correction | dyadic causal evidence |

@@ -7,6 +7,11 @@ This is the executable workboard for the paradigm. The detailed questions live i
 defines when each milestone is complete. A milestone passing its formal gate does not
 establish its empirical assumptions or its normative bridge principles.
 
+The canonical conceptual model is
+`MULTISCALE_GOODNESS_AND_VIRTUE_ATTRACTORS.md`. The complete disposition of existing
+experiments and pipelines is
+`EXPERIMENT_DEFINITION_PIPELINE_REVIEW_2026-07-19.md`.
+
 ## Status key
 
 - **Complete**: artifact exists and its stated checks pass.
@@ -23,10 +28,11 @@ establish its empirical assumptions or its normative bridge principles.
 | Proof-validation gate | Complete | theorem ledger and machine-check policy specified | `MATHEMATICAL_PROOF_VALIDATION.md` |
 | Formal toolchain | Complete | `lake build` passes; Z3 countermodel runs | `formal/` |
 
-## Phase 1 -- Finite functional-good kernel
+## Phase 1 -- Finite viability and non-externalization kernel
 
-**Objective:** establish exactly what can be concluded about phenotype-relative
-functional goodness before attempting the bridge to moral goodness.
+**Objective:** establish finite conditional results about viability, recovery, robust
+dominance, and affected-agent floors. These are components of attainable
+metastability, not a derivation or definition of felt or moral goodness.
 
 | Milestone | Status | Exit criterion | Artifact |
 |---|---|---|---|
@@ -36,11 +42,29 @@ functional goodness before attempting the bridge to moral goodness.
 | 1.4 Robust dominance | Complete | componentwise dominance is proved reflexive and transitive; one-environment success is shown insufficient | `RobustDominance.lean` |
 | 1.5 Non-externalization | Complete | Lean counterexample separates robust focal benefit from affected-agent capability floors | `RelationalViability.lean` |
 
-**Gate 1: passed for the finite deterministic kernel.** We may say “conditionally good for phenotype P” only when phenotype,
-environment class, horizon, viability constraints, perturbations, and effects on
-others are explicit. We may not yet say “morally good.”
+**Gate 1: passed for the finite deterministic kernel.** We may state the proved
+viability, recovery, dominance, and non-externalization conditions. We may not infer
+felt goodness, virtue, or moral goodness from them.
 
-## Phase 2 -- Normative bridge
+## Phase 2A -- Multi-scale goodness measurement
+
+**Objective:** test the central hypothesis that felt goodness is a fallible embodied
+estimate of counterfactual relations enabling phenotype-level attainable
+metastability.
+
+| Milestone | Status | Exit criterion | Artifact |
+|---|---|---|---|
+| 2A.1 Canonical definitions | Complete | ground, signal, disposition, calibration, and justification are non-circularly separated | `MULTISCALE_GOODNESS_AND_VIRTUE_ATTRACTORS.md` |
+| 2A.2 Repository-wide audit | Complete | every existing experiment and pipeline receives a keep/reinterpret/redesign/rerun decision | `EXPERIMENT_DEFINITION_PIPELINE_REVIEW_2026-07-19.md` |
+| 2A.3 Measurement model | Planned | immediate feeling, expected consequence, approval, reasons, and reflective judgment are distinguishable |
+| 2A.4 Enabling intervention set | Planned | matched manipulations identify individual and higher-scale contributions without using moral labels as outcomes |
+| 2A.5 Nested-enabling pilot | Planned | nested model is recoverable and discriminable from comfort, reward, conformity, and individual-viability baselines |
+
+**Gate 2A:** proceed to virtue-attractor claims only if pre-reflective feeling and its
+calibration to independently manipulated enabling relations can be measured, and a
+nested-scale model adds held-out predictive value.
+
+## Phase 2B -- Normative bridge
 
 **Objective:** defend, rather than mathematically smuggle in, the passage from
 functional goods to moral standing and admissibility.
@@ -57,15 +81,18 @@ justification; neither simulation nor Lean can establish that principle by itsel
 
 ## Phase 3 -- Virtue as context-transformed regulation
 
-**Objective:** test whether an abstract virtue is realized by different situated
-policies that preserve a deeper regulatory organization.
+**Objective:** test whether an abstract virtue is a family of slow metastable regimes
+that transforms feeling, inquiry, policy, and learning with context while remaining
+calibrated to enabling relations.
 
 | Milestone | Status | Exit criterion |
 |---|---|---|
-| 3.1 Construct validation | Planned | scenarios preserve virtue identity while varying appropriate action |
-| 3.2 Pilot and parameter recovery | Planned | competing models are identifiable on simulated and pilot data |
-| 3.3 Preregistered Experiment 1 | Planned | protocol, exclusions, outcomes, and model comparison frozen in advance |
-| 3.4 Held-out context test | Planned | transformed-schema model beats trait-only and situation-only baselines out of domain |
+| 3.1 Construct and temporal-order validation | Planned | virtue identity, feeling, predictions, reasons, and judgments are separately reliable |
+| 3.2 Pilot and parameter recovery | Planned | M0--M7 are identifiable on simulated and pilot data |
+| 3.3 Preregistered felt-goodness study | Planned | enabling manipulations, exclusions, outcomes, and model comparison are frozen |
+| 3.4 Held-out context test | Planned | nested transformed-regime model beats proxy, trait, situation, and fixed-regime baselines |
+| 3.5 Perturbation test | Planned | recovery after noise and revision after diagnostic harm evidence are distinguished |
+| 3.6 Dyadic semantics/cooperation study | Planned | joint outcomes and randomized coupling identify shared meaning separately from dependence |
 
 Primary protocol: `FIRST_EXPERIMENT_REGULATORY_INVARIANCE.md`.
 
@@ -120,18 +147,23 @@ semantic and ordinary dynamical baselines on held-out adversarial cases.
 
 ## Immediate work queue
 
-1. Bind all empirical statistics and figures to data hashes, commit ID, environment,
-   and serialized result ledgers; real-data results are currently unreproduced.
-2. Obtain independent, blinded construct review for benchmark labels and decorations.
-3. Add held-out adversarial variants rather than evaluating authored flags directly.
-4. **Complete:** the first finite probabilistic active-inference counterexample has an
+1. Repair reproducibility blockers, then bind every statistic and figure to data
+   hashes, commit ID, environment, and a serialized result ledger. Real-data results
+   remain unreproduced; EEG and Reddit require redesign before rerun.
+2. Build and simulate V0/V1 with temporal separation of feeling, prediction,
+   justification, evidence reveal, and revision.
+3. Construct matched multi-scale enabling interventions and obtain independent,
+   blinded review of scenarios, benchmark labels, and decorations.
+4. Add held-out adversarial variants rather than evaluating authored flags directly.
+5. **Complete:** the first finite probabilistic active-inference counterexample has an
    explicit likelihood, transition model, preferences, Bayesian posterior, two EFE
    decompositions, affected-agent intervention, and constrained policy posterior.
    Standing and floor uncertainty are also implemented with both uncertainty-weighted
    and precautionary policy rules. Extend next to domination and multi-step repair.
-5. Formalize affected-agent indexing and standing uncertainty.
-6. Add a locked computational environment before confirmatory experiments.
-7. Extend the finite diagnostic implementation into one identified multi-agent
+6. Formalize affected-phenotype and scale indexing, attainable metastability, and a
+   finite counterfactual enabling operator; retain standing uncertainty.
+7. Add a locked computational environment before confirmatory experiments.
+8. Extend the finite diagnostic implementation into one identified multi-agent
    generative model with agent-local EFEs, randomized coupling interventions, a named
    PID, and blinded cooperation outcomes. The present unit checks cover deterministic
    zero-TC coordination, redundant common dependence, XOR complementarity, scale-

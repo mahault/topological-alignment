@@ -7,6 +7,12 @@
 **Scope:** virtue ethics, practical wisdom, ecological-enactive cognition, active
 inference, dynamical systems, moral psychology, empowerment, and AI alignment
 
+> **2026-07-19 design note:** the literature assessment remains current, but the
+> proposed experiments have been superseded by the ground/signal/disposition model in
+> [Multi-Scale Goodness and Virtue Attractors](MULTISCALE_GOODNESS_AND_VIRTUE_ATTRACTORS.md)
+> and the dispositions in the
+> [Experiment, Definition, and Pipeline Review](EXPERIMENT_DEFINITION_PIPELINE_REVIEW_2026-07-19.md).
+
 ## Executive assessment
 
 The project's central synthesis is promising, but its components have very different

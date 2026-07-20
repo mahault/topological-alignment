@@ -2,6 +2,14 @@
 
 ## Status
 
+**2026-07-19 scope correction:** this document formalizes a downstream admissibility
+and audit layer. It does not define the phenomenological origin of goodness. The
+upstream hypothesis—felt goodness as a fallible estimate of multi-scale enablingness,
+and virtue as the slow regime that governs its calibration—is specified in
+[Multi-Scale Goodness and Virtue Attractors](MULTISCALE_GOODNESS_AND_VIRTUE_ATTRACTORS.md).
+The predicates below should be read as tests for captured or truncated heuristics,
+not as labels bolted onto VFE/EFE and renamed feelings.
+
 This document gives a formal interpretation of the paradigm relative to active
 inference. It distinguishes three claims:
 
@@ -10,15 +18,16 @@ inference. It distinguishes three claims:
 3. it cannot derive moral standing or the authority of moral constraints from free
    energy minimization alone.
 
-The normative bridge supplies a definition that becomes a formal predicate over
+The normative bridge supplies an admissibility proposal that becomes a formal predicate over
 policies and their predicted trajectory distributions. Active inference supplies the
 distribution to which that predicate is applied and a process theory of how agents
-act, learn, and revise within—or violate—the morally admissible region.
+act, learn, and revise within—or violate—the proposed morally admissible region.
 
 The correct claim is therefore not merely that morality can externally “filter”
-active inference. Given the adopted definition, moral goodness is formally
+active inference. Given the adopted audit criteria, moral admissibility is formally
 interpretable relative to an active-inference model. What active inference does not do
-is establish that the adopted normative definition is uniquely correct.
+is establish that those criteria are uniquely correct or that an agent's felt
+goodness is calibrated to them.
 
 ## 1. Multi-agent generative model
 

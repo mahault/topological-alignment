@@ -33,7 +33,7 @@ def run_exp1_crypto(data_dir):
     # Also run the synthetic experiment for comparison
     print("\n--- Running synthetic baseline for comparison ---")
     from exp1_synthetic import run_experiment as run_exp1_synth
-    synth_results, _ = run_exp1_synth(seed=42)
+    synth_results, _, _ = run_exp1_synth(seed=42)
 
     return {
         'crypto': results,
@@ -131,6 +131,7 @@ def main():
     FIG_DIR.mkdir(parents=True, exist_ok=True)
 
     all_results = {}
+    failures = []
 
     # Run all 3 experiments
     try:
@@ -139,6 +140,7 @@ def main():
         print(f"\nExp 1 FAILED: {e}")
         import traceback; traceback.print_exc()
         all_results['exp1'] = {'error': str(e)}
+        failures.append('exp1')
 
     try:
         all_results['exp2'] = run_exp2_eeg(data_dir)
@@ -146,6 +148,7 @@ def main():
         print(f"\nExp 2 FAILED: {e}")
         import traceback; traceback.print_exc()
         all_results['exp2'] = {'error': str(e)}
+        failures.append('exp2')
 
     try:
         all_results['exp3'] = run_exp3_reddit(data_dir)
@@ -153,6 +156,7 @@ def main():
         print(f"\nExp 3 FAILED: {e}")
         import traceback; traceback.print_exc()
         all_results['exp3'] = {'error': str(e)}
+        failures.append('exp3')
 
     # Save results
     # Convert numpy types for JSON serialization
@@ -173,6 +177,9 @@ def main():
     with open(str(RESULTS_FILE), 'w') as f:
         json.dump(convert(all_results), f, indent=2, default=str)
     print(f"\nResults saved to: {RESULTS_FILE}")
+
+    if failures:
+        print(f"\nINCOMPLETE RUN: failed experiments: {', '.join(failures)}")
 
     # Print summary
     print("\n" + "=" * 60)
@@ -204,6 +211,9 @@ def main():
             for key in ['rds_same_type', 'rds_diff_type', 'kl_same_type', 'kl_diff_type']:
                 if key in rr:
                     print(f"  {key}: {rr[key]:.4f}")
+
+    if failures:
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":

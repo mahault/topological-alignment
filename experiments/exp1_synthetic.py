@@ -7,8 +7,8 @@ Three groups: Rigid (R), Flexible (F), Mixed (M).
 Tests:
   H1: Attractor reconstruction via TDA
   H2: RDS distance vs KL divergence
-  H4: Geodesic bending via precision perturbation
-  H5: Empowerment-constrained vs unconstrained alignment
+  H4: Trajectory-direction sensitivity to prior-precision perturbation
+  H5: Reachable-dispersion proxy across constructed regimes
 """
 
 import numpy as np
@@ -295,8 +295,11 @@ def _h0_persistence_numpy(points: np.ndarray, max_edge: float = 5.0) -> np.ndarr
 
 def bottleneck_distance(dgm1: np.ndarray, dgm2: np.ndarray, dim: int = 0) -> float:
     """
-    Approximate bottleneck distance between persistence diagrams for a given dimension.
-    Uses the wasserstein-1 approximation if gudhi/persim not available.
+    Persistence-profile distance surrogate for a given homology dimension.
+
+    Despite the legacy function name, the numpy fallback is not a mathematically
+    valid bottleneck distance: it compares sorted persistence magnitudes. Results
+    from this fallback must be labelled as a surrogate.
     """
     # Filter by dimension
     if len(dgm1) > 0 and dgm1.shape[1] >= 3:
@@ -408,16 +411,15 @@ def kl_divergence_gaussian(traj1: np.ndarray, traj2: np.ndarray) -> float:
 
 
 # ====================================================================
-# Empowerment estimation
+# Reachable-dispersion proxy
 # ====================================================================
 
 def estimate_empowerment(agent: AgentParams, env_signal: np.ndarray,
                          n_samples: int = 1000, rng: np.random.Generator = None) -> float:
     """
-    Estimate geometric empowerment: how many distinct future belief states
-    can the agent reach via different perturbations?
+    Estimate dispersion of sampled one-step reachable belief states.
 
-    Empowerment = effective dimensionality of reachable set, measured as
+    The proxy uses effective dimensionality of the reachable set, measured as
     the entropy of the eigenvalue spectrum of the next-state covariance
     relative to a fixed-size perturbation. Flexible agents with low
     precision can explore more of belief space; rigid agents with high
@@ -637,7 +639,7 @@ def run_experiment(seed: int = 42, n_steps: int = 10000, d: int = 5):
     results['h2_rds'] = rds_dists
     results['h2_kl'] = kl_dists
 
-    # ---- H4: Geodesic bending ----
+    # ---- H4: Prior-precision perturbation sensitivity ----
     print("\n--- H4: Precision Perturbation ---")
     # Compare pre- vs post-perturbation dynamics for Group R
     # Perturbation was applied inline at t = n_steps // 2
@@ -655,8 +657,8 @@ def run_experiment(seed: int = 42, n_steps: int = 10000, d: int = 5):
     print(f"  Direction change magnitude: {direction_change:.4f}")
     results['h4_direction_change'] = direction_change
 
-    # ---- H5: Empowerment vs brittleness ----
-    print("\n--- H5: Empowerment Analysis ---")
+    # ---- H5: Reachable dispersion across regimes ----
+    print("\n--- H5: Reachable-Dispersion Proxy ---")
     emp_by_group = {}
     for name, idx in group_indices.items():
         emps = []
@@ -664,7 +666,7 @@ def run_experiment(seed: int = 42, n_steps: int = 10000, d: int = 5):
             e = estimate_empowerment(all_agents[i], env_signal, n_samples=500, rng=rng)
             emps.append(e)
         emp_by_group[name] = np.mean(emps)
-        print(f"  {name}: mean empowerment = {emp_by_group[name]:.4f}")
+        print(f"  {name}: mean reachable-dispersion proxy = {emp_by_group[name]:.4f}")
 
     results['h5_empowerment'] = emp_by_group
 

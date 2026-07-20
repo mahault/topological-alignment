@@ -206,9 +206,11 @@ def load_collaboration_eeg(data_dir: str, dyad_id: int) -> Optional[Hyperscannin
         cond_file = dyad_dir / 'conditions.npy'
         if cond_file.exists():
             conditions = np.load(str(cond_file))
+        sfreq_file = dyad_dir / 'sampling_frequency_hz.npy'
+        sfreq = float(np.load(str(sfreq_file))) if sfreq_file.exists() else 250.0
         return HyperscanningData(
             participant1=p1, participant2=p2,
-            sfreq=500.0, condition_labels=conditions,
+            sfreq=sfreq, condition_labels=conditions,
             modality='eeg', dyad_id=f"collab_{dyad_id}",
         )
 

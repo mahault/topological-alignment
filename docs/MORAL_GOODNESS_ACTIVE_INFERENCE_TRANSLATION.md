@@ -2,11 +2,16 @@
 
 ## Purpose
 
-Before constructing a probabilistic solver, every category in the project's definition
-of moral goodness must be given a distinct active-inference interpretation. This
-document is a translation ledger, not a claim that active inference entails morality.
+> **2026-07-19 reinterpretation:** this is now a translation ledger for reflective
+> moral admissibility and error correction, not the canonical definition of felt
+> goodness. The upstream ground/signal/disposition model is
+> [Multi-Scale Goodness and Virtue Attractors](MULTISCALE_GOODNESS_AND_VIRTUE_ATTRACTORS.md).
 
-The adopted definition is:
+Before constructing a probabilistic solver, every category in the project's moral
+audit must be given a distinct active-inference interpretation. This document is a
+translation ledger, not a claim that active inference entails morality.
+
+The adopted audit criterion is:
 
 > Moral goodness is robust, non-dominating, publicly justifiable improvement in the
 > plural flourishing of affected centres of vulnerability, under protected capability
@@ -135,7 +140,7 @@ For compactness in the predicates below, write \(m_i:=\mathfrak M_i(v,c)\), and 
 \(m^{\mathrm{sh}}\) only for a fused overlap projection whose processability and
 sheaf-consistency diagnostics have passed. This notation does not imply identical
 private beliefs.
-Accordingly, every term in the adopted definition is a derived predicate:
+Accordingly, every term in the adopted audit criterion is a derived predicate:
 
 1. **Affected centre of vulnerability:**
    \(\operatorname{Affected}_i(Q,m,N)\) holds when intervention on the joint policy

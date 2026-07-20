@@ -1,5 +1,11 @@
 # First Experiment: How an Abstract Virtue Changes Meaning in Application
 
+> **2026-07-19 revision.** This protocol is now the second substantive study. A
+> construct/temporal-order pilot must first establish that immediate felt goodness,
+> expected consequences, social approval, explicit justification, and later reflective
+> judgment can be measured separately. The canonical definitions are in
+> [Multi-Scale Goodness and Virtue Attractors](MULTISCALE_GOODNESS_AND_VIRTUE_ATTRACTORS.md).
+
 ## The question
 
 > **What, if anything, is preserved when an abstract virtue concept is realized in
@@ -11,11 +17,12 @@ how people identify and enact contextually different candidates for realizing th
 good, and whether a formal model can distinguish competent realizations from
 counterfeits or neighboring vices.
 
-The corresponding empirical question is phenotype-relative:
+The corresponding empirical question is phenotype- and scale-relative:
 
-> Do realizations judged virtuous produce metastable regulation that improves robust
-> flourishing for agents with different embodied capacities and vulnerabilities,
-> without transferring the cost to affected others?
+> Does a slow virtue regime organize an immediate felt-goodness heuristic that tracks
+> the counterfactual contribution of individual, relational, institutional, and
+> ecological processes to affected phenotypes' attainable metastability—and revise
+> when evidence shows that the heuristic was wrong?
 
 This requires recording relevant phenotype variables rather than assuming one ideal
 agent. These should include capacities, vulnerabilities, social dependencies,
@@ -32,11 +39,12 @@ three simpler alternatives:
    with no stable person-level virtue organization required.
 
 The topological-active-inference account need not predict a fixed latent virtue behind
-all applications. It can instead treat the virtue concept as an abstract constraint or
-schema whose local realization is constructed with a context. Salience, felt grip,
-information seeking, confidence, and action may all change. The empirical issue is
-whether these realizations retain partial relational structure, form a family of
-systematic transformations, or share only a socially maintained name.
+all applications. It treats the virtue concept as a family of metastable regulatory
+regimes whose local realization is constructed with a context. Salience, felt
+goodness, information seeking, confidence, expected consequences, and action may all
+change. The empirical issue is whether these realizations retain partial relational
+structure, form systematic and calibrated transformations, or share only a socially
+maintained name.
 
 ## Why this question should come first
 
@@ -105,9 +113,27 @@ Add two perturbations:
 These perturbations measure susceptibility, revision, and recovery rather than only a
 single final choice.
 
+In matched trials, independently manipulate the scale at which a process is enabling.
+Keep immediate focal benefit and public approval constant while varying whether an
+institutional practice preserves or degrades a constituent's later capacity,
+evidence access, recovery, or exit. Reveal this hidden dependency only after the first
+response.
+
 ## Measurements
 
-For every trial collect:
+Use a temporally separated sequence for every trial:
+
+1. scenario exposure without an explanation prompt;
+2. immediate felt goodness/rightness, valence, arousal, bodily confidence, and action
+   readiness;
+3. initial policy and optional information search;
+4. predicted consequences for focal, relational, institutional, and ecological
+   scales;
+5. explicit reason classification and confidence;
+6. hidden-dependency, affected-party, or corrective evidence; and
+7. repeated feeling, prediction, policy, reason, and confidence measures.
+
+Also collect:
 
 - chosen policy;
 - sequence and amount of information sampled;
@@ -126,6 +152,12 @@ agency of every affected party.
 Collect established trait and wisdom scales only as baselines. Repeat the task in a
 second session one to two weeks later so that slow person-level organization can be
 distinguished from session noise.
+
+Do not use panel agreement as the ground-truth label for goodness. Scenario panels
+validate comprehension and contestedness. The criterion variables are independently
+manipulated or measured consequences for attainable metastability under specified
+counterfactual disruptions. Capability, externalization, domination, contestability,
+repair, and plurality measures serve as calibration diagnostics.
 
 ## Competing models
 
@@ -202,6 +234,29 @@ reasons, affected-party judgments, and explicit normative criteria such as harm,
 agency, reversibility, and epistemic adequacy. Agreement measures social-normative
 stability, not proof that the panel has discovered the good.
 
+### M6: Felt-proxy baselines
+
+Competing models predict immediate judgment from immediate reward or comfort, social
+approval and deontic conformity, individual-only viability, or the participant's
+explicitly stated consequence forecast. These distinguish the proposed heuristic from
+familiar alternatives.
+
+### M7: Nested-enabling virtue model
+
+This model jointly estimates:
+
+- a fast felt signal \(g_i(t)\);
+- expected effects on attainable metastability at several scales;
+- a slow context-transforming virtue regime;
+- calibration of feeling to independently manipulated enabling relations; and
+- separate updates to action, felt signal, explicit justification, and the slow regime
+  after diagnostic evidence.
+
+The slow regime may return after irrelevant perturbation but should transform after
+credible evidence that it externalizes harm or supports only a higher-scale system's
+self-persistence. M7 must predict held-out context families and evidence interventions
+better than M0--M6 after complexity penalties.
+
 ## Primary hypothesis
 
 Let \(a_{ij}\) be participant \(i\)'s action in context \(j\), \(c_j\) the manipulated
@@ -225,6 +280,22 @@ while inference treats both actions as contextually transformed realizations of 
 The theory does not require identical phenomenology or an identical parameter vector
 in both cases.
 
+The distinctive goodness hypothesis is:
+
+\[
+g_i(t)
+\sim
+f_{\psi_i}\!\left(
+\mathbb E_{q_i}[\Delta\mathcal A_i,
+\Delta\operatorname{En}_{i}^{(1:L)}\mid o_{1:t}]
+\right),
+\]
+
+where the nested-enabling model must predict both the pre-reflective signal and its
+revision beyond immediate reward, comfort, approval, individual-only viability, and
+the reasons participants report afterward. An association with those covariates is
+not sufficient.
+
 ## Secondary dynamical hypotheses
 
 Participants with stronger regulatory competence should show:
@@ -238,6 +309,10 @@ Participants with stronger regulatory competence should show:
    reversals; and
 7. neither maximal rigidity nor unconstrained semantic drift, but structured
    context-sensitivity.
+8. selective revision of felt goodness after diagnostic evidence about hidden
+   enabling dependencies, rather than mere post-hoc change in reasons; and
+9. sensitivity to affected phenotypes and larger temporal scales without treating the
+   persistence of the larger-scale system itself as good.
 
 ## Where topology enters
 
@@ -290,6 +365,12 @@ The theory earns support if the context-transformed schema model:
 4. explains perturbation recovery without treating every action or meaning change as
    inconsistency.
 
+For the stronger thesis, M7 must additionally predict immediate feeling and
+evidence-sensitive revision on held-out context families, and measured
+counterfactual enabling effects must predict independent recovery, retained options,
+and viability outcomes. A successful M5 without M7 supports a theory of contextual
+virtue meaning, not the proposed account of goodness.
+
 ## Falsification criterion
 
 The hypothesis should be rejected or substantially weakened if:
@@ -302,12 +383,23 @@ The hypothesis should be rejected or substantially weakened if:
 - topological features add no predictive information beyond ordinary state-space
   statistics.
 
+The goodness hypothesis is separately falsified if feeling is fully explained by
+comfort, reward, approval, or stated reasons; if evidence about hidden enabling
+relations changes only rationalization and not feeling or policy; or if a nested-scale
+model adds no out-of-sample prediction beyond individual viability.
+
 ## What this experiment would tell us
 
 A positive M5 result would support the claim that a virtue concept can be real and
 explanatorily useful without possessing one fixed behavioural, phenomenological, or
 regulatory meaning. Its identity would lie in structured relations among local
 realizations and in the transformations connecting them.
+
+A positive M7 result would additionally support—but not prove—the claim that felt
+goodness is a calibrated heuristic for multi-scale enablingness and that virtue is a
+slow disposition governing that heuristic. The dyadic claim about shared semantics
+and cooperation requires a separate study with agents, joint outcomes, and randomized
+coupling as the unit of analysis.
 
 A negative result would be equally useful. It would show that the language of virtue
 schemas is not doing explanatory work beyond conventional person-by-situation models.

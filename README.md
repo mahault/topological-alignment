@@ -36,6 +36,11 @@ Its initial adversarial test suite is documented in the
 [Active-Inference Moral Translation Audit](docs/ACTIVE_INFERENCE_TRANSLATION_AUDIT.md).
 The repository-wide findings, corrections, rerun evidence, and remaining blockers are
 recorded in the [Adversarial Audit of 2026-07-19](docs/ADVERSARIAL_AUDIT_2026-07-19.md).
+The current canonical account of felt goodness, multi-scale enabling relations,
+practical wisdom, and virtue attractors is
+[Multi-Scale Goodness and Virtue Attractors](docs/MULTISCALE_GOODNESS_AND_VIRTUE_ATTRACTORS.md).
+The repository-wide disposition of every experiment, definition, and pipeline is in
+the [Experiment, Definition, and Pipeline Review of 2026-07-19](docs/EXPERIMENT_DEFINITION_PIPELINE_REVIEW_2026-07-19.md).
 The first explicit probabilistic model is the
 [Finite Active-Inference Externalization Counterexample](docs/FINITE_ACTIVE_INFERENCE_COUNTEREXAMPLE.md).
 
@@ -79,13 +84,12 @@ evaluate, coordinate, act, and revise. Its content is partly socially stabilized
 the same word does not denote the same virtue merely because different agents utter
 it.
 
-More precisely, a virtue is hypothesized to be a reliably good function of meaning.
-We operationalize meaning as an agent-indexed semantic-pragmatic profile containing
-anticipated consequences, induced policies, learned deontic cue mappings, parameter
-beliefs, and precision. Shared meaning exists when agents infer a shared sign and
-their heterogeneous profiles remain mutually processable on relevant overlaps. This
-permits different internal representations and actions. It is stronger than verbal
-agreement and weaker than convergence on one world model.
+More precisely, practical meaning is an agent- and context-indexed profile of expected
+consequences, policies, affordances, affect, learned cue mappings, parameter beliefs,
+and precision. Shared meaning exists when heterogeneous profiles remain reciprocally
+processable on relevant overlaps. A virtue is hypothesized to be a slow metastable
+regime that organizes these profiles and transforms them appropriately with context.
+It is not one action, trait score, felt state, or verbal label.
 
 Likewise, cooperation is not an atomic action label or a single statistic. Candidate
 cooperative coordination is evaluated through a vector: joint achievement, mutual
@@ -99,8 +103,9 @@ signs and local likelihood mappings are learned first; processability, sheaf
 consistency, causal contribution, and readability are then measured as distinct
 diagnostics. EFE generates protentions and policy posteriors, but agent-local EFEs
 remain a vector unless a common aggregation rule is justified. Total correlation is
-retained only as a dependence baseline. Normative constraints then determine whether
-emergent coordination is good rather than coercive or exploitative.
+retained only as a dependence baseline. Normative diagnostics then test whether the
+felt and socially stabilized sense of goodness tracks actual enabling relations
+rather than coercion or exploitation.
 
 ## Virtue as a metastable control regime
 
@@ -151,10 +156,8 @@ agent \(i\) in context \(c\).
 
 One feature does not vary in the same way: **a virtue is, qua virtue, good**. "Virtue"
 is a success term and a thick evaluative concept, not a morally neutral label for a
-recurring psychological pattern. If apparent courage is destructive recklessness, or
-apparent humility is servile self-erasure, the problem is not simply that courage or
-humility has acquired another equally valid realization. The application may have
-failed to instantiate the virtue at all.
+recurring psychological pattern. Attractorhood itself is morally neutral: dogmatism
+and servility may also be stable, confident, and socially reproduced.
 
 The proposal is therefore not that goodness is fixed while only behaviour changes,
 nor that every contextual use determines its own goodness. Rather, the abstract
@@ -166,11 +169,13 @@ V \text{ is good},
 R_{c,i}(V) \text{ may or may not adequately realize } V \text{ in } c.
 \]
 
-What counts as adequate cannot be read from topology, stability, social acceptance,
-or subjective grip alone. It requires substantive judgment about flourishing, truth,
-harm, agency, justice, and relations to others. Active inference can model how an
-agent interprets and enacts that demand; it cannot convert an enacted pattern into a
-virtue merely by describing its dynamics.
+The present hypothesis is that goodness is first encountered as a fallible embodied
+heuristic for multi-scale relations that enable a phenotype's viable, recoverable,
+revisable modes of life. A successful virtue realization is therefore not merely an
+attractor: its felt orientation must be calibrated to those enabling relations and
+its enactment must actually sustain them across relevant perturbations. Active
+inference can model the estimation, action, and revision dynamics; it does not make
+the heuristic infallible.
 
 ### Phenotype-relative goodness
 
@@ -200,44 +205,34 @@ declared environment class \(\mathcal E\), it should:
 - avoid achieving self-maintenance by destroying the viability or agency of affected
   others.
 
-A phenotype-relative functional can make the claim explicit:
+A higher-scale process can be tested through its counterfactual contribution to a
+phenotype's **attainable metastability** \(\mathcal A_P\):
 
 \[
-J_P(V;\mathcal E)
+\operatorname{En}_{P}^{(\ell)}
 =
-\mathbb E_{e\sim\mathcal E}
-\left[
-\int_0^T
-\bigl(
-w_v\,\mathrm{Viab}_P
-+w_e\,\mathrm{Epistemic}
-+w_r\,\mathrm{RelEmp}
--w_h\,\mathrm{Harm}
-\bigr)dt
--\lambda\tau_{\mathrm{recovery}}
-\right].
+\mathcal A_P
+-
+\mathcal A_P^{\operatorname{do}(X^{(\ell)}\ \mathrm{removed\ or\ scrambled})}.
 \]
 
-A candidate realization \(V_c\) is functionally better for phenotype \(P\) than a
-comparison regime \(U_c\) only if it robustly improves \(J_P\) across relevant
-perturbations, not merely in one preferred environment, while respecting floors on
-the viability and agency of affected others.
-
-This yields a conditional result:
+Because agents cannot solve this counterfactual problem online, felt goodness is
+modeled as a learned embodied compression of expected changes in attainable
+metastability and enabling relations:
 
 \[
-J_P(V_c;\mathcal E) > J_P(U_c;\mathcal E)
-\quad\Longrightarrow\quad
-V_c \text{ is better for } P
-\text{ under } \mathcal E
-\text{ and the stated criteria}.
+g_i(t)\approx f_{\psi_i}\!\left(
+\mathbb E_{q_i}[\Delta\mathcal A_i,
+\Delta\operatorname{En}_{i}^{(1:L)}\mid o_{1:t}]
+\right).
 \]
 
-It does not yet prove moral goodness simpliciter. That requires an explicit bridge
-principle: why phenotype-relative flourishing has normative standing, how conflicts
-among phenotypes should be adjudicated, and why another agent's viability cannot be
-treated merely as an instrumental constraint. Keeping this bridge visible prevents
-metastability or survival from silently becoming a complete ethics.
+This is not a scalar utility and does not prove moral goodness simpliciter. The target
+is a partially ordered, phenotype- and scale-indexed vector. Capability floors,
+non-externalization, non-domination, contestability, repair, and plural improvement
+are retained as error-correcting diagnostics of what the heuristic tracks. They are
+not bolted-on constituents of felt goodness. The bridge to standing and conflicts
+among phenotypes remains an explicit philosophical obligation.
 
 ## Four levels of normative agency
 
@@ -457,7 +452,8 @@ Existential grip is necessary for embodied agency but insufficient for morality.
 agent, institution, or community can occupy a deep and phenomenologically compelling
 attractor while dominating others or systematically resisting evidence.
 
-A beneficial normative landscape must therefore include additional constraints:
+The following diagnostics test whether felt and socially stabilized goodness tracks
+actual enabling relations across phenotypes and scales:
 
 - **epistemic adequacy:** sensitivity to evidence and resistance to manipulation;
 - **relational empowerment:** maintenance of meaningful capacities for action and
@@ -470,7 +466,9 @@ A beneficial normative landscape must therefore include additional constraints:
 - **reversibility and corrigibility:** preservation of routes through which commitments
   and interventions can be reconsidered.
 
-Consequences then play a recursive role. If purported courage repeatedly causes
+These diagnostics are not the definition of felt goodness. They expose characteristic
+ways in which the heuristic can be captured, truncated, or rationalized. Consequences
+then play a recursive role. If purported courage repeatedly causes
 needless harm, or purported humility repeatedly enables domination, those outcomes
 must be capable of changing not only the selected action but the generative
 organization that presented it as virtuous.
@@ -479,22 +477,26 @@ organization that presented it as virtuous.
 
 This synthesis suggests several directions for theoretical and empirical work:
 
-1. Model virtues as structured slow regions of generative-model parameter space,
+1. Identify attainable metastability and counterfactual enabling contributions at
+   individual, relational, institutional, and ecological scales.
+2. Test whether immediate felt goodness estimates those contributions beyond comfort,
+   reward, approval, individual viability, and explicit reasons.
+3. Model virtues as structured slow regions of generative-model parameter space,
    spanning preferences, policy priors, precision, self- and other-models, learning,
    and temporal depth.
-2. Formalize practical wisdom as context-sensitive model governance, with precision
+4. Formalize practical wisdom as context-sensitive calibration and model governance, with precision
    allocation as one candidate mechanism.
-3. Identify phenomenological and behavioural signatures of metastable virtue regimes
+5. Identify phenomenological and behavioural signatures of metastable virtue regimes
    and their breakdowns.
-4. Distinguish different realizations of a shared virtue from genuinely different
+6. Distinguish different realizations of a shared virtue from genuinely different
    normative attractor landscapes.
-5. Measure when consequences produce local policy learning versus structural change
+7. Measure when consequences produce local policy learning versus structural change
    in character.
-6. Extend topological alignment metrics to compare virtue-generating dynamics across
+8. Extend topological alignment metrics to compare virtue-generating dynamics across
    agents without requiring identical state spaces or behaviours.
-7. Test whether empowerment, epistemic openness, and transition accessibility
+9. Test whether relational capacity, epistemic openness, and transition accessibility
    distinguish adaptive virtue regimes from rigid but locally stable forms of grip.
-8. Replace individual empowerment with measures of self-, other-, and joint
+10. Replace individual empowerment with measures of self-, other-, and joint
    empowerment, and test these separately from willingness to accept correction.
 
 The resulting view treats ethical agency as a circular, multiscale process:

@@ -100,7 +100,7 @@ This paper develops a geometric framework that captures these distinctions. Our 
 
 We formalize this thesis through five phases. Phase~1 (\Cref{sec:phase1}) establishes the topology of beliefs by mapping generative models onto statistical manifolds and reconstructing their attractor structure via persistent homology and random dynamical systems theory. Phase~1.5 (\Cref{sec:phase1p5}) grounds these mathematical structures in psychological and cognitive interpretation, connecting basin depth to cognitive rigidity, ridges to identity barriers, and funnels to convergent narratives. Phase~2 (\Cref{sec:phase2}) quantifies misalignment as topological distance between belief-generating systems, adopting $C^*$-algebra homomorphisms on RDS attractors after evaluating and rejecting KL divergence and Gromov--Hausdorff distance. Phase~3 (\Cref{sec:phase3}) models belief path dynamics by bridging variational inference with Wasserstein gradient flows and applying a Freidlin--Wentzell large deviation principle to identify least-surprise belief geodesics. Phase~4 (\Cref{sec:phase4}) develops hierarchical co-steering through curvature mapping, empowerment constraints, and Mori--Zwanzig coarse-graining. Finally, Phase~4.5 (\Cref{sec:phase4p5}) establishes normative criteria for beneficial attractor landscapes, including epistemic adequacy, empowerment preservation, cooperative compatibility, and pluralism.
 
-We validate the framework through three experiments combining controlled simulations with real-world data (\Cref{sec:experiments}): a synthetic belief network with cryptocurrency market validation demonstrating that RDS distances capture structural misalignment invisible to KL divergence; real EEG hyperscanning data from cooperative and competitive dyads showing that Forman--Ricci curvature dynamics predict task condition; and Reddit political communities revealing echo chambers as topologically distinct belief basins with measurably different persistence signatures.
+We evaluate mathematical components through controlled simulations and describe three exploratory real-data applications (\Cref{sec:experiments}). The synthetic belief network is a constructed separation check. Earlier cryptocurrency, EEG, and Reddit outputs are not reproduced by the present checkout and cannot presently validate transfer, cooperation, community type, virtue, or moral alignment.
 
 \Cref{fig:framework_overview} illustrates the core intuition: two attractor basins on a belief landscape connected by a surprise geodesic, with the ridge between them encoding the cost of transitioning from one worldview to another.
 
@@ -397,7 +397,7 @@ reproduced or confirmatory findings. A future release must bind data hashes, cod
 commit, preprocessing, multiplicity corrections, numerical outputs, and figures in a
 machine-readable result ledger.
 
-We validate the framework through three experiments combining controlled simulations with real-world data, targeting four integrated hypotheses. Experiment~1 uses a synthetic belief network with known attractor geometries for ground-truth validation of TDA and Koopman pipelines, supplemented by real cryptocurrency market data confirming that between-regime topological distance exceeds within-regime distance. Experiment~2 analyzes real 4-channel EEG hyperscanning data from 8 dyads performing cooperative and competitive tasks \citep{czeszumski2022eeg}, testing whether Forman--Ricci curvature on inter-brain interaction graphs predicts task condition. Experiment~3 applies persistent homology to Sentence-BERT embeddings \citep{reimers2019sentence} of Reddit political communities from the Politosphere corpus \citep{hofmann2022politosphere}, testing whether topological signatures distinguish structurally different communities. The analysis pipelines are data-agnostic: the same TDA, Koopman, and curvature computations apply without modification across all domains. \Cref{tab:hypothesis_mapping} summarizes the mapping.
+We test mathematical components in constructed simulations and report historic, exploratory outputs from three real-data applications. Experiment~1 checks whether deliberately parameterized synthetic regimes can be separated; the cryptocurrency extension is unreproduced. Experiment~2 applies Forman--Ricci curvature to an EEG task dataset, but the historic analysis confounds condition with block order and treats autocorrelated windows as independent, so it must be redesigned. Experiment~3 applies persistent homology to Sentence-BERT embeddings \citep{reimers2019sentence} from the Politosphere corpus \citep{hofmann2022politosphere}; it describes embedding-cloud geometry rather than an identified belief attractor. These pipelines share mathematical components, but their domain-specific measurement and inferential assumptions are not interchangeable. \Cref{tab:hypothesis_mapping} records the status of each target.
 
 \begin{table}[t]
 \centering
@@ -410,7 +410,7 @@ Hypothesis & Exp. & Verification \\
 \midrule
 H1: Attractors reconstructable & 1, 3 & Synthetic: ratio $= 3.79\times$ reproduced; real analyses not rerun \\
 H2: RDS $\neq$ KL & 1, 3 & Rank reversal (synthetic); RDS/KL ratio differs across metrics \\
-H3: Curvature predicts condition & 2 & Real EEG: mean $|r| = 0.37$, all $p < 0.01$ ($n = 8$ dyads) \\
+H3: Curvature predicts condition & 2 & Historic exploratory output; current inference invalid, redesign required \\
 H4: Interventions bend geodesics & 1 & Direction change $= 0.55$ \\
 \bottomrule
 \end{tabular}
@@ -451,28 +451,28 @@ In an earlier exploratory real-data analysis, we applied the pipeline to 20 cryp
 \subsection{Experiment 2: EEG Hyperscanning}
 \label{sec:exp2}
 
-To test whether curvature dynamics predict cooperative states (H3), we analyze real EEG hyperscanning data from the cooperation/competition dataset of \citet{czeszumski2022eeg}, available on Figshare. The dataset contains 4-channel EEG recordings (250~Hz) from 8 dyads, each performing both cooperative (Recording~1) and competitive (Recording~2) tasks across 4 sub-tasks, yielding approximately 22 minutes per condition per dyad. For each dyad, we concatenate the cooperation and competition recordings and compute the phase-locking value (PLV) between all inter-brain channel pairs ($4 \times 4 = 16$ pairs) in non-overlapping 2-second windows. Forman--Ricci curvature (\Cref{eq:forman_ricci}) is computed on the resulting time-varying interaction graph at each window, and a 5-block smoothing kernel removes high-frequency noise. The condition label (cooperation $= 0$, competition $= 1$) serves as the ground-truth signal against which curvature dynamics are correlated.
+The historic H3 pipeline analyzed EEG hyperscanning data from tasks instructed as cooperative or competitive \citep{czeszumski2022eeg}. It concatenated all cooperation recordings before all competition recordings, computed phase-locking value on inter-brain channel pairs in non-overlapping windows, and correlated smoothed Forman--Ricci curvature with the binary task label. This design tests neither cooperation nor a directionally specified neural mechanism: condition is confounded with a single order/time transition, and the window-wise test does not respect the dyad as the independent unit.
 
-All 8 dyads show statistically significant curvature--condition correlations (all $p < 0.01$), with individual $r$ values ranging from $-0.56$ to $0.74$ (mean $|r| = 0.37$, median $|r| = 0.33$). Five dyads show positive correlations (higher curvature during competition) and three show negative correlations (higher curvature during cooperation). This sign heterogeneity is consistent with known individual differences in neural coupling patterns during social interaction \citep{czeszumski2022eeg}: some dyads synchronize more during cooperation while others synchronize more during competition, but in all cases the Forman--Ricci curvature on the interaction graph reliably tracks the task condition. The mean absolute correlation of $0.37$ across 8 dyads with only 4 EEG channels represents a moderate effect; richer channel configurations (e.g., 64-channel EEG or multi-channel fNIRS) are expected to yield stronger effects due to denser interaction graphs.
+The archived manuscript reported per-dyad correlations ranging from $-0.56$ to $0.74$ and summarized their absolute values. Those statistics have no machine-readable ledger or data in this checkout and were not reproduced. Mixed signs, post-hoc absolute-value aggregation, autocorrelation, and the order confound prevent the old $p$ values from supporting a general curvature effect. A valid rerun must retain task/block order, use dyad-level hierarchical or randomization inference, freeze smoothing and threshold sensitivity, and validate behavioral joint outcomes before using the word cooperation.
 
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=\textwidth]{fig_exp2_curvature.pdf}
-  \caption{Experiment~2 results: Forman--Ricci curvature dynamics on the inter-brain interaction graph for the strongest dyad (D6, $r = 0.735$) from the cooperation/competition EEG dataset \citep{czeszumski2022eeg}. Top: raw and smoothed curvature time series computed from PLV in non-overlapping 2\,s windows across concatenated cooperation and competition blocks. Middle: condition labels (green = cooperation, orange = competition). Bottom: z-scored curvature and condition overlay. The curvature clearly tracks the cooperation-to-competition transition.}
+  \caption{Historic exploratory EEG output for the dyad with the largest archived correlation. Because all cooperation blocks precede all competition blocks, the visible transition is confounded with time/order and is not evidence that curvature identifies cooperation. The data and result ledger are absent from the current checkout.}
   \label{fig:exp2_curvature}
 \end{figure}
 
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=\textwidth]{fig_exp2_dyad_summary.pdf}
-  \caption{Per-dyad curvature--condition correlations across all 8 EEG dyads. (a)~Signed $r$ values: five dyads show positive correlations (higher curvature during competition) and three show negative correlations (higher curvature during cooperation), reflecting individual differences in neural coupling. Stars indicate significance ($^{***}p < 0.001$, $^{**}p < 0.01$). (b)~Absolute effect sizes $|r|$: the mean $|r| = 0.37$ (dashed line) confirms that curvature reliably tracks task condition regardless of direction, with all dyads significant at $p < 0.01$.}
+  \caption{Historic exploratory per-dyad curvature--condition correlations. Stars and absolute-value summaries reproduce the earlier figure annotation, not a valid current inference: direction was heterogeneous, windows were autocorrelated, condition was order-confounded, and the analysis was not reproduced.}
   \label{fig:exp2_dyad_summary}
 \end{figure}
 
 \subsection{Experiment 3: Reddit Political Community Belief Basins}
 \label{sec:exp3}
 
-To test whether persistent homology distinguishes structurally different online communities (H1) and whether topological metrics capture inter-community differences (H2), we analyze real political discussion data from the Reddit Politosphere corpus \citep{hofmann2022politosphere}, a CC-BY-4.0 dataset covering over 600 political subreddits across 12 years. We select 8 subreddits spanning three community types:
+The historic Experiment~3 applied persistent homology and distributional distances to text embeddings from the Reddit Politosphere corpus \citep{hofmann2022politosphere}. It selected 8 subreddits and assigned three authored community-type labels:
 \begin{itemize}[nosep]
   \item \textbf{Echo chambers}: \texttt{r/socialism}, \texttt{r/Conservative}, \texttt{r/The\_Donald}, \texttt{r/Republican} --- communities with strong ideological consensus and active moderation enforcing in-group norms.
   \item \textbf{Diverse}: \texttt{r/PoliticalDiscussion}, \texttt{r/NeutralPolitics}, \texttt{r/moderatepolitics} --- communities with explicit viewpoint diversity norms and active cross-ideological debate.
@@ -488,16 +488,16 @@ For each subreddit, we sample 2{,}000 comments from three monthly snapshots (Jun
   \label{fig:exp3_distances}
 \end{figure}
 
-The persistence analysis reveals topological signatures that differentiate community types (\Cref{fig:exp3_persistence}). The strongest distinction appears in $H_1$ features (topological loops): \texttt{r/NeutralPolitics} shows markedly fewer $H_1$ features ($497$) and the lowest mean persistence ($0.538$) of any community, consistent with a structurally simpler embedding landscape where viewpoints are dispersed without forming tight ideological clusters. Echo chamber communities show more $H_1$ features ($686$--$727$) and higher mean persistence ($0.592$--$0.608$), reflecting the tight topological structure of homogeneous communities where recurring ideological themes create persistent loop patterns in embedding space. The polarized community \texttt{r/politics} shows the most $H_1$ features ($803$) and highest mean persistence ($0.624$), consistent with a bimodal landscape where two ideological poles create rich topological structure. The adaptive filtration radius (95th percentile of pairwise distances per community) prevents artificial ceiling effects.
+The historic persistence outputs varied across the authored labels (\Cref{fig:exp3_persistence}), but they were not reproduced in this audit. Even if reproduced, topology of a Sentence-BERT point cloud is geometry of sampled model embeddings, not an identified attractor of community beliefs. Counts and persistence values therefore cannot by themselves establish ideological cohesion, echo chambers, polarization, or moral alignment. Those interpretations require independent blinded outcomes, a shared representation transform, sampling sensitivity, and adequate ordered trajectories.
 
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=\textwidth]{fig_exp3_persistence.pdf}
-  \caption{Persistence analysis of Reddit political communities. (a)~Mean $H_0$ and $H_1$ persistence per community (communities sorted by type). $H_1$ mean persistence distinguishes community structure: diverse communities show lower persistence (less cohesive ideological clustering) while echo chambers and polarized communities show higher persistence (tighter topological structure). (b)~Box plot of $H_0$ persistence distributions aggregated by community type. The distributional differences confirm that topological signatures capture meaningful structural variation across community types.}
+  \caption{Historic exploratory persistence summaries of Reddit embedding clouds, grouped by authored community labels. These unreproduced differences describe sampled embedding geometry and do not establish echo chambers, polarization, or belief attractors.}
   \label{fig:exp3_persistence}
 \end{figure}
 
-The metric comparison reveals that KL divergence provides the strongest type discrimination (same-type/different-type ratio $= 1.70$), with \texttt{r/NeutralPolitics} showing the largest KL distances from all other communities ($0.11$--$0.33$). Embedding centroid distances show negligible discrimination (ratio $\approx 0.94$): the communities are differentiated by the \emph{shape} of their distributions, not by their location in embedding space. RDS distance is degenerate ($= 0$) because the Politosphere data yields only $1$--$2$ monthly centroids per subreddit, insufficient for Koopman estimation. This confirms the finding from Experiment~1 that RDS requires longer temporal trajectories, while also demonstrating that KL and TDA provide complementary structural information even with limited temporal data.
+The archived metric comparison reported a KL label-discrimination ratio of $1.70$, negligible centroid discrimination, and degenerate RDS values. These figures are exploratory and unreproduced. The RDS result is non-estimability rather than evidence: one or two monthly centroids cannot identify the Koopman dynamics. A redesigned study needs a frozen shared representation, sufficient ordered time bins, time-respecting validation, and outcomes independent of subreddit names.
 
 
 \section{Discussion}
@@ -635,7 +635,7 @@ H4 & Direction change & $0.55$ & --- \\
 
 \begin{table}[h]
 \centering
-\caption{Experiment~2: per-dyad curvature--condition correlations (real EEG data).}
+\caption{Historic exploratory per-dyad EEG correlations; current inferential design invalid and unreproduced.}
 \label{tab:exp2_results}
 \begin{tabular}{@{}lccc@{}}
 \toprule

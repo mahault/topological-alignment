@@ -73,12 +73,44 @@ def toolchain_errors() -> list[str]:
     return errors
 
 
+def experiment_ledger_errors() -> list[str]:
+    errors: list[str] = []
+    path = ROOT / "benchmarks" / "experiment_pipeline_ledger.json"
+    ledger = json.loads(path.read_text("utf-8"))
+    required = {
+        "id", "kind", "artifact", "disposition", "evidence_status",
+        "permitted_claim", "blockers",
+    }
+    seen: set[str] = set()
+    for index, entry in enumerate(ledger.get("entries", [])):
+        missing = required - set(entry)
+        if missing:
+            errors.append(f"experiment ledger entry {index}: missing {sorted(missing)}")
+            continue
+        if entry["id"] in seen:
+            errors.append(f"experiment ledger: duplicate id {entry['id']!r}")
+        seen.add(entry["id"])
+        artifact = ROOT / entry["artifact"]
+        if not artifact.exists():
+            errors.append(
+                f"experiment ledger {entry['id']}: missing artifact {entry['artifact']!r}"
+            )
+        if not entry["disposition"]:
+            errors.append(f"experiment ledger {entry['id']}: empty disposition")
+        if not entry["permitted_claim"].strip():
+            errors.append(f"experiment ledger {entry['id']}: empty permitted claim")
+    if not seen:
+        errors.append("experiment ledger has no entries")
+    return errors
+
+
 def run() -> list[str]:
     return [
         *markdown_link_errors(),
         *bibliography_errors(),
         *lean_errors(),
         *toolchain_errors(),
+        *experiment_ledger_errors(),
     ]
 
 
@@ -89,4 +121,4 @@ if __name__ == "__main__":
         for failure in failures:
             print(f"- {failure}")
         raise SystemExit(1)
-    print("PASS: links, citations, Lean placeholders, and toolchain status")
+    print("PASS: links, citations, Lean placeholders, toolchain, and experiment ledger")

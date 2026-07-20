@@ -83,6 +83,7 @@ def extract_dyads():
         np.save(str(dyad_dir / 'participant1.npy'), p1_full)
         np.save(str(dyad_dir / 'participant2.npy'), p2_full)
         np.save(str(dyad_dir / 'conditions.npy'), conditions)
+        np.save(str(dyad_dir / 'sampling_frequency_hz.npy'), np.array(250.0))
 
         print(f"  {dyad_name}: coop={min_coop} samples ({min_coop/250:.0f}s), "
               f"comp={min_comp} ({min_comp/250:.0f}s), "
