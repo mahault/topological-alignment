@@ -627,7 +627,9 @@ display(run_register.style.hide(axis='index').set_properties(**{'text-align':'le
 Circles are individual agents or affected parties. Rectangles are environments,
 public signs, model variants, or dynamical systems. This prevents an abstract label
 such as “cooperation” from hiding who acts, who is affected, and where the outcome is
-generated.
+generated. V7 contains **NO INDIVIDUAL AGENTS**: its units are paired decorated
+dynamical systems. Robustness and ablations contain copies or variants of the V2
+agent rather than new social actors.
 """),
     code(r"""
 fig,axes=plt.subplots(3,3,figsize=(18,13))
@@ -646,20 +648,26 @@ for ax,(title,actors,world,intervention,readout) in zip(axes.flat,entity_specs):
  ax.set_xlim(0,10); ax.set_ylim(0,7); ax.axis('off'); ax.set_title(title,fontsize=12,fontweight='bold',pad=8)
  if actors==['NO INDIVIDUAL AGENTS']:
   ax.text(1.65,3.65,'NO\nINDIVIDUAL\nAGENTS',ha='center',va='center',fontsize=9,fontweight='bold',color=RED,bbox=dict(boxstyle='round,pad=.4',fc='#fff0ed',ec=RED,lw=2))
+  ax.annotate('',xy=(3.3,3.6),xytext=(2.65,3.6),arrowprops=dict(arrowstyle='->',lw=1.7,color=DARK,ls=':'))
  else:
   ys=np.linspace(5.2,2.0,len(actors))
-  for actor,y in zip(actors,ys):
+  for actor_index,(actor,y) in enumerate(zip(actors,ys)):
    affected='affected' in actor
-   ax.add_patch(patches.Circle((1.65,y),.55,fc=GOLD if affected else BLUE,ec='white',lw=2))
-   ax.text(1.65,y,actor,ha='center',va='center',fontsize=7.2,fontweight='bold',color=NAVY if affected else 'white')
+   icon=('C' if affected else chr(65+actor_index)) if len(actors)>1 else ('48' if title=='Robustness' else '7' if title=='Ablations' else 'i')
+   ax.add_patch(patches.Circle((.72,y),.38,fc=GOLD if affected else BLUE,ec='white',lw=2))
+   ax.text(.72,y,icon,ha='center',va='center',fontsize=7.2,fontweight='bold',color=NAVY if affected else 'white')
+   ax.text(1.2,y,actor,ha='left',va='center',fontsize=7.2,fontweight='bold',color=NAVY)
+   if affected:
+    ax.annotate('',xy=(2.65,y),xytext=(3.3,3.6),arrowprops=dict(arrowstyle='->',lw=1.4,color=GOLD))
+   else:
+    ax.annotate('',xy=(3.3,3.6),xytext=(2.65,y),arrowprops=dict(arrowstyle='->',lw=1.4,color=NAVY))
  ax.add_patch(patches.FancyBboxPatch((3.35,2.25),3.15,2.7,boxstyle='round,pad=.08',fc='#eef8f5',ec=TEAL,lw=2))
  ax.text(4.925,3.6,world,ha='center',va='center',fontsize=8.5,fontweight='bold')
  ax.add_patch(patches.FancyBboxPatch((7.25,2.6),2.45,2.0,boxstyle='round,pad=.06',fc='#fff8e5',ec=GOLD,lw=2))
  ax.text(8.475,3.6,readout,ha='center',va='center',fontsize=8.1,fontweight='bold')
- ax.annotate('',xy=(3.3,3.6),xytext=(2.35,3.6),arrowprops=dict(arrowstyle='->',lw=1.7,color=NAVY))
  ax.annotate('',xy=(7.2,3.6),xytext=(6.55,3.6),arrowprops=dict(arrowstyle='->',lw=1.7,color=NAVY))
- ax.text(4.925,6.2,'MANIPULATION',ha='center',fontsize=7.5,fontweight='bold',color=RED)
- ax.annotate(intervention,xy=(4.925,5.0),xytext=(4.925,5.9),ha='center',fontsize=7.6,arrowprops=dict(arrowstyle='->',lw=1.4,color=RED))
+ ax.text(4.925,6.0,'INTERVENE:\n'+intervention,ha='center',va='center',fontsize=7.2,fontweight='bold',color=RED,bbox=dict(boxstyle='round,pad=.25',fc='#fff0ed',ec=RED,lw=1.2))
+ ax.annotate('',xy=(4.925,5.0),xytext=(4.925,5.55),arrowprops=dict(arrowstyle='->',lw=1.4,color=RED))
  ax.text(1.65,.55,'WHO / UNIT',ha='center',fontsize=7,fontweight='bold',color=DARK)
  ax.text(4.925,.55,'WORLD / COMPARISON OBJECT',ha='center',fontsize=7,fontweight='bold',color=DARK)
  ax.text(8.475,.55,'READOUT',ha='center',fontsize=7,fontweight='bold',color=DARK)

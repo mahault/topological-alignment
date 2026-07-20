@@ -11,6 +11,16 @@ stage-by-stage setups, and the interpretation of the mechanism ablations for vir
 Display equations use `$$...$$` delimiters so Markdown preserves the TeX source for
 the static-math export step.
 
+The visual experiment atlas is a required part of the guide, not decoration. It:
+
+- names and depicts the agents, affected parties, environments, public signs, or
+  abstract systems that literally exist in each V0–V7 setup;
+- states the manipulation, measured readout, identifying contrast, and hard limit for
+  every experiment, robustness test, and ablation;
+- embeds current result graphs only when an executable and committed ledger exist;
+- marks V4–V7 setup diagrams as designs rather than findings; and
+- includes two browser-playable pedagogical animations whose controls are audited.
+
 The notebook is generated from `build_where_we_are.py`, then executed so every table,
 graph, and animation is embedded in both artifacts. Numerical evidence is read from
 the current committed benchmark ledgers. Historical, archived, and

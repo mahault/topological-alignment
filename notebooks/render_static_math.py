@@ -114,6 +114,12 @@ def equation_image(source: str, *, display: bool, namespace_key: str) -> str:
     )
 
 
+def assert_math_mode() -> None:
+    probe = equation_image(r"\theta_{t+1}", display=True, namespace_key="self-test")
+    if "DejaVuSans-Oblique-34c" not in probe or "DejaVuSans-5c" in probe:
+        raise RuntimeError("MathText self-test failed: TeX is being drawn as literal text")
+
+
 def render(path: Path) -> tuple[int, int]:
     html = path.read_text(encoding="utf-8")
     if 'content="matplotlib-mathtext-inline-svg-v3"' in html:
@@ -248,6 +254,7 @@ def main() -> None:
         default=Path(__file__).with_name("where_we_are.html"),
     )
     args = parser.parse_args()
+    assert_math_mode()
     display_count, inline_count = render(args.html)
     print(
         f"Static math: {display_count} display and {inline_count} inline equations in {args.html}"

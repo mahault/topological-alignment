@@ -223,6 +223,8 @@ def research_guide_errors() -> list[str]:
     html = html_path.read_text("utf-8")
     if html.count("function Animation(frames") < 2:
         errors.append("research guide: fewer than two embedded animations")
+    if html.count('class="jp-RenderedImage jp-OutputArea-output"') < 13:
+        errors.append("research guide: fewer than thirteen static diagrams/result figures")
     if 'content="matplotlib-mathtext-inline-svg-v3"' not in html:
         errors.append("research guide: equations are not rendered as inline SVG")
     if html.count('<svg class="static-math ') < 30:
@@ -231,9 +233,19 @@ def research_guide_errors() -> list[str]:
         errors.append("research guide: equation rendering still uses fallible image elements")
     if "cdnjs.cloudflare.com/ajax/libs/mathjax" in html:
         errors.append("research guide: still depends on remote MathJax")
-    for heading in ("What counts as a proof here?", "Master claim register", "Experiment genealogy and setup"):
+    for heading in (
+        "What counts as a proof here?",
+        "Master claim register",
+        "Experiment genealogy and setup",
+        "Experimental entities: what literally exists in each model",
+        "Why each setup is fit for its question",
+        "V5–V7 — planned setup atlas",
+    ):
         if heading not in html:
             errors.append(f"research guide: HTML missing section {heading!r}")
+    for required_text in ("NO INDIVIDUAL AGENTS", "Why this answers the question", "Hard limit"):
+        if required_text.lower() not in html.lower():
+            errors.append(f"research guide: setup audit missing {required_text!r}")
     return errors
 
 
