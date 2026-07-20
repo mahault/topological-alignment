@@ -13,6 +13,9 @@ The public collaborator-facing versions are the
 and the [detailed visual guide](https://mahault.github.io/topological-alignment/where-we-are.html).
 Deployment and update instructions are in
 [Public Research Dashboard](docs/GITHUB_PAGES.md).
+The rationale for the definitions, the exact mathematical mapping, the interpretation
+of the mechanism ablations, and the experiment genealogy are recorded in
+[Definition Decisions and Virtue Mapping](docs/DEFINITION_DECISIONS_AND_MAPPING.md).
 
 ## Virtue, pragmatics, and active inference
 

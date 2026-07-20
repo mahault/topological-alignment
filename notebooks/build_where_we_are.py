@@ -550,7 +550,46 @@ for claim in CLAIMS:
 
 cells.extend([
     md(r"""
-## 6. What the experiments actually look like
+## 6. Experiment genealogy and setup
+
+The programme is cumulative. Each experiment exists because the previous one leaves
+one specific ambiguity unresolved. This table shows how the hypotheses were earned
+rather than merely announced.
+"""),
+    code(r"""
+experiment_genealogy=pd.DataFrame([
+ ['Legacy E-C1','Can topology distinguish deliberately different update regimes?','Synthetic belief-network trajectories; persistence and operator summaries','Constructed separation is feasible','Topology might describe belief-generating dynamics','Sanity check only; psychological labels withdrawn'],
+ ['Legacy E-C2','Can curvature recover injected dyadic synchrony?','Synthetic EEG plus an unreproducible/confounded real pipeline','Injected synchrony is detectable','Dyadic dynamics may carry coordination information','Real cooperation claim retired; redesign required'],
+ ['Legacy E-C3','Can embedding-cloud geometry summarize discourse?','Synthetic/Reddit semantic point clouds and persistence','Geometry summarizes clouds','Semantic organization may have measurable structure','Not an attractor; real result unreproduced'],
+ ['Legacy E-C4','Can Fisher/GW comparisons work on constructed systems?','Synthetic Gaussian paths and relational structures','Selected geometry computations work','Decorated topology may compare dynamical organizations','Mathematical feasibility only'],
+ ['V0','Is felt goodness separable from reward, approval, predictions, and reasons?','Factorially varied vignettes; temporally separated reports; hidden evidence reveal','Constructed design is identifiable','Goodness can be modeled as a fallible felt heuristic','Human item pilot still required'],
+ ['V1','Can that heuristic be calibrated to an independent functional target?','Finite phenotypes and higher-scale processes; remove/scramble interventions; VFE inference; EFE policy','Counterfactual enablingness, capture failures, and phenotype reversals reproduce','Felt goodness can estimate phenotype-relative enablingness','Finite-model evidence only'],
+ ['V2/V3','What dynamics distinguish virtue from rigidity, instability, and opportunism?','Four authored regimes; noise, recovery, diagnostic transformation, washout','Selective-stability diagnostics separate the regimes','Virtue may be slow calibration of meaning to goodness','Constructed mechanism-discrimination result'],
+ ['Robustness','Is V2 one hand-tuned point?','48 sampled parameter configurations in three environments; six gates','41/48 pass every gate in every environment','The signature occupies a broad sampled region','Authored parameter box'],
+ ['Ablations','Which components actually explain the V2 signature?','Remove slow learning, precision gating, context interactions, goodness grounding, explicit pull, or EFE mapping','First four break; explicit pull and EFE removal do not','Narrow virtue mapping and downgrade unsupported mechanism claims','Architecture-relative necessity only'],
+ ['V4 next','Can shared meaning, coupling, and goodness be experimentally separated?','Factorial dyads varying sign, translation, coupling, and affected-party outcomes','Not yet run','Virtue should stabilize jointly enabling shared meaning','Decisive next simulation'],
+ ['V5 planned','Can stable shared coordination still be morally counterfeit?','Matched domination, exploitation, exclusion, and repair cases','Not yet run','Functional success is not sufficient for moral virtue','Tests normative bridge'],
+ ['V6 planned','How do public virtue concepts and local realizations co-evolve?','Longitudinal testimony, exemplars, institutions, perturbations, and multiple learning rates','Not yet run','Concept and enactment should change on separable timescales','Social-attractor test'],
+ ['V7 planned','Does topology add anything after constructs are identified?','Held-out adversarial pairs; semantic and ordinary dynamical baselines','Not yet run','Decorated topology should add predictive value','Topology removed if baselines tie or win'],
+],columns=['Experiment','Question inherited from prior stage','Setup','Result/status','Hypothesis it motivates or tests','Permitted inference'])
+display(experiment_genealogy.style.hide(axis='index').set_properties(**{'text-align':'left'}))
+"""),
+    md(r"""
+### Setup template used for every experiment
+
+| Field | What must be specified before interpreting a result |
+|---|---|
+| Unit | phenotype, agent, dyad, group, trajectory, or community |
+| Manipulation | what is randomized, intervened on, removed, scrambled, or revealed |
+| Independent target | what the agent's estimate or behavior is calibrated against |
+| Observables | feelings, beliefs, policies, actions, joint outcomes, and revision |
+| Controls | reward, approval, common causes, coercion, exploitation, noise, and simpler models |
+| Gate | the declared result that must hold |
+| Falsifier | the observation that makes us reject or narrow the claim |
+| Inference class | conceptual, mathematical, computational, empirical, or normative |
+"""),
+    md(r"""
+## 6.1 What the individual experiments actually look like
 
 ### V0 — separating felt goodness from its confounds
 

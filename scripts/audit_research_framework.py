@@ -223,7 +223,7 @@ def research_guide_errors() -> list[str]:
     html = html_path.read_text("utf-8")
     if html.count("function Animation(frames") < 2:
         errors.append("research guide: fewer than two embedded animations")
-    for heading in ("What counts as a proof here?", "Master claim register", "What the experiments actually look like"):
+    for heading in ("What counts as a proof here?", "Master claim register", "Experiment genealogy and setup"):
         if heading not in html:
             errors.append(f"research guide: HTML missing section {heading!r}")
     return errors
