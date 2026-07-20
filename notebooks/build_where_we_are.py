@@ -327,6 +327,16 @@ table{font-size:.92em} code{white-space:normal}
 </style>'''))
 """),
     md(r"""
+<div class="proofbox"><b>Pictures-first route.</b> You do not need to read twenty
+claim cards before seeing the research programme. Jump directly to the
+<a href="#6.-Experiment-genealogy-and-setup">experiment genealogy</a>,
+<a href="#6.1-What-the-individual-experiments-actually-look-like">visual experiment atlas</a>,
+<a href="#7.-Formal-theorem-inventory:-what-is-genuinely-machine-checked">theorem inventory</a>,
+or <a href="#9.-Experiment-roadmap-and-stopping-rules">roadmap and stopping rules</a>.
+The atlas distinguishes measured simulation results from pedagogical animations and
+from planned designs that have not run.</div>
+"""),
+    md(r"""
 ## 1. The thesis in one diagram
 
 The upper loop is descriptive and computational. The moral bridge is an explicit
@@ -612,6 +622,73 @@ display(run_register.style.hide(axis='index').set_properties(**{'text-align':'le
     md(r"""
 ## 6.1 What the individual experiments actually look like
 
+### Experimental entities: what literally exists in each model
+
+Circles are individual agents or affected parties. Rectangles are environments,
+public signs, model variants, or dynamical systems. This prevents an abstract label
+such as “cooperation” from hiding who acts, who is affected, and where the outcome is
+generated.
+"""),
+    code(r"""
+fig,axes=plt.subplots(3,3,figsize=(18,13))
+entity_specs=[
+ ('V0 measurement',['simulated\nrespondent i'],'vignette world\nwith hidden dependency','reveal evidence','feeling, forecast,\nreason, revision'),
+ ('V1 enablingness',['finite agent i\n+ phenotype P'],'higher-scale process\nintact / removed / scrambled','do-intervention','VFE posterior, policy,\nactual En(P)'),
+ ('V2/V3 virtue dynamics',['learning agent i\nfast w(t), slow r(t)'],'context family\nnoise then diagnostic change','precision + context','recovery, retained\nrevision, policy'),
+ ('Robustness',['48 parameterized\nV2 agents'],'3 environment seeds','sample parameters','six predeclared\ngates'),
+ ('Ablations',['7 V2 model\nvariants'],'same 3 environments','remove component','which gates fail\nor survive'),
+ ('V4 cooperation',['Agent A','Agent B','affected party C'],'coupled dyadic world\n+ joint outcome Y','factorial coupling /\ntranslation / outcome','dependence, meaning,\ncontribution, En(P)'),
+ ('V5 counterfeit virtue',['coordinator A','coordinator B','affected party C'],'matched stable\ncoordination regime','domination / exclusion /\nharm / repair','affected outcomes +\nadmissibility'),
+ ('V6 social concepts',['agents i=1...n'],'public sign V(t)\n+ institutions','exemplar / testimony /\ncontext shock','local M_i and\npublic V(t+1)'),
+ ('V7 topology',['NO INDIVIDUAL AGENTS'],'system D_i <-> system D_j\ndecorated dynamics','held-out adversarial\nsystem pairs','baseline vs topology\npredictive score'),
+]
+for ax,(title,actors,world,intervention,readout) in zip(axes.flat,entity_specs):
+ ax.set_xlim(0,10); ax.set_ylim(0,7); ax.axis('off'); ax.set_title(title,fontsize=12,fontweight='bold',pad=8)
+ if actors==['NO INDIVIDUAL AGENTS']:
+  ax.text(1.65,3.65,'NO\nINDIVIDUAL\nAGENTS',ha='center',va='center',fontsize=9,fontweight='bold',color=RED,bbox=dict(boxstyle='round,pad=.4',fc='#fff0ed',ec=RED,lw=2))
+ else:
+  ys=np.linspace(5.2,2.0,len(actors))
+  for actor,y in zip(actors,ys):
+   affected='affected' in actor
+   ax.add_patch(patches.Circle((1.65,y),.55,fc=GOLD if affected else BLUE,ec='white',lw=2))
+   ax.text(1.65,y,actor,ha='center',va='center',fontsize=7.2,fontweight='bold',color=NAVY if affected else 'white')
+ ax.add_patch(patches.FancyBboxPatch((3.35,2.25),3.15,2.7,boxstyle='round,pad=.08',fc='#eef8f5',ec=TEAL,lw=2))
+ ax.text(4.925,3.6,world,ha='center',va='center',fontsize=8.5,fontweight='bold')
+ ax.add_patch(patches.FancyBboxPatch((7.25,2.6),2.45,2.0,boxstyle='round,pad=.06',fc='#fff8e5',ec=GOLD,lw=2))
+ ax.text(8.475,3.6,readout,ha='center',va='center',fontsize=8.1,fontweight='bold')
+ ax.annotate('',xy=(3.3,3.6),xytext=(2.35,3.6),arrowprops=dict(arrowstyle='->',lw=1.7,color=NAVY))
+ ax.annotate('',xy=(7.2,3.6),xytext=(6.55,3.6),arrowprops=dict(arrowstyle='->',lw=1.7,color=NAVY))
+ ax.text(4.925,6.2,'MANIPULATION',ha='center',fontsize=7.5,fontweight='bold',color=RED)
+ ax.annotate(intervention,xy=(4.925,5.0),xytext=(4.925,5.9),ha='center',fontsize=7.6,arrowprops=dict(arrowstyle='->',lw=1.4,color=RED))
+ ax.text(1.65,.55,'WHO / UNIT',ha='center',fontsize=7,fontweight='bold',color=DARK)
+ ax.text(4.925,.55,'WORLD / COMPARISON OBJECT',ha='center',fontsize=7,fontweight='bold',color=DARK)
+ ax.text(8.475,.55,'READOUT',ha='center',fontsize=7,fontweight='bold',color=DARK)
+fig.suptitle('Entity atlas: agents are shown when they exist; abstract comparison objects are named when they do not',fontsize=17,fontweight='bold')
+fig.tight_layout(rect=[0,0,1,.965]); plt.show()
+"""),
+    md(r"""
+### Why each setup is fit for its question
+
+“Fit” here means that the manipulation creates the contrast required for the limited
+inference in the final two columns. It does **not** mean that a simulation validates a
+human construct or supplies the normative bridge.
+"""),
+    code(r"""
+setup_adequacy=pd.DataFrame([
+ ['V0','Simulated respondent i in a vignette world with reward, approval, expected consequences, hidden enabling facts, and two report times','Separate reports first; reveal hidden evidence later','Whether felt-good reports contain programmed enablingness signal beyond reward/approval and revise after evidence','Temporal separation plus adversarial confounds tests design identifiability','No evidence that humans instantiate the construct'],
+ ['V1','One finite agent with phenotype P embedded in a higher-scale process','Remove or scramble the process; vary priors/preferences while holding the counterfactual target fixed','Actual En(P), inferred process, and policy choice','The intervention defines an independent target, so capture is error relative to something outside the agent estimate','Finite operationalization, not a unique or morally sufficient good'],
+ ['V2/V3','One learning agent with fast practical meaning w(t), slow centre r(t), precision gating, policies, and contextual outcomes','Low-precision noise followed by reliable diagnostic context change and washout','Noise displacement, recovery, retained calibration, retained policy improvement','The same agent must resist non-diagnostic noise yet retain justified revision; rigidity and instability fail different phases','Constructed selective-stability signature, not human virtue'],
+ ['Robustness','Forty-eight parameterized copies of the V2 agent in three environment seeds','Sample a declared parameter box','Six V2 gates in every environment','Shows the result is not one hand-picked parameter point inside that box','Does not generalize outside the authored model family'],
+ ['Ablations','Seven V2 architectures exposed to the same environments','Remove one proposed component at a time','Change in gate pass rates','Failure identifies architecture-relative necessity; survival rejects necessity in this test','Ablation does not prove unique causal mechanism across all models'],
+ ['V4','Agent A and Agent B with different local frames, a translation channel, causal coupling, joint outcome Y, and affected party C','Factorially vary sign, frame compatibility, coupling, common shock, and affected-party outcome','Dependence, processability, readability, joint attainment, causal contribution, phenotype-indexed En(P)','Orthogonal factors create common-cause, misunderstanding, exploitation, and genuine-coordination cases that one scalar cannot collapse','Setup only until the integrated simulation and ledger exist'],
+ ['V5','Coordinating agents A/B plus affected party C in descriptively matched stable regimes','Vary domination, exclusion, externalized burden, contestability, and repair while matching focal coordination','Affected-party outcomes, exit/voice, burden allocation, repair, admissibility verdict','Matching descriptive success isolates whether the moral bridge detects counterfeit virtue','Normative premises still require philosophical defence'],
+ ['V6','Population of agents i=1...n, local meanings M_i, public sign V(t), and institutional/testimonial channels','Intervene on exemplars, testimony, institutions, contexts, phenotypes, and learning rates','Fast local trajectories, slow public-sign trajectory, uptake and action','Interventions plus competing one-rate/static models test whether the two proposed timescales are real rather than narrated','A successful simulation would not by itself establish historical adequacy'],
+ ['V7','No privileged individual agent: paired decorated dynamical systems D_i and D_j with candidate maps','Use held-out adversarial pairs: same topology/opposed meaning and different topology/equivalent function','Prediction, calibration, invariant preservation, and mapping complexity','Topology must beat semantic and ordinary dynamical baselines on cases designed to expose bare-topology failure','If it ties or loses after complexity penalty, topology is removed'],
+],columns=['Experiment','What literally exists','Manipulation','Measured readout','Why this answers the question','Hard limit'])
+display(setup_adequacy.style.hide(axis='index').set_properties(**{'text-align':'left'}))
+"""),
+    md(r"""
+
 ### V0 — separating felt goodness from its confounds
 
 Each trial temporally separates immediate feeling, expected consequences, social
@@ -864,6 +941,26 @@ affected-party outcome. This creates cases in which dependence, understanding,
 achievement, and goodness come apart.
 """),
     code(r"""
+fig,ax=plt.subplots(figsize=(15,5.8)); ax.set_xlim(0,15); ax.set_ylim(0,6); ax.axis('off')
+factors=[('Shared sign',.35,TEAL),('Frame compatibility',.35+2.15,BLUE),('Causal coupling',.35+4.3,ORANGE),('Affected-party outcome',.35+6.45,RED)]
+for label,x,color in factors:
+ ax.add_patch(patches.FancyBboxPatch((x,4.15),1.8,.85,boxstyle='round,pad=.05',fc=color,ec='white'))
+ ax.text(x+.9,4.575,label+'\nON / OFF',ha='center',va='center',fontsize=8.5,fontweight='bold',color='white')
+ ax.annotate('',xy=(7.25,3.75),xytext=(x+.9,4.1),arrowprops=dict(arrowstyle='->',color=DARK,lw=1.5))
+ax.add_patch(patches.FancyBboxPatch((6.0,2.45),2.5,1.25,boxstyle='round,pad=.08',fc='#eef8f5',ec=TEAL,lw=2))
+ax.text(7.25,3.08,'Dyadic active-inference loop\nlocal meanings + translated predictions\npolicies -> joint outcome',ha='center',va='center',fontsize=9.5,fontweight='bold')
+outputs=[('Dependence\n(common shock?)',9.35,BLUE),('Processability +\nreadability',11.05,TEAL),('Joint attainment +\ncausal contribution',12.75,ORANGE)]
+for label,x,color in outputs:
+ ax.add_patch(patches.FancyBboxPatch((x,2.55),1.5,1.05,boxstyle='round,pad=.05',fc=color,ec='white'))
+ ax.text(x+.75,3.075,label,ha='center',va='center',fontsize=8.2,fontweight='bold',color='white')
+ ax.annotate('',xy=(x-.05,3.08),xytext=(8.55,3.08),arrowprops=dict(arrowstyle='->',color=NAVY,lw=1.5))
+ax.add_patch(patches.FancyBboxPatch((3.1,.45),8.8,.85,boxstyle='round,pad=.06',fc='#fff8e5',ec=GOLD,lw=2))
+ax.text(7.5,.875,'DECISION: which metrics distinguish common cause, translation failure, exploitation, and revisable cooperation?',ha='center',va='center',fontsize=10,fontweight='bold')
+for x in [7.25,10.1,11.8,13.5]: ax.annotate('',xy=(7.5,1.35),xytext=(x,2.4),arrowprops=dict(arrowstyle='->',color=GOLD,lw=1.2))
+ax.set_title('V4 planned factorial setup — design only, no result is implied',fontsize=16,fontweight='bold')
+plt.show()
+"""),
+    code(r"""
 v4_cases=pd.DataFrame([
  ['Common shock','High','Low','Variable','Variable','Dependence ≠ cooperation'],
  ['Different frames / shared meaning','Variable','High','High','High','Translation without convergence'],
@@ -894,6 +991,77 @@ def update_sem(k):
  txt.set_text(f'Different codes, shared practical structure — translation residual {residual:.3f}')
  return (*bars1,*bars2,txt)
 ani2=FuncAnimation(fig,update_sem,frames=range(frames),interval=100,blit=False); sem_html=ani2.to_jshtml(fps=10,default_mode='loop'); plt.close(fig); display(HTML(sem_html))
+"""),
+    md(r"""
+### V5–V7 — planned setup atlas (designs, not findings)
+
+These experiments have **not run**. Their diagrams make the proposed manipulations,
+observables, model comparisons, and failure conditions inspectable before any result
+exists. A future result panel must be generated from a committed ledger; it cannot be
+substituted by the illustrative arrows below.
+"""),
+    code(r"""
+fig,axes=plt.subplots(3,1,figsize=(15,12))
+
+def setup_box(ax,x,y,w,h,text,color,txt='white'):
+ ax.add_patch(patches.FancyBboxPatch((x,y),w,h,boxstyle='round,pad=.05',fc=color,ec='white',lw=1.5))
+ ax.text(x+w/2,y+h/2,text,ha='center',va='center',fontsize=8.6,fontweight='bold',color=txt)
+
+for ax in axes:
+ ax.set_xlim(0,15); ax.set_ylim(0,4); ax.axis('off')
+
+# V5: match descriptive coordination while varying morally decisive structure.
+ax=axes[0]
+setup_box(ax,.2,1.55,2.3,1.0,'Matched stable\ncoordination regimes',BLUE)
+v5=[('domination',3.1,RED),('exclusion',5.0,ORANGE),('externalized harm',6.9,RED),('repair + contestation',8.8,TEAL)]
+for label,x,color in v5:
+ setup_box(ax,x,2.25,1.55,.75,label+'\nON / OFF',color)
+ ax.annotate('',xy=(x+.78,2.2),xytext=(2.55,2.05),arrowprops=dict(arrowstyle='->',color=DARK,lw=1.2))
+setup_box(ax,11.0,1.55,1.65,1.0,'Affected-party\noutcomes',GOLD,txt=NAVY)
+setup_box(ax,13.0,1.55,1.65,1.0,'Admissibility\nclassification',TEAL)
+ax.annotate('',xy=(10.95,2.05),xytext=(10.4,2.55),arrowprops=dict(arrowstyle='->',color=NAVY,lw=1.5))
+ax.annotate('',xy=(12.95,2.05),xytext=(12.7,2.05),arrowprops=dict(arrowstyle='->',color=NAVY,lw=1.5))
+ax.text(7.5,.55,'Falsifier: the proposed moral bridge cannot distinguish matched exploitation from revisable non-dominating cooperation without ad-hoc repair.',ha='center',fontsize=9.5)
+ax.set_title('V5 planned setup: hold coordination constant; vary moral counterfeit structure',fontsize=14,fontweight='bold')
+
+# V6: explicitly separate fast local realization from slow public concept dynamics.
+ax=axes[1]
+setup_box(ax,.25,1.55,1.7,1.0,'Public sign\nV(t)',BLUE)
+setup_box(ax,2.55,2.35,2.0,.8,'Exemplar / testimony /\ninstitutional shock',ORANGE)
+setup_box(ax,2.55,.75,2.0,.8,'Context + phenotype\nchange',GOLD,txt=NAVY)
+setup_box(ax,5.25,1.55,2.0,1.0,'Local realizations\nM_i(V,c,t)',TEAL)
+setup_box(ax,8.0,1.55,2.0,1.0,'Action, consequence,\nsocial uptake',RED)
+setup_box(ax,10.75,1.55,1.9,1.0,'Updated public sign\nV(t+1)',BLUE)
+setup_box(ax,13.25,1.55,1.45,1.0,'Static lexical\nbaseline',DARK)
+for start,end in [((1.95,2.05),(5.2,2.05)),((4.55,2.75),(5.2,2.35)),((4.55,1.15),(5.2,1.75)),((7.3,2.05),(7.95,2.05)),((10.05,2.05),(10.7,2.05)),((12.7,2.05),(13.2,2.05))]:
+ ax.annotate('',xy=end,xytext=start,arrowprops=dict(arrowstyle='->',color=NAVY,lw=1.5))
+ax.text(7.5,.35,'Test: do fast local adaptation and slower public-concept change have identifiable, intervention-sensitive timescales?',ha='center',fontsize=9.5)
+ax.set_title('V6 planned setup: local realization and public virtue concept co-evolve on different timescales',fontsize=14,fontweight='bold')
+
+# V7: topology competes against simpler baselines on held-out adversarial pairs.
+ax=axes[2]
+setup_box(ax,.25,1.55,2.0,1.0,'Decorated systems\n(X,F,M,P,En,S)',BLUE)
+methods=[('semantic\nbaseline',3.0,TEAL),('ordinary dynamical\nbaseline',5.25,ORANGE),('decorated topology\nmodel',7.5,RED)]
+for label,x,color in methods:
+ setup_box(ax,x,1.55,1.75,1.0,label,color)
+ ax.annotate('',xy=(x-.05,2.05),xytext=(2.3,2.05),arrowprops=dict(arrowstyle='->',color=NAVY,lw=1.3))
+setup_box(ax,10.05,1.55,2.0,1.0,'Held-out adversarial pairs\nsame topology / opposed meaning\ndifferent topology / same function',GOLD,txt=NAVY)
+setup_box(ax,12.75,1.55,1.9,1.0,'Predictive score +\ncalibration penalty',TEAL)
+ax.annotate('',xy=(10.0,2.05),xytext=(9.3,2.05),arrowprops=dict(arrowstyle='->',color=NAVY,lw=1.5))
+ax.annotate('',xy=(12.7,2.05),xytext=(12.1,2.05),arrowprops=dict(arrowstyle='->',color=NAVY,lw=1.5))
+ax.text(7.5,.45,'Stopping rule: remove topology from the paradigm if it does not add held-out value over semantic and ordinary dynamical baselines.',ha='center',fontsize=9.5)
+ax.set_title('V7 planned setup: topology must earn explanatory value in model comparison',fontsize=14,fontweight='bold')
+
+fig.suptitle('Planned experiment atlas — every arrow is a design commitment, not evidence',fontsize=17,fontweight='bold')
+fig.tight_layout(rect=[0,0,1,.97]); plt.show()
+"""),
+    code(r"""
+planned_designs=pd.DataFrame([
+ ['V5 moral counterfeit','Domination, exclusion, externalized burden, repair/contestability while descriptive coordination is matched','Affected-party outcomes, exit/voice, burden distribution, repair','Coordination-only vs explicit moral bridge','Bridge cannot discriminate without case-by-case adjustment'],
+ ['V6 concept-realization coevolution','Exemplars, testimony, institutional shocks, contexts, phenotypes, learning rates','Local meaning profiles, actions, uptake, public-sign trajectory','Static lexical vs one-rate vs multi-timescale dynamics','No separable timescales or static model predicts equally well'],
+ ['V7 decorated topology','Adversarial system pairs and predeclared invariants','Held-out prediction, calibration, map complexity, invariant preservation','Semantic vs ordinary dynamical vs decorated topology','Topology ties/loses after complexity penalty'],
+],columns=['Experiment','Manipulations','Observables','Required comparison','Decisive failure'])
+display(planned_designs.style.hide(axis='index').set_properties(**{'text-align':'left'}))
 """),
     md(r"""
 ## 7. Formal theorem inventory: what is genuinely machine checked
