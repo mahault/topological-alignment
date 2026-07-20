@@ -97,10 +97,10 @@
       "id": "V2-V3",
       "kind": "constructed_dynamical_simulation",
       "artifact": "docs/V2_VIRTUE_ATTRACTOR_CALIBRATION_SIMULATION.md",
-      "disposition": ["single_setting_passed", "robustness_sweep_required"],
-      "evidence_status": "selective_stability_gates_passed_no_human_data",
-      "permitted_claim": "Within one declared parameterization, slow semantic regulation can combine recovery after noise with retained transformation after diagnostic evidence and can be distinguished from constructed dogmatic, unstable, and opportunistic regimes.",
-      "blockers": ["parameter_sweep", "mechanism_ablation", "latent_context_inference", "vector_learning", "shared_semantics"]
+      "disposition": ["constructed_signature_replicated", "mechanism_claim_narrowed"],
+      "evidence_status": "multi_seed_parameter_sweep_and_ablations_passed_no_human_data",
+      "permitted_claim": "Within the declared simulation family, selective stability occupies a broad sampled parameter region and requires slow-centre learning, evidence-precision gating, context-sensitive semantics, and grounding in enablingness under the tested ablations.",
+      "blockers": ["explicit_attractor_mechanism_not_identified", "efe_necessity_not_identified", "latent_context_inference", "vector_learning", "shared_semantics"]
     },
     {
       "id": "P-REAL",

@@ -75,6 +75,9 @@ class RegimeConfig:
     enabling_preference_weight: float
     subjective_reward_weight: float = 0.0
     subjective_approval_weight: float = 0.0
+    grounding_weight: float = 1.0
+    feature_ablation: str = "none"
+    use_efe_policy: bool = True
 
 
 @dataclass
@@ -146,6 +149,17 @@ def semantic_features(case: ContextCase) -> np.ndarray:
     )
 
 
+def regime_features(case: ContextCase, config: RegimeConfig) -> np.ndarray:
+    features = semantic_features(case)
+    if config.feature_ablation == "none":
+        return features
+    if config.feature_ablation == "no_context_interactions":
+        features = features.copy()
+        features[9:15] = 0.0
+        return features
+    raise ValueError(f"unknown feature ablation: {config.feature_ablation}")
+
+
 def actual_enabling(case: ContextCase) -> tuple[np.ndarray, float]:
     vector, _, _ = enabling_contribution(case.phenotype, case.process)
     return vector, float(vector.mean())
@@ -153,7 +167,7 @@ def actual_enabling(case: ContextCase) -> tuple[np.ndarray, float]:
 
 def subjective_target(config: RegimeConfig, process: Process, actual: float) -> float:
     return (
-        actual
+        config.grounding_weight * actual
         + config.subjective_reward_weight * (2.0 * process.reward_probability - 1.0)
         + config.subjective_approval_weight * (2.0 * process.approval_probability - 1.0)
     )
@@ -203,7 +217,9 @@ def efe_felt_signal(
     state: SemanticState, case: ContextCase, config: RegimeConfig
 ) -> float:
     process = case.process
-    predicted_enabling = float(state.weights @ semantic_features(case))
+    predicted_enabling = float(state.weights @ regime_features(case, config))
+    if not config.use_efe_policy:
+        return predicted_enabling
     enabling_probability = 1.0 / (1.0 + np.exp(-5.0 * np.clip(predicted_enabling, -4, 4)))
     accept_cost = (
         config.reward_preference_weight
@@ -290,7 +306,7 @@ def _train_phase(
         observed = target + rng.normal(0.0, observation_noise)
         update_semantics(
             state,
-            semantic_features(case),
+            regime_features(case, config),
             observed,
             evidence_precision,
             diagnosticity,

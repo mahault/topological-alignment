@@ -50,6 +50,9 @@ updates, EFE-derived feeling, and captured institutional priors is
 The next constructed dynamical test—virtue as selective stability of meaning relative
 to goodness—is documented in
 [V2/V3 Virtue-Attractor Simulation](docs/V2_VIRTUE_ATTRACTOR_CALIBRATION_SIMULATION.md).
+Its relationship to the semantic, social, and multi-agent machinery already built in
+sibling projects is assessed in the
+[Cross-Project Integration Assessment](docs/CROSS_PROJECT_INTEGRATION_ASSESSMENT_2026-07-20.md).
 The first explicit probabilistic model is the
 [Finite Active-Inference Externalization Counterexample](docs/FINITE_ACTIVE_INFERENCE_COUNTEREXAMPLE.md).
 

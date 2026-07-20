@@ -1,0 +1,58 @@
+{
+  "schema_version": "1.0",
+  "study": "V2/V3 robustness sweep and mechanism ablations",
+  "epistemic_status": "constructed parameter sweep; no human or moral validation",
+  "run": {
+    "command": "python -B experiments/exp_v2_robustness_sweep.py --sweep-seed 16000 --configurations 48",
+    "base_commit": "683ff5fe1b0906d9ff91382f0bffb74df2fb0e59",
+    "source_sha256": "0BB7A53B7AB1D8D5536ED2D27B2E737F9E98F3260BCA9253D6712D55DC7678FB",
+    "model_source_sha256": "5F32BE275CEC44362F9779F8976A12B39528883F958962947D08E5EC9AD609BF",
+    "python": "3.12.10",
+    "numpy": "2.4.6",
+    "sweep_seed": 16000,
+    "environment_seeds": [16100, 16200, 16300]
+  },
+  "configuration_count": 48,
+  "robust_configuration_count": 41,
+  "robust_configuration_fraction": 0.8541666666666666,
+  "per_gate_pass_rates": {
+    "baseline_calibration": 1.0,
+    "noise_stability": 0.8958333333333334,
+    "recovery": 1.0,
+    "retained_policy_improvement": 1.0,
+    "retained_transformation": 1.0,
+    "slow_centre_revision": 1.0
+  },
+  "robust_parameter_region": {
+    "attractor_precision": {"min": 0.020606373096373365, "median": 0.07147857705211078, "max": 0.294217290969599},
+    "diagnostic_gain": {"min": 0.404822414643699, "median": 0.8118933856979602, "max": 1.2924706006256645},
+    "fast_learning_rate": {"min": 0.016209270008358805, "median": 0.032624330037880865, "max": 0.06312931758446012},
+    "minimum_evidence_precision": {"min": 0.004024887661555155, "median": 0.07287920345046668, "max": 0.19320136641017482},
+    "slow_learning_rate": {"min": 0.0045590052719413875, "median": 0.025408619477844258, "max": 0.06978178243515397}
+  },
+  "ablations": {
+    "full_model": {"seed_pass_count": 3, "robust_pass": true},
+    "no_slow_centre_learning": {"seed_pass_count": 0, "robust_pass": false},
+    "no_precision_gating": {"seed_pass_count": 0, "robust_pass": false},
+    "no_attractor": {"seed_pass_count": 3, "robust_pass": true},
+    "no_context_interactions": {"seed_pass_count": 0, "robust_pass": false},
+    "no_goodness_grounding": {"seed_pass_count": 0, "robust_pass": false},
+    "no_efe_policy_mapping": {"seed_pass_count": 3, "robust_pass": true}
+  },
+  "gates": {
+    "nonzero_robust_region": true,
+    "not_everything_passes": true,
+    "full_model_replicates": true,
+    "slow_centre_is_necessary": true,
+    "precision_gating_is_necessary": true,
+    "context_interactions_are_necessary": true,
+    "goodness_grounding_is_necessary": true,
+    "all_gates_pass": true
+  },
+  "interpretive_limits": [
+    "The sweep samples an authored parameter box rather than an independently specified population of agents.",
+    "Passing without the explicit attractor-pull term means this experiment does not identify that term as the source of attractor dynamics.",
+    "Passing without the EFE policy mapping means the selective-stability signature alone does not identify EFE as necessary.",
+    "The study contains no multi-agent shared semantics, cooperation, human data, or validation of moral goodness."
+  ]
+}

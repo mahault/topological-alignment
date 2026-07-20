@@ -411,7 +411,12 @@ computed goodness target:
 
 The V2/V3 constructed simulation operationalizes selective stability: recovery after
 low-precision noise, but slow meaning transformation after diagnostic evidence that
-reduces calibration error. One parameter setting passes; robustness is not yet shown.
+reduces calibration error. A multi-seed sweep reproduced the signature for 41/48
+sampled parameter configurations. Ablations support the necessity, within this model,
+of slow-centre learning, evidence-precision gating, context interactions, and
+goodness-grounding. They do not support the necessity of the explicit attraction
+term or the EFE policy mapping. The current result therefore establishes a robust
+constructed signature, not a uniquely identified active-inference mechanism.
 
 Virtue should not be assigned to one parameter without evidence. Candidate components
 include:

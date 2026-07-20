@@ -5,7 +5,7 @@
   "run": {
     "command": "python -B experiments/exp_v2_virtue_attractor.py --seed 13000",
     "base_commit": "176d5901cbc5e6efb6b836f408882d5f9dbc83f2",
-    "source_sha256": "6E08B540439A9EAD5921C4BC7946D60E811BFA1E875151807CA3ED86E92B3FFC",
+    "source_sha256": "5F32BE275CEC44362F9779F8976A12B39528883F958962947D08E5EC9AD609BF",
     "python": "3.12.10",
     "numpy": "2.4.6",
     "seed": 13000

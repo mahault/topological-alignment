@@ -162,10 +162,13 @@ semantic and ordinary dynamical baselines on held-out adversarial cases.
 3. **Complete for the finite model:** V1 computes multi-scale enabling interventions,
    VFE updates, EFE contrasts, capture failures, and phenotype reversal. Next extend
    the simulation to slow virtue regimes, adaptive recovery, and dogmatic return.
-4. **Complete for one constructed setting:** V2/V3 implements virtue as selective
-   stability of meaning relative to goodness and distinguishes calibrated, dogmatic,
-   unstable, and opportunistic regimes. Next run parameter sweeps and mechanism
-   ablations before proceeding to shared semantics.
+4. **Constructed robustness complete, claim narrowed:** V2/V3 implements virtue as
+   selective stability of meaning relative to goodness. Its signature replicated in
+   41/48 sampled configurations across three environments. Ablations require slow
+   learning, precision gating, context-sensitive meaning, and goodness-grounding, but
+   do not identify the explicit attractor pull or EFE policy mapping as necessary.
+   Proceed to the identified multi-agent V4 design without treating those two terms
+   as established mechanisms.
 5. Add held-out adversarial variants rather than evaluating authored flags directly.
 6. **Complete:** the first finite probabilistic active-inference counterexample has an
    explicit likelihood, transition model, preferences, Bayesian posterior, two EFE
@@ -192,6 +195,7 @@ python ..\benchmarks\validate_coordination_diagnostics.py
 python ..\benchmarks\validate_v0_measurement_identification.py
 python ..\benchmarks\validate_v1_multiscale_enabling.py
 python ..\benchmarks\validate_v2_virtue_attractor.py
+python ..\benchmarks\validate_v2_robustness_sweep.py
 ```
 
 Every completed formal milestone must build without `sorry` or `admit`. Every
