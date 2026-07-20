@@ -206,6 +206,10 @@ Validate that participants distinguish immediate felt goodness, expected consequ
 social approval, explicit reason, virtue label, and later reflective judgment. Verify
 that asking for reasons does not erase the pre-reflective measurement.
 
+**Current status:** protocol and adversarial design-recovery simulation complete; all
+six simulation gates pass. No human data have been collected. See
+[V0 Felt-Goodness Measurement Pilot](V0_FELT_GOODNESS_MEASUREMENT_PILOT.md).
+
 ### V1 — Felt goodness and hidden enabling dependencies
 
 Use matched scenarios with the same immediate reward and approval but different

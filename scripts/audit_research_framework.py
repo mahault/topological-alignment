@@ -7,6 +7,7 @@ empirical claims, or the truth of external sources.
 from __future__ import annotations
 
 import json
+import hashlib
 import re
 from pathlib import Path
 
@@ -104,6 +105,25 @@ def experiment_ledger_errors() -> list[str]:
     return errors
 
 
+def v0_result_errors() -> list[str]:
+    errors: list[str] = []
+    result_path = ROOT / "benchmarks" / "v0_measurement_identification_results.json"
+    result = json.loads(result_path.read_text("utf-8"))
+    if result.get("epistemic_status") != "design recovery only; not human evidence":
+        errors.append("V0 result ledger overstates its epistemic status")
+    gates = result.get("gates", {})
+    component_gates = {key: value for key, value in gates.items() if key != "all_gates_pass"}
+    if not component_gates or gates.get("all_gates_pass") != all(component_gates.values()):
+        errors.append("V0 result ledger gate summary is inconsistent")
+    source = ROOT / "experiments" / "exp0_measurement_identification.py"
+    normalized = source.read_text("utf-8").replace("\r\n", "\n").encode("utf-8")
+    actual_hash = hashlib.sha256(normalized).hexdigest().upper()
+    expected_hash = result.get("run", {}).get("source_sha256")
+    if actual_hash != expected_hash:
+        errors.append("V0 result ledger source hash does not match simulation source")
+    return errors
+
+
 def run() -> list[str]:
     return [
         *markdown_link_errors(),
@@ -111,6 +131,7 @@ def run() -> list[str]:
         *lean_errors(),
         *toolchain_errors(),
         *experiment_ledger_errors(),
+        *v0_result_errors(),
     ]
 
 
@@ -121,4 +142,4 @@ if __name__ == "__main__":
         for failure in failures:
             print(f"- {failure}")
         raise SystemExit(1)
-    print("PASS: links, citations, Lean placeholders, toolchain, and experiment ledger")
+    print("PASS: links, citations, Lean placeholders, toolchain, and result ledgers")

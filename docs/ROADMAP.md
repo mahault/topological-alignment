@@ -56,7 +56,7 @@ metastability.
 |---|---|---|---|
 | 2A.1 Canonical definitions | Complete | ground, signal, disposition, calibration, and justification are non-circularly separated | `MULTISCALE_GOODNESS_AND_VIRTUE_ATTRACTORS.md` |
 | 2A.2 Repository-wide audit | Complete | every existing experiment and pipeline receives a keep/reinterpret/redesign/rerun decision | `EXPERIMENT_DEFINITION_PIPELINE_REVIEW_2026-07-19.md` |
-| 2A.3 Measurement model | Planned | immediate feeling, expected consequence, approval, reasons, and reflective judgment are distinguishable |
+| 2A.3 Measurement model | Design recovery complete | adversarial simulation separates immediate feeling, expected consequence, approval, reasons, and reflective judgment; human pilot remains | `V0_FELT_GOODNESS_MEASUREMENT_PILOT.md` |
 | 2A.4 Enabling intervention set | Planned | matched manipulations identify individual and higher-scale contributions without using moral labels as outcomes |
 | 2A.5 Nested-enabling pilot | Planned | nested model is recoverable and discriminable from comfort, reward, conformity, and individual-viability baselines |
 
@@ -87,8 +87,8 @@ calibrated to enabling relations.
 
 | Milestone | Status | Exit criterion |
 |---|---|---|
-| 3.1 Construct and temporal-order validation | Planned | virtue identity, feeling, predictions, reasons, and judgments are separately reliable |
-| 3.2 Pilot and parameter recovery | Planned | M0--M7 are identifiable on simulated and pilot data |
+| 3.1 Construct and temporal-order validation | Protocol complete; human pilot planned | virtue identity, feeling, predictions, reasons, and judgments are separately reliable |
+| 3.2 Pilot and parameter recovery | V0 simulation passed | M0--M7 are identifiable on simulated and pilot data; current result covers the V0 measurement subset |
 | 3.3 Preregistered felt-goodness study | Planned | enabling manipulations, exclusions, outcomes, and model comparison are frozen |
 | 3.4 Held-out context test | Planned | nested transformed-regime model beats proxy, trait, situation, and fixed-regime baselines |
 | 3.5 Perturbation test | Planned | recovery after noise and revision after diagnostic harm evidence are distinguished |
@@ -150,9 +150,10 @@ semantic and ordinary dynamical baselines on held-out adversarial cases.
 1. Repair reproducibility blockers, then bind every statistic and figure to data
    hashes, commit ID, environment, and a serialized result ledger. Real-data results
    remain unreproduced; EEG and Reddit require redesign before rerun.
-2. Build and simulate V0/V1 with temporal separation of feeling, prediction,
-   justification, evidence reveal, and revision.
-3. Construct matched multi-scale enabling interventions and obtain independent,
+2. **Complete for design recovery:** V0 temporally separates feeling, prediction,
+   justification, evidence reveal, and revision and passes adversarial simulations.
+   Next, implement the human item pilot.
+3. Construct matched V1 multi-scale enabling interventions and obtain independent,
    blinded review of scenarios, benchmark labels, and decorations.
 4. Add held-out adversarial variants rather than evaluating authored flags directly.
 5. **Complete:** the first finite probabilistic active-inference counterexample has an
@@ -177,6 +178,7 @@ cd formal
 lake build
 python counterexamples\empowerment_not_reachability.py
 python ..\benchmarks\validate_coordination_diagnostics.py
+python ..\benchmarks\validate_v0_measurement_identification.py
 ```
 
 Every completed formal milestone must build without `sorry` or `admit`. Every

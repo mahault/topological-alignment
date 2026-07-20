@@ -41,6 +41,9 @@ practical wisdom, and virtue attractors is
 [Multi-Scale Goodness and Virtue Attractors](docs/MULTISCALE_GOODNESS_AND_VIRTUE_ATTRACTORS.md).
 The repository-wide disposition of every experiment, definition, and pipeline is in
 the [Experiment, Definition, and Pipeline Review of 2026-07-19](docs/EXPERIMENT_DEFINITION_PIPELINE_REVIEW_2026-07-19.md).
+The first redesigned study and its successful adversarial design-recovery simulation
+are documented in the
+[V0 Felt-Goodness Measurement Pilot](docs/V0_FELT_GOODNESS_MEASUREMENT_PILOT.md).
 The first explicit probabilistic model is the
 [Finite Active-Inference Externalization Counterexample](docs/FINITE_ACTIVE_INFERENCE_COUNTEREXAMPLE.md).
 
@@ -498,6 +501,11 @@ This synthesis suggests several directions for theoretical and empirical work:
    distinguish adaptive virtue regimes from rigid but locally stable forms of grip.
 10. Replace individual empowerment with measures of self-, other-, and joint
    empowerment, and test these separately from willingness to accept correction.
+
+The current executable milestone is V0. Its simulation shows that the proposed
+balanced, temporally separated measurement design can recover a programmed
+multi-scale signal and reject proxy-only, confounded, and prompt-contaminated cases.
+It is a design check, not human evidence.
 
 The resulting view treats ethical agency as a circular, multiscale process:
 

@@ -78,11 +78,11 @@
     {
       "id": "V0",
       "kind": "planned_human_experiment",
-      "artifact": "docs/FIRST_EXPERIMENT_REGULATORY_INVARIANCE.md",
-      "disposition": ["plan"],
-      "evidence_status": "not_run",
-      "permitted_claim": "No empirical claim.",
-      "blockers": ["measurement_design", "ethics_review", "preregistration"]
+      "artifact": "docs/V0_FELT_GOODNESS_MEASUREMENT_PILOT.md",
+      "disposition": ["design_recovery_complete", "human_pilot_planned"],
+      "evidence_status": "simulation_gates_passed_no_human_data",
+      "permitted_claim": "The programmed measurement process is identifiable under the simulated balanced design and fails diagnostic controls appropriately.",
+      "blockers": ["human_item_validation", "ethics_review", "preregistration"]
     },
     {
       "id": "V1",

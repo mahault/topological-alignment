@@ -5,6 +5,8 @@
 > expected consequences, social approval, explicit justification, and later reflective
 > judgment can be measured separately. The canonical definitions are in
 > [Multi-Scale Goodness and Virtue Attractors](MULTISCALE_GOODNESS_AND_VIRTUE_ATTRACTORS.md).
+> The prerequisite protocol and design-recovery results are in the
+> [V0 Felt-Goodness Measurement Pilot](V0_FELT_GOODNESS_MEASUREMENT_PILOT.md).
 
 ## The question
 

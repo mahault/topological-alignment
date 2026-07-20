@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0",
+  "study": "V0 measurement-identification simulation",
+  "epistemic_status": "design recovery only; not human evidence",
+  "run": {
+    "command": "python -B experiments/exp0_measurement_identification.py --replicates 50 --base-seed 7000",
+    "base_commit": "5e7d30e1f8e1d786ba1340ba75bc4a3fee311144",
+    "source_sha256": "147A6A577A08FD6FDF3B3626C7E13EE2A4E62B83069AB9EFC3D9205DA8389369",
+    "python": "3.12.10",
+    "numpy": "2.4.6",
+    "replicates": 50,
+    "base_seed": 7000,
+    "participants": 180,
+    "context_families": 12,
+    "trials_per_family": 2,
+    "folds": 4
+  },
+  "gates": {
+    "nested_increment_detected": true,
+    "evidence_revision_detected": true,
+    "proxy_false_positive_controlled": true,
+    "confounding_flagged": true,
+    "prompt_contamination_detected": true,
+    "nested_signs_recovered": true,
+    "all_gates_pass": true
+  },
+  "primary_results": {
+    "nested": {
+      "nested_delta_r2": {"median": 0.07440243945803393, "p05": 0.06284322951086282, "p95": 0.0895071339395749},
+      "revision_delta_r2": {"median": 0.10636595639782126, "p05": 0.0905322582043651, "p95": 0.12036217361725872},
+      "design_condition_number": {"median": 2.330664203439586, "p05": 2.290114278818773, "p95": 2.3902646950886126},
+      "feeling_justification_correlation": {"median": 0.5506469374449674, "p05": 0.5339681760868115, "p95": 0.5741820460313023},
+      "nested_coefficient_signs": {"median": 4.0, "p05": 4.0, "p95": 4.0}
+    },
+    "proxy_only": {
+      "nested_delta_r2": {"median": -0.0008963119175472989, "p05": -0.0020812262629121446, "p95": 0.000392068519243754},
+      "revision_delta_r2": {"median": -0.0012007952482222528, "p05": -0.0028184491562057044, "p95": 0.00015064907732818543}
+    },
+    "confounded": {
+      "nested_delta_r2": {"median": -0.0003323560455747998, "p05": -0.0011737957342810355, "p95": 0.00024109583601812347},
+      "design_condition_number": {"median": 133.39569533597552, "p05": 131.26073786860343, "p95": 136.03915774155416}
+    },
+    "prompt_contaminated": {
+      "nested_delta_r2": {"median": 0.0450823601807977, "p05": 0.0366205825195181, "p95": 0.0570863265834856},
+      "feeling_justification_correlation": {"median": 0.8143075374557645, "p05": 0.806889334683986, "p95": 0.8210610671708911}
+    }
+  },
+  "limitations": [
+    "linear Gaussian data-generating process",
+    "OLS recovery rather than the planned hierarchical human model",
+    "simulated effects are assumptions, not human effect-size estimates",
+    "context families, rather than participants, are held out",
+    "no empirical evidence about goodness, virtue, or active inference"
+  ]
+}
