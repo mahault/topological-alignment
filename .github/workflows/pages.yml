@@ -34,8 +34,9 @@ jobs:
         shell: bash
         run: |
           mkdir -p _site
-          cp notebooks/RESEARCH_DASHBOARD.html _site/index.html
+          cp notebooks/where_we_are.html _site/index.html
           cp notebooks/where_we_are.html _site/where-we-are.html
+          cp notebooks/RESEARCH_DASHBOARD.html _site/summary.html
           touch _site/.nojekyll
 
       - name: Upload GitHub Pages artifact
