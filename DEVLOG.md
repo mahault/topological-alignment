@@ -50,3 +50,5 @@
   `Active_Inference_Social_Lock_In` feed the proposed V4 experiment.
 - Added executed notebook and standalone HTML dashboards explaining the theory,
   evidence ladder, robustness results, claim boundaries, and next experiment.
+- Added a GitHub Pages deployment that publishes only the two self-contained visual
+  dashboards for stable collaborator-facing links.

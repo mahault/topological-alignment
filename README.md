@@ -7,6 +7,11 @@ projects, and next experiment, open the
 An alternative presentation-oriented rendering is available as the
 [Research Dashboard notebook](notebooks/RESEARCH_DASHBOARD.ipynb) and
 [Research Dashboard HTML](notebooks/RESEARCH_DASHBOARD.html).
+The public collaborator-facing versions are the
+[GitHub Pages research dashboard](https://mahault.github.io/topological-alignment/)
+and the [detailed visual guide](https://mahault.github.io/topological-alignment/where-we-are.html).
+Deployment and update instructions are in
+[Public Research Dashboard](docs/GITHUB_PAGES.md).
 
 ## Virtue, pragmatics, and active inference
 
