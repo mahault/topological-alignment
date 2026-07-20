@@ -31,13 +31,13 @@
     "slow_learning_rate": {"min": 0.0045590052719413875, "median": 0.025408619477844258, "max": 0.06978178243515397}
   },
   "ablations": {
-    "full_model": {"seed_pass_count": 3, "robust_pass": true},
-    "no_slow_centre_learning": {"seed_pass_count": 0, "robust_pass": false},
-    "no_precision_gating": {"seed_pass_count": 0, "robust_pass": false},
-    "no_attractor": {"seed_pass_count": 3, "robust_pass": true},
-    "no_context_interactions": {"seed_pass_count": 0, "robust_pass": false},
-    "no_goodness_grounding": {"seed_pass_count": 0, "robust_pass": false},
-    "no_efe_policy_mapping": {"seed_pass_count": 3, "robust_pass": true}
+    "full_model": {"seed_pass_count": 3, "robust_pass": true, "gate_pass_rates": {"baseline_calibration": 1.0, "noise_stability": 1.0, "recovery": 1.0, "retained_transformation": 1.0, "retained_policy_improvement": 1.0, "slow_centre_revision": 1.0}},
+    "no_slow_centre_learning": {"seed_pass_count": 0, "robust_pass": false, "gate_pass_rates": {"baseline_calibration": 1.0, "noise_stability": 1.0, "recovery": 1.0, "retained_transformation": 0.3333333333333333, "retained_policy_improvement": 0.3333333333333333, "slow_centre_revision": 0.0}},
+    "no_precision_gating": {"seed_pass_count": 0, "robust_pass": false, "gate_pass_rates": {"baseline_calibration": 1.0, "noise_stability": 0.0, "recovery": 0.3333333333333333, "retained_transformation": 1.0, "retained_policy_improvement": 0.6666666666666666, "slow_centre_revision": 1.0}},
+    "no_attractor": {"seed_pass_count": 3, "robust_pass": true, "gate_pass_rates": {"baseline_calibration": 1.0, "noise_stability": 1.0, "recovery": 1.0, "retained_transformation": 1.0, "retained_policy_improvement": 1.0, "slow_centre_revision": 1.0}},
+    "no_context_interactions": {"seed_pass_count": 0, "robust_pass": false, "gate_pass_rates": {"baseline_calibration": 1.0, "noise_stability": 1.0, "recovery": 1.0, "retained_transformation": 0.3333333333333333, "retained_policy_improvement": 0.0, "slow_centre_revision": 1.0}},
+    "no_goodness_grounding": {"seed_pass_count": 0, "robust_pass": false, "gate_pass_rates": {"baseline_calibration": 0.0, "noise_stability": 1.0, "recovery": 1.0, "retained_transformation": 0.0, "retained_policy_improvement": 0.0, "slow_centre_revision": 1.0}},
+    "no_efe_policy_mapping": {"seed_pass_count": 3, "robust_pass": true, "gate_pass_rates": {"baseline_calibration": 1.0, "noise_stability": 1.0, "recovery": 1.0, "retained_transformation": 1.0, "retained_policy_improvement": 1.0, "slow_centre_revision": 1.0}}
   },
   "gates": {
     "nonzero_robust_region": true,
