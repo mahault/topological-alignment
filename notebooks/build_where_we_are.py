@@ -620,6 +620,47 @@ plt.figure(figsize=(12,6)); sns.heatmap(abl,annot=True,fmt='.2g',vmin=0,vmax=1,c
 plt.title('Ablations: explicit pull and EFE mapping are not yet necessary',fontsize=15,fontweight='bold'); plt.xticks(rotation=25,ha='right'); plt.tight_layout(); plt.show()
 """),
     md(r"""
+### Why the mechanism-ablation panel matters for virtue
+
+Section 5 of the shorter dashboard is not merely a technical sensitivity check. It
+asks which parts of the construction earn the right to interpret the simulated
+regime as **virtue-like**, rather than as generic adaptive control.
+
+| Component | Philosophical work it was meant to do | Ablation result | Consequence for the virtue claim |
+|---|---|---|---|
+| Slow-centre learning | Character should persist across situations yet retain genuine learning | Removing it fails | Supports a slow dispositional layer as necessary *in this construction* |
+| Evidence-precision gating | Practical wisdom should distinguish noise from trustworthy counterevidence | Removing it fails | Supports selective, not indiscriminate, stability |
+| Context interactions | The same virtue may rationally reverse action when consequences change | Removing them fails | Supports context-sensitive practical meaning rather than a fixed rule |
+| Goodness grounding | Virtue is a success term, not merely a coherent disposition | Removing it fails | Without calibration to an independent good, the regime cannot count as virtue-like |
+| Explicit attraction pull | “Attractor” was proposed as the mechanism of return | Removing it still passes | We cannot claim the explicit pull causes the signature; “attractor” is currently descriptive |
+| EFE policy mapping | Active inference was proposed as the distinctive pragmatic bridge | Removing it still passes | EFE is compatible with the result but not yet uniquely explanatory |
+
+Three logical cautions matter:
+
+1. **Failure under ablation is architecture-relative necessity**, not a theorem that
+   every possible virtue must contain that exact parameter.
+2. **Survival under ablation refutes necessity for this test.** It prevents us from
+   presenting attractive terminology as an identified cause.
+3. **No ablation proves moral sufficiency.** Slow learning, precision gating, context
+   sensitivity, and goodness calibration could still occur in a locally successful
+   but dominating social system. V4 and V5 must test shared consequences and the
+   normative bridge.
+
+The positive virtue mapping is therefore currently:
+
+\[
+\underbrace{r_t}_{\text{character}}
++\underbrace{\rho_t d_t}_{\text{practical evidence sensitivity}}
++\underbrace{M(V,c)}_{\text{contextual practical meaning}}
++\underbrace{\operatorname{Cal}(g,\operatorname{En}_P)}_{\text{success condition}}.
+\]
+
+That combination explains why a virtue is stable without being rigid, adaptable
+without being fickle, context-sensitive without being empty, and good without being
+defined by the agent's confidence. Whether it is sufficient for **moral** virtue is
+still open.
+"""),
+    md(r"""
 ### Animation 1 — selective stability (pedagogical one-dimensional projection)
 
 This animation is **not an additional result**. It explains the diagnostic logic in
