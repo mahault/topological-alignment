@@ -223,7 +223,7 @@ def research_guide_errors() -> list[str]:
     html = html_path.read_text("utf-8")
     if html.count("function Animation(frames") < 2:
         errors.append("research guide: fewer than two embedded animations")
-    if 'content="matplotlib-mathtext-inline-svg-v2"' not in html:
+    if 'content="matplotlib-mathtext-inline-svg-v3"' not in html:
         errors.append("research guide: equations are not rendered as inline SVG")
     if html.count('<svg class="static-math ') < 30:
         errors.append("research guide: fewer than thirty inline equation SVGs")

@@ -39,7 +39,29 @@ INLINE_EQUATION_SVG = re.compile(
 
 
 def normalized_tex(source: str) -> str:
-    return " ".join(unescape(source).strip().split())
+    tex = " ".join(unescape(source).strip().split())
+    # MathJax accepts unbraced alphabet switches such as ``\mathcal A`` while
+    # Matplotlib MathText requires an explicit group.
+    tex = re.sub(
+        r"\\(mathcal|mathbb|mathbf)\s+([A-Za-z])",
+        r"\\\1{\2}",
+        tex,
+    )
+    tex = re.sub(r"\\(le|ge|ne)(?![A-Za-z])", r"\\\1q", tex)
+    tex = re.sub(
+        r"\\xrightarrow\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}",
+        r"\\overset{\1}{\\longrightarrow}",
+        tex,
+    )
+    return (
+        tex.replace(r"\land", r"\wedge")
+        .replace(r"\lor", r"\vee")
+        .replace(r"\lVert", r"\Vert")
+        .replace(r"\rVert", r"\Vert")
+        # MathText has no underbrace; retaining the labelled subscript preserves
+        # the explanatory decomposition without displaying raw TeX.
+        .replace(r"\underbrace", "")
+    )
 
 
 def write_html(path: Path, html: str) -> None:
@@ -77,7 +99,7 @@ def equation_image(source: str, *, display: bool, namespace_key: str) -> str:
     tex = normalized_tex(source)
     buffer = BytesIO()
     math_to_image(
-        tex,
+        f"${tex}$",
         buffer,
         format="svg",
         dpi=180,
@@ -94,29 +116,41 @@ def equation_image(source: str, *, display: bool, namespace_key: str) -> str:
 
 def render(path: Path) -> tuple[int, int]:
     html = path.read_text(encoding="utf-8")
-    if 'content="matplotlib-mathtext-inline-svg-v2"' in html:
+    if 'content="matplotlib-mathtext-inline-svg-v3"' in html:
         write_html(path, html)
         return 0, 0
 
-    if 'content="matplotlib-mathtext-inline-svg"' in html:
+    if (
+        'content="matplotlib-mathtext-inline-svg-v2"' in html
+        or 'content="matplotlib-mathtext-inline-svg"' in html
+    ):
         display_count = 0
         inline_count = 0
 
-        def namespace_existing(match: re.Match[str]) -> str:
+        def rerender_existing(match: re.Match[str]) -> str:
             nonlocal display_count, inline_count
-            element, kind, _label = match.groups()
+            _element, kind, label = match.groups()
             if kind == "display":
                 display_count += 1
                 ordinal = display_count
             else:
                 inline_count += 1
                 ordinal = inline_count
-            return namespace_ids(element, f"{kind}-{ordinal}")
+            return equation_image(
+                unescape(label),
+                display=kind == "display",
+                namespace_key=f"{kind}-{ordinal}",
+            )
 
-        html = INLINE_EQUATION_SVG.sub(namespace_existing, html)
+        html = INLINE_EQUATION_SVG.sub(rerender_existing, html)
+        html = html.replace(
+            'content="matplotlib-mathtext-inline-svg-v2"',
+            'content="matplotlib-mathtext-inline-svg-v3"',
+            1,
+        )
         html = html.replace(
             'content="matplotlib-mathtext-inline-svg"',
-            'content="matplotlib-mathtext-inline-svg-v2"',
+            'content="matplotlib-mathtext-inline-svg-v3"',
             1,
         )
         if display_count < 20 or inline_count < 10:
@@ -139,18 +173,17 @@ def render(path: Path) -> tuple[int, int]:
                 display_count += 1
             else:
                 inline_count += 1
-            svg = base64.b64decode(encoded, validate=True).decode("utf-8")
-            return inline_svg(
-                svg,
-                css_class=f"static-math static-math-{kind}",
-                label=unescape(label),
+            base64.b64decode(encoded, validate=True)
+            return equation_image(
+                unescape(label),
+                display=kind == "display",
                 namespace_key=f"{kind}-{display_count if kind == 'display' else inline_count}",
             )
 
         html = LEGACY_EQUATION_IMAGE.sub(migrate_image, html)
         html = html.replace(
             'content="matplotlib-mathtext-svg"',
-            'content="matplotlib-mathtext-inline-svg-v2"',
+            'content="matplotlib-mathtext-inline-svg-v3"',
             1,
         )
         if display_count < 20 or inline_count < 10:
@@ -190,7 +223,7 @@ def render(path: Path) -> tuple[int, int]:
 
     html = TABLE_CELL.sub(replace_cell, html)
     style = """
-<meta name="static-math-renderer" content="matplotlib-mathtext-inline-svg-v2"/>
+<meta name="static-math-renderer" content="matplotlib-mathtext-inline-svg-v3"/>
 <style id="static-math-style">
 .static-math-container { text-align: center; margin: 1.1rem auto; overflow-x: auto; }
 .static-math-display { display: inline-block; max-width: 100%; height: auto; }

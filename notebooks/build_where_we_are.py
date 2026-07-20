@@ -1,7 +1,8 @@
 """Build the claim-by-claim research guide notebook.
 
-The generated notebook is intentionally evidence-bound: numerical plots load the
-archived result ledgers, while animations are explicitly labelled pedagogical.
+The generated notebook is intentionally evidence-bound: numerical plots load only
+current, reproducible result ledgers, while animations are explicitly labelled
+pedagogical. Historical or non-acceptance-ready results are omitted from the guide.
 """
 
 from __future__ import annotations
@@ -308,6 +309,8 @@ if not (ROOT / 'benchmarks').exists():
 def load_json(path):
     return json.loads((ROOT / path).read_text(encoding='utf-8'))
 
+v0 = load_json('benchmarks/v0_measurement_identification_results.json')
+v1_results = load_json('benchmarks/v1_multiscale_enabling_results.json')
 v2 = load_json('benchmarks/v2_virtue_attractor_results.json')
 robust = load_json('benchmarks/v2_robustness_sweep_results.json')
 
@@ -555,24 +558,42 @@ cells.extend([
 The programme is cumulative. Each experiment exists because the previous one leaves
 one specific ambiguity unresolved. This table shows how the hypotheses were earned
 rather than merely announced.
+
+<div class="warningbox"><b>Display rule.</b> This public guide does not show archived,
+historical, or non-acceptance-ready results. A result is shown only when the executable
+and a machine-readable ledger are committed and pass the repository audit. "Run" below
+means a simulation was run; it does not mean that a human experiment was conducted.</div>
 """),
     code(r"""
 experiment_genealogy=pd.DataFrame([
- ['Legacy E-C1','Can topology distinguish deliberately different update regimes?','Synthetic belief-network trajectories; persistence and operator summaries','Constructed separation is feasible','Topology might describe belief-generating dynamics','Sanity check only; psychological labels withdrawn'],
- ['Legacy E-C2','Can curvature recover injected dyadic synchrony?','Synthetic EEG plus an unreproducible/confounded real pipeline','Injected synchrony is detectable','Dyadic dynamics may carry coordination information','Real cooperation claim retired; redesign required'],
- ['Legacy E-C3','Can embedding-cloud geometry summarize discourse?','Synthetic/Reddit semantic point clouds and persistence','Geometry summarizes clouds','Semantic organization may have measurable structure','Not an attractor; real result unreproduced'],
- ['Legacy E-C4','Can Fisher/GW comparisons work on constructed systems?','Synthetic Gaussian paths and relational structures','Selected geometry computations work','Decorated topology may compare dynamical organizations','Mathematical feasibility only'],
- ['V0','Is felt goodness separable from reward, approval, predictions, and reasons?','Factorially varied vignettes; temporally separated reports; hidden evidence reveal','Constructed design is identifiable','Goodness can be modeled as a fallible felt heuristic','Human item pilot still required'],
- ['V1','Can that heuristic be calibrated to an independent functional target?','Finite phenotypes and higher-scale processes; remove/scramble interventions; VFE inference; EFE policy','Counterfactual enablingness, capture failures, and phenotype reversals reproduce','Felt goodness can estimate phenotype-relative enablingness','Finite-model evidence only'],
- ['V2/V3','What dynamics distinguish virtue from rigidity, instability, and opportunism?','Four authored regimes; noise, recovery, diagnostic transformation, washout','Selective-stability diagnostics separate the regimes','Virtue may be slow calibration of meaning to goodness','Constructed mechanism-discrimination result'],
- ['Robustness','Is V2 one hand-tuned point?','48 sampled parameter configurations in three environments; six gates','41/48 pass every gate in every environment','The signature occupies a broad sampled region','Authored parameter box'],
- ['Ablations','Which components actually explain the V2 signature?','Remove slow learning, precision gating, context interactions, goodness grounding, explicit pull, or EFE mapping','First four break; explicit pull and EFE removal do not','Narrow virtue mapping and downgrade unsupported mechanism claims','Architecture-relative necessity only'],
- ['V4 next','Can shared meaning, coupling, and goodness be experimentally separated?','Factorial dyads varying sign, translation, coupling, and affected-party outcomes','Not yet run','Virtue should stabilize jointly enabling shared meaning','Decisive next simulation'],
- ['V5 planned','Can stable shared coordination still be morally counterfeit?','Matched domination, exploitation, exclusion, and repair cases','Not yet run','Functional success is not sufficient for moral virtue','Tests normative bridge'],
- ['V6 planned','How do public virtue concepts and local realizations co-evolve?','Longitudinal testimony, exemplars, institutions, perturbations, and multiple learning rates','Not yet run','Concept and enactment should change on separable timescales','Social-attractor test'],
- ['V7 planned','Does topology add anything after constructs are identified?','Held-out adversarial pairs; semantic and ordinary dynamical baselines','Not yet run','Decorated topology should add predictive value','Topology removed if baselines tie or win'],
-],columns=['Experiment','Question inherited from prior stage','Setup','Result/status','Hypothesis it motivates or tests','Permitted inference'])
+ ['V0','RUN: simulation only','Can felt goodness be separated from reward, approval, prediction, and reasons?','Factorial simulated vignettes; temporally separated reports; hidden-evidence reveal','Design recovery passed; no human evidence','A human measurement pilot is identifiable enough to attempt'],
+ ['V1','RUN: finite simulation','Can the heuristic be calibrated to an independent functional target?','Finite phenotypes; remove/scramble higher-scale processes; VFE inference; policy contrasts','All finite-model gates passed','Felt goodness can be modelled as a fallible estimate of phenotype-relative enablingness'],
+ ['V2/V3','RUN: constructed simulation','What dynamics distinguish virtue from rigidity, instability, and opportunism?','Four authored regimes; noise, recovery, diagnostic transformation, washout','Selective-stability gates passed','Virtue may have a selective-stability signature'],
+ ['Robustness','RUN: parameter sweep','Is V2 one hand-tuned point?','48 parameter configurations in three environments; six gates','41/48 pass every gate in every environment','The signature occupies a broad sampled region of the authored box'],
+ ['Ablations','RUN: mechanism tests','Which components explain the V2 signature?','Seven model variants across three environments','Four removals break the signature; two proposed mechanisms survive removal','Narrow the virtue mapping and reject unsupported necessity claims'],
+ ['V4','NOT RUN: next','Can shared meaning, coupling, and goodness be separated?','Factorial dyads varying sign, translation, coupling, and affected-party outcomes','Setup only','Test jointly enabling shared meaning'],
+ ['V5','NOT RUN: planned','Can stable shared coordination still be morally counterfeit?','Matched domination, exploitation, exclusion, and repair cases','Setup only','Test the normative bridge'],
+ ['V6','NOT RUN: planned','How do public virtue concepts and local realizations co-evolve?','Longitudinal perturbations with multiple learning rates','Setup only','Test social attractor dynamics'],
+ ['V7','NOT RUN: planned','Does topology add value after constructs are identified?','Held-out adversarial pairs against semantic and ordinary dynamical baselines','Setup only','Retain topology only if it adds predictive value'],
+],columns=['Experiment','Run status','Question inherited from prior stage','Setup','Evidence available','Permitted inference'])
 display(experiment_genealogy.style.hide(axis='index').set_properties(**{'text-align':'left'}))
+"""),
+    md(r"""
+### Exactly which experiments have been run?
+
+The five rows below are the complete current simulation evidence shown on this page.
+The run sizes come from the committed ledgers, not from captions written after the
+fact. The older exploratory programme is deliberately absent.
+"""),
+    code(r"""
+run_register=pd.DataFrame([
+ ['V0 measurement identification','Simulation','50 replicates; 180 simulated participants; 12 context families','Passed','No human participants'],
+ ['V1 enablingness and EFE calibration','Finite simulation','1,200 scenarios','Passed','No human or moral validation'],
+ ['V2/V3 selective stability','Constructed dynamical simulation','4 authored regimes; seed 13,000','Passed','Mechanism-discrimination only'],
+ ['V2 robustness','Parameter sweep','48 configurations x 3 environment seeds','41/48 robust','Authored parameter box'],
+ ['V2 mechanism ablations','Ablation simulation','7 variants x 3 environment seeds','4 necessary here; 2 proposed mechanisms not necessary','Architecture-relative'],
+],columns=['Run','Evidence class','Scale','Ledger result','Hard limit'])
+display(run_register.style.hide(axis='index').set_properties(**{'text-align':'left'}))
 """),
     md(r"""
 ### Setup template used for every experiment
@@ -596,6 +617,8 @@ display(experiment_genealogy.style.hide(axis='index').set_properties(**{'text-al
 Each trial temporally separates immediate feeling, expected consequences, social
 approval, justification, evidence reveal, and later revision. Hidden enabling
 dependencies let reward and approval disagree with actual consequences.
+
+#### V0 setup diagram
 """),
     code(r"""
 fig,ax=plt.subplots(figsize=(14,3.6)); ax.set_xlim(0,14); ax.set_ylim(0,3); ax.axis('off')
@@ -608,12 +631,66 @@ ax.text(7,2.55,'V0 trial timeline: measurement precedes explanation',ha='center'
 plt.show()
 """),
     md(r"""
+#### V0 result graphs
+
+**Shown because the result is current and reproducible.** The simulation asks whether
+the planned measurement design can recover distinctions programmed into its own
+data-generating process. It is a design-recovery test, not evidence that people
+actually make these distinctions.
+"""),
+    code(r"""
+v0r=v0['primary_results']; nested=v0r['nested']; proxy=v0r['proxy_only']; conf=v0r['confounded']; contam=v0r['prompt_contaminated']
+fig,axes=plt.subplots(2,2,figsize=(13,8))
+
+def interval_bar(ax, labels, stats, title, colors):
+ vals=np.array([s['median'] for s in stats])
+ lo=vals-np.array([s['p05'] for s in stats]); hi=np.array([s['p95'] for s in stats])-vals
+ bars=ax.bar(labels,vals,yerr=np.vstack([lo,hi]),capsize=5,color=colors)
+ ax.axhline(0,color=NAVY,lw=1)
+ ax.bar_label(bars,labels=[f'{v:.3f}' for v in vals],padding=3)
+ ax.set_title(title)
+
+interval_bar(axes[0,0],['separated','proxy only','confounded'],
+ [nested['nested_delta_r2'],proxy['nested_delta_r2'],conf['nested_delta_r2']],
+ 'Incremental signal for nested enablingness (delta R2)',[TEAL,GREY,GOLD])
+interval_bar(axes[0,1],['separated','proxy only'],
+ [nested['revision_delta_r2'],proxy['revision_delta_r2']],
+ 'Hidden evidence predicts later revision (delta R2)',[BLUE,GREY])
+cond=[nested['design_condition_number']['median'],conf['design_condition_number']['median']]
+bars=axes[1,0].bar(['separated','confounded'],cond,color=[TEAL,RED]); axes[1,0].set_yscale('log'); axes[1,0].bar_label(bars,labels=[f'{v:.1f}' for v in cond]); axes[1,0].set_title('Confounding is detected (condition number, log scale)')
+corr=[nested['feeling_justification_correlation']['median'],contam['feeling_justification_correlation']['median']]
+bars=axes[1,1].bar(['separated prompts','contaminated prompts'],corr,color=[TEAL,RED]); axes[1,1].set_ylim(0,1); axes[1,1].bar_label(bars,labels=[f'{v:.2f}' for v in corr]); axes[1,1].set_title('Prompt contamination raises feeling-reason correlation')
+fig.suptitle('V0 simulation results: design recovery and failure controls (not human data)',fontsize=16,fontweight='bold'); fig.tight_layout(); plt.show()
+"""),
+    md(r"""
 ### V1 — counterfactual enablingness and captured active inference
 
 V1 holds the finite world explicit. A higher-scale process is removed or scrambled;
 phenotype outcomes are recomputed; an agent infers hidden process type via VFE and
 selects policies via EFE. Reward-dominant preferences and captured priors create
 predictable miscalibration.
+
+#### V1 setup diagram
+"""),
+    code(r"""
+fig,ax=plt.subplots(figsize=(14,5)); ax.set_xlim(0,14); ax.set_ylim(0,5); ax.axis('off')
+nodes=[
+ (0.3,2.9,2.2,1.0,'Higher-scale process\nintact / removed / scrambled',TEAL),
+ (3.0,2.9,2.0,1.0,'Phenotype dynamics\nneeds + dependencies',TEAL),
+ (5.7,3.25,2.0,1.0,'Counterfactual En(P)\nindependent target',BLUE),
+ (5.7,1.45,2.0,1.0,'Observations\npartial + revealed',GOLD),
+ (8.5,2.9,1.8,1.0,'VFE posterior\nover process type',ORANGE),
+ (10.9,2.9,2.2,1.0,'Policy contrast\ncalibrated or captured',RED),
+]
+for x,y,w,h,label,color in nodes:
+ ax.add_patch(patches.FancyBboxPatch((x,y),w,h,boxstyle='round,pad=.06',fc=color,ec='white'))
+ ax.text(x+w/2,y+h/2,label,ha='center',va='center',fontsize=9,fontweight='bold',color='white')
+for start,end in [((2.5,3.4),(3.0,3.4)),((5.0,3.4),(5.7,3.65)),((7.7,3.65),(8.5,3.4)),((7.7,1.95),(8.5,3.0)),((10.3,3.4),(10.9,3.4))]:
+ ax.annotate('',xy=end,xytext=start,arrowprops=dict(arrowstyle='->',lw=2,color=NAVY))
+ax.annotate('intervention defines ground truth',xy=(4.0,4.45),xytext=(6.7,4.65),ha='center',arrowprops=dict(arrowstyle='->',color=TEAL))
+ax.text(7,0.55,'Capture controls change priors/preferences while the counterfactual target remains fixed',ha='center',fontsize=11,fontweight='bold')
+ax.set_title('V1 setup: independent enablingness target -> inference -> policy',fontsize=16,fontweight='bold')
+plt.show()
 """),
     code(r"""
 v1=pd.DataFrame([
@@ -626,11 +703,53 @@ v1=pd.DataFrame([
 display(v1.style.hide(axis='index').set_properties(**{'text-align':'left'}))
 """),
     md(r"""
+#### V1 result graphs
+
+**Shown because the result is current and reproducible.** The important result is the
+dissociation: post-reveal nested signals track the intervention-defined target,
+captured priors/preferences degrade that calibration, and the same process reverses
+sign for different phenotypes.
+"""),
+    code(r"""
+s=v1_results['summaries']; calibrated=s['calibrated']; captured=s['captured']; reversal=v1_results['phenotype_reversal']
+fig,axes=plt.subplots(1,3,figsize=(15,5)); x=np.arange(4); w=.36
+corr_keys=['corr_proxy_actual','corr_focal_actual','corr_nested_pre_actual','corr_nested_post_actual']
+corr_labels=['reward/approval\nproxy','focal only','nested\npre-reveal','nested\npost-reveal']
+axes[0].bar(x-w/2,[calibrated[k] for k in corr_keys],w,label='calibrated',color=TEAL)
+axes[0].bar(x+w/2,[captured[k] for k in corr_keys],w,label='captured',color=RED)
+axes[0].set_xticks(x,corr_labels); axes[0].set_ylim(-.1,1.08); axes[0].set_title('Correlation with actual enablingness'); axes[0].legend()
+policy_labels=['robust-case\naccuracy','institution-trap\nacceptance']
+axes[1].bar(np.arange(2)-w/2,[calibrated['robust_policy_accuracy'],calibrated['institution_trap_acceptance']],w,label='calibrated',color=TEAL)
+axes[1].bar(np.arange(2)+w/2,[captured['robust_policy_accuracy'],captured['institution_trap_acceptance']],w,label='captured',color=RED)
+axes[1].set_xticks(np.arange(2),policy_labels); axes[1].set_ylim(0,1.08); axes[1].set_title('Capture changes policy quality'); axes[1].legend()
+phenos=['dependency\nintensive','autonomy\nsensitive']; probs=[reversal['dependency_intensive']['accept_probability'],reversal['autonomy_sensitive']['accept_probability']]
+bars=axes[2].bar(phenos,probs,color=[BLUE,GOLD]); axes[2].set_ylim(0,1.08); axes[2].bar_label(bars,labels=[f'{p:.2f}' for p in probs]); axes[2].set_title('Same process, phenotype reversal\n(accept probability)')
+fig.suptitle('V1 finite-simulation results (not human or moral validation)',fontsize=16,fontweight='bold'); fig.tight_layout(); plt.show()
+"""),
+    md(r"""
 ### V2/V3 — selective stability under noise and evidence
 
 The sequence is fixed: settlement, held-out baseline, low-precision perturbation,
 recovery, diagnostic context change, immediate test, ordinary-context washout, and
 retained transformed-context test.
+
+#### V2/V3 setup diagram
+"""),
+    code(r"""
+fig,ax=plt.subplots(figsize=(14,3.6)); ax.set_xlim(0,16); ax.set_ylim(0,3); ax.axis('off')
+phases=[('settle',.25,TEAL),('held-out\nbaseline',2.1,BLUE),('low-precision\nnoise',4.15,GREY),('recovery',6.25,TEAL),('diagnostic\nchange',8.15,GOLD),('immediate\ntest',10.2,ORANGE),('washout',12.1,GREY),('retained\ntest',14.0,RED)]
+for label,x,color in phases:
+ ax.add_patch(patches.FancyBboxPatch((x,1.0),1.55,.85,boxstyle='round,pad=.05',fc=color,ec='white'))
+ ax.text(x+.775,1.43,label,ha='center',va='center',fontsize=8.5,fontweight='bold',color=NAVY if color in [GOLD,GREY] else 'white')
+for a,b in zip(phases[:-1],phases[1:]): ax.annotate('',xy=(b[1]-.05,1.43),xytext=(a[1]+1.6,1.43),arrowprops=dict(arrowstyle='->',color=NAVY,lw=1.6))
+ax.text(8,2.55,'V2/V3 setup: resist noise, recover, then retain diagnostic revision',ha='center',fontsize=15,fontweight='bold')
+plt.show()
+"""),
+    md(r"""
+#### V2/V3 regime result graphs
+
+These panels test whether the programmed diagnostics distinguish selective stability
+from dogmatism, instability, and opportunism.
 """),
     code(r"""
 metrics=pd.DataFrame(v2['primary_results']).T
@@ -641,7 +760,13 @@ axes[0,1].bar(regimes,metrics.loc[regimes,'noise_displacement'],color=cols); axe
 axes[1,0].bar(x-w/2,metrics.loc[regimes,'trap_calibration_before'],w,label='before',color=GREY); axes[1,0].bar(x+w/2,metrics.loc[regimes,'trap_calibration_retained'],w,label='retained',color=BLUE); axes[1,0].set_xticks(x,regimes); axes[1,0].set_title('Transformed-context calibration'); axes[1,0].legend()
 axes[1,1].bar(x-w/2,metrics.loc[regimes,'trap_policy_accuracy_before'],w,label='before',color=GREY); axes[1,1].bar(x+w/2,metrics.loc[regimes,'trap_policy_accuracy_retained'],w,label='retained',color=ORANGE); axes[1,1].set_xticks(x,regimes); axes[1,1].set_title('Transformed-context policy accuracy'); axes[1,1].legend()
 for ax in axes.flat: ax.tick_params(axis='x',rotation=16)
-fig.suptitle('Archived V2/V3 results: four constructed regimes',fontsize=16,fontweight='bold'); fig.tight_layout(); plt.show()
+fig.suptitle('Current V2/V3 simulation results: four constructed regimes',fontsize=16,fontweight='bold'); fig.tight_layout(); plt.show()
+"""),
+    md(r"""
+#### V2 robustness result graphs
+
+The sweep asks whether the selective-stability signature survives away from a single
+hand-authored parameter point.
 """),
     code(r"""
 passed=robust['robust_configuration_count']; total=robust['configuration_count']
@@ -650,6 +775,12 @@ fig,axes=plt.subplots(1,2,figsize=(13,5))
 axes[0].pie([passed,total-passed],labels=['robust','failed ≥1 seed'],colors=[TEAL,GREY],autopct='%1.1f%%',startangle=90,wedgeprops={'width':.42,'edgecolor':'white'}); axes[0].text(0,0,f'{passed}/{total}',ha='center',va='center',fontsize=23,fontweight='bold'); axes[0].set_title('Configurations passing all three environments')
 bars=axes[1].barh(rates.index,rates.values,color=[RED if v<.95 else BLUE for v in rates]); axes[1].set_xlim(0,1.05); axes[1].bar_label(bars,labels=[f'{v:.1%}' for v in rates.values]); axes[1].set_title('Gate pass rates across configuration × environment')
 fig.tight_layout(); plt.show()
+"""),
+    md(r"""
+#### V2 mechanism-ablation result
+
+The heatmap asks which proposed components are necessary for the signature inside
+this architecture.
 """),
     code(r"""
 labels={'full_model':'Full model','no_slow_centre_learning':'− slow centre','no_precision_gating':'− precision gate','no_attractor':'− explicit pull','no_context_interactions':'− context interactions','no_goodness_grounding':'− goodness ground','no_efe_policy_mapping':'− EFE mapping'}
@@ -688,10 +819,7 @@ Three logical cautions matter:
 The positive virtue mapping is therefore currently:
 
 $$
-\underbrace{r_t}_{\text{character}}
-+\underbrace{\rho_t d_t}_{\text{practical evidence sensitivity}}
-+\underbrace{M(V,c)}_{\text{contextual practical meaning}}
-+\underbrace{\operatorname{Cal}(g,\operatorname{En}_P)}_{\text{success condition}}.
+r_t + \rho_t d_t + M(V,c) + \operatorname{Cal}(g,\operatorname{En}_P).
 $$
 
 That combination explains why a virtue is stable without being rigid, adaptable
@@ -729,7 +857,7 @@ def update(frame):
 ani=FuncAnimation(fig,update,frames=range(2,T,2),interval=90,blit=True); animation_html=ani.to_jshtml(fps=12,default_mode='loop'); plt.close(fig); display(HTML(animation_html))
 """),
     md(r"""
-### V4 — the next decisive multi-agent experiment
+### V4 — setup only; the next multi-agent experiment has not run
 
 V4 independently randomizes: shared sign, frame compatibility, causal coupling, and
 affected-party outcome. This creates cases in which dependence, understanding,
