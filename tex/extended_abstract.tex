@@ -1,0 +1,235 @@
+\documentclass[11pt,a4paper]{article}
+
+% ===== Packages =====
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+% This extended abstract carries no equations. It states the framework as a
+% research program and leaves each mathematical construction open, for new
+% collaborators. Information geometry is retained as the one standard foundation.
+%
+% Authorship to be confirmed.
+
+\title{Alignment as the Geometry of Belief-Generating Systems\\
+\large An Extended Abstract and Research Program}
+
+\author{[authors to be confirmed]}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Most current measures of AI alignment evaluate what an agent produces rather
+than how it produces it. Reinforcement learning from human feedback evaluates
+behavior; information-theoretic methods evaluate belief distributions. Neither
+captures the dynamics that generate the beliefs in the first place. Two agents
+can hold the same belief now and still respond differently to new evidence,
+social pressure, or manipulation, because one holds it rigidly and the other
+loosely. We propose treating alignment as a relationship between the systems
+that generate beliefs, described by their attractor landscapes, the paths
+beliefs follow through those landscapes, and the geometry of the landscape
+itself. This abstract sets out the framework, the phenomena it should account
+for, and the patterns we have already found in real data. We keep one standard
+mathematical foundation, information geometry, which gives the space of beliefs
+a curved geometry. The other objects we need, a structural distance between
+belief dynamics, a least-effort belief transition, and a measure of landscape
+curvature, are left as open problems rather than fixed definitions.
+\end{abstract}
+
+\section{The problem}
+
+Current alignment methods work almost entirely on what an agent outputs.
+Preference-based training adjusts behavior to match human choices,
+constitution-based methods impose principles stated as text, and quantitative
+work usually measures the divergence between an agent's output distribution and
+a target.
+
+What these methods miss is the process behind the output. Suppose two agents
+currently assign the same probability to a proposition. Output-level and
+distributional measures call them equally aligned. But one agent may hold the
+belief firmly, with a conviction that resists revision and returns after a
+perturbation, while the other holds it loosely and updates readily. Given new
+information, a deliberate nudge, or a change in their social setting, the two
+agents behave very differently. The first is fragile: aligned now, possibly
+badly misaligned later. The second can track a changing world. Existing
+measures cannot separate the two cases, because the difference is in the
+dynamics and not in the current belief.
+
+\section{The thesis}
+
+\begin{quote}
+\emph{Alignment should be understood as the distance between belief-generating
+dynamical systems, described by their attractor landscapes, the trajectories
+beliefs trace through them, and the curvature of the terrain, rather than as the
+distance between the beliefs those systems currently produce.}
+\end{quote}
+
+This changes several things at once. What we measure becomes the shape of the
+belief-forming process instead of its momentary output. Good alignment becomes
+agreement that survives perturbation. Intervention becomes the reshaping of the
+landscape an agent moves through, which is a different act from overwriting the
+conclusions it currently holds.
+
+\section{The framework}
+
+The program has five stages. None commits to a particular formalism here; each
+identifies a phenomenon and the kind of mathematical object that would capture
+it.
+
+\paragraph{1. The landscape of belief.}
+An agent that updates its beliefs against a stream of experience does not move
+at random. Its beliefs tend to settle into recurring configurations, the
+patterns its reasoning returns to. We call the set of these patterns the
+agent's belief landscape and the stable patterns its attractors. The starting
+point is information geometry, which is standard and which we keep. An agent's
+beliefs are probability distributions, and the space of probability
+distributions has a curved Riemannian geometry in which the distance between
+two beliefs reflects how hard they are to tell apart statistically. This
+supplies the substrate the landscape sits on: a curved manifold of belief
+states with a canonical metric, so that distance, gradient, and curvature are
+already defined. We take that as given. What concerns us is how an agent forms
+and holds beliefs, not only what it currently believes, since the same stated
+opinion can sit in landscapes of very different shape, and the shape is what
+governs behavior under pressure. The first task is to recover the landscape
+from observed behavior: its basins, its connectivity, and its complexity, using
+trajectories alone and without access to the agent's internals.
+
+\paragraph{2. What the landscape means.}
+The geometry has a psychological reading. The depth of a basin reflects the
+cognitive, emotional, and social effort needed to give up a belief; deep basins
+are dogmas and shallow ones are working hypotheses. The ridges between basins
+act as identity barriers, since crossing one can mean leaving a group, a
+self-image, or a social world, so a ridge's height measures the real cost of
+changing one's mind rather than the logical distance between positions. Funnels,
+where many trajectories converge, correspond to shared narratives that draw
+different agents toward a common view. This reading yields testable
+predictions: hesitation and arousal near ridge crossings, resistance to belief
+change that scales with basin depth, and social clustering that follows basin
+membership.
+
+\paragraph{3. Measuring misalignment structurally.}
+This is the central problem and the one most in need of new mathematics. We
+want a distance between two agents that reflects how differently their beliefs
+evolve, not where their beliefs currently sit. Several requirements constrain
+it. Two agents whose current beliefs match but whose landscapes have opposite
+shape, one rigid and one flexible, should come out far apart. Two agents that
+respond to evidence the same way should come out close, even when their
+momentary opinions differ. The distance should be stable under noise and
+short-lived fluctuations, so that it reflects lasting behavior. And it should
+obey the usual axioms of a distance, so that the separations among three or
+more agents stay mutually consistent. We state this as a requirement, not a
+definition. Constructing such a distance between belief-generating systems is
+the main problem we want to work on.
+
+\paragraph{4. The paths beliefs take, and steering them.}
+Beliefs change along trajectories through the landscape, and some trajectories
+are more likely than others. There is a least-effort path: the most probable
+route from one worldview to another, the one that works least against the
+terrain. Knowing these paths is what makes steering possible. The aim is not to
+force an agent across a ridge but to learn which interventions lower a ridge,
+widen a valley, or deepen a basin, and how each changes the routes open to the
+agent. Belief change also runs on several timescales at once, from fast
+perceptual updates through slower revisions of opinion to slow shifts in core
+identity, and the level that matters for comparing and steering agents is the
+slow one, where the durable structure is. Two agents that differ only in fast
+fluctuations but share a slow landscape are aligned in the sense we care about.
+Formalizing the least-effort path and the separation of timescales are two
+further open problems.
+
+\paragraph{5. Which landscapes are desirable.}
+Measuring and steering belief landscapes forces a normative question: which
+landscapes should we steer toward? We suggest four properties of a good one. It
+should be truth-tracking, with attractors that move under genuine evidence and
+hold up against noise and manipulation. It should preserve flexibility, leaving
+agents able to revise their beliefs instead of being trapped in a basin; this
+is the geometric counterpart of corrigibility. It should be cooperatively
+compatible, keeping bounded the cost of reaching mutual understanding among
+agents in a coalition. And it should be pluralistic, supporting many distinct
+but mutually reachable basins, so that agents can hold different worldviews and
+still count as aligned as long as the routes between them stay affordable.
+Alongside these we place constraints on intervention: lower ridges rather than
+push agents over them, keep interventions reversible, share their costs fairly,
+and act only at a level the agent can understand and consent to.
+
+\section{Empirical support}
+
+The quantities the framework posits can be measured, and we have found them in
+three different real systems using the same analysis pipeline in each.
+
+\begin{itemize}[leftmargin=1.4em]
+\item \textbf{Rigid and flexible attractors can be told apart.} In a controlled
+belief-network model with known ground truth, populations tuned to be rigid
+versus flexible produced attractor landscapes whose topological complexity
+differed by more than a factor of two, with the flexible populations forming
+richer and more diffuse structure. Run on real financial market data, the same
+pipeline still separated higher-volatility from lower-volatility regimes by the
+shape of their dynamics.
+
+\item \textbf{Cooperation and competition appear in the curvature of
+interaction.} From dual-brain EEG recordings of eight pairs of people doing
+cooperative and competitive tasks, a curvature measure on the moment-to-moment
+coupling between their brain signals tracked which task each pair was
+performing, in all eight pairs. The sign of the effect varied across pairs,
+reflecting individual differences in how people couple, but the curvature
+carried the cooperation/competition signal throughout.
+
+\item \textbf{Echo chambers and open forums have different shape.} The same
+topological analysis, applied to language embeddings from real online political
+communities, found denser and more persistent structure in ideologically
+homogeneous and polarized communities than in communities organized around
+viewpoint diversity. The belief basins of echo chambers are measurably tighter.
+\end{itemize}
+
+The dynamics-based view repeatedly separates cases that a purely distributional
+view merges, but it needs more data to do so. The structural comparison
+requires long, rich behavioral trajectories, and where those are missing it
+falls back toward distributional methods. Lowering that data requirement is one
+of the practical goals for the new work.
+
+\section{Open problems}
+
+We close by listing the formal objects we need and do not yet have.
+
+\begin{enumerate}[leftmargin=1.6em]
+\item \textbf{A structural distance between belief-generating systems.} A
+metric that compares two agents by how their beliefs evolve, stays stable under
+noise, weighs lasting behavior over transient behavior, and can be computed
+from observed trajectories. It can build on the information-geometric substrate
+we keep, but it has to measure the dynamics on that manifold, not the distance
+between two points on it. It should improve on any purely distributional
+comparison.
+
+\item \textbf{Recovering the landscape from behavior.} A stable method for
+reconstructing attractors, basins, ridges, and connectivity from observed
+trajectories, with guarantees that the result is robust to measurement noise.
+
+\item \textbf{The least-effort belief transition.} A description of the most
+probable path an agent takes between worldviews, the cost of that path, and how
+interventions change it. This is the basis for steering that does not coerce.
+
+\item \textbf{Timescale separation.} A rigorous account of how to average out
+fast belief fluctuations and isolate the slow landscape at which alignment
+should be measured and steered.
+
+\item \textbf{From flexibility to a guarantee.} A formal connection between an
+agent's capacity to revise its beliefs and a bound on how reliably it can be
+steered to a target, so that corrigibility becomes something one can prove.
+
+\item \textbf{Normative geometry.} Turning the four criteria for a good
+landscape into precise, checkable conditions, and working out the trade-offs
+among them.
+\end{enumerate}
+
+Our working assumption is that the right language for alignment is geometric:
+basins, ridges, paths, curvature, and an agent's capacity to revise. Developing
+that language carefully is what would let us state alignment precisely enough to
+measure it and to prove things about it.
+
+\end{document}

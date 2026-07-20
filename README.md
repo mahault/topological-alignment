@@ -1,5 +1,13 @@
 # Topological Alignment
 
+For a visual, executable account of the theory, evidence, ablations, related sibling
+projects, and next experiment, open the
+[Where We Are notebook](notebooks/where_we_are.ipynb) or its
+[standalone HTML view](notebooks/where_we_are.html).
+An alternative presentation-oriented rendering is available as the
+[Research Dashboard notebook](notebooks/RESEARCH_DASHBOARD.ipynb) and
+[Research Dashboard HTML](notebooks/RESEARCH_DASHBOARD.html).
+
 ## Virtue, pragmatics, and active inference
 
 This project develops a geometric account of alignment in which agents are compared
