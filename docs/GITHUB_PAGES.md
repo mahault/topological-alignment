@@ -15,10 +15,11 @@ artifact:
 | Repository source | Public path |
 |---|---|
 | `notebooks/RESEARCH_DASHBOARD.html` | `/index.html` |
-| `notebooks/where_we_are.html` | `/where-we-are.html` |
+| `notebooks/where_we_are.html` | `/where-we-are.html` (claim-by-claim guide with embedded animations) |
 
 No datasets, source code, local settings, or other repository files are copied into
-the web artifact. Both HTML files are self-contained exports with embedded plots.
+the web artifact. Both HTML files are self-contained exports with embedded plots;
+the detailed guide also embeds two offline-playable pedagogical animations.
 
 The deployment runs when either HTML export or the workflow changes on `main` or
 `virtue-pragmatics-active-inference`. It can also be started manually from the GitHub

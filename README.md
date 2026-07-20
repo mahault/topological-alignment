@@ -1,7 +1,8 @@
 # Topological Alignment
 
-For a visual, executable account of the theory, evidence, ablations, related sibling
-projects, and next experiment, open the
+For a visual, executable account of all 20 canonical claims—including each claim's
+motivation, formal object, assumptions, proof standard, experiment, falsifier,
+current evidence, graphs, and pedagogical animations—open the
 [Where We Are notebook](notebooks/where_we_are.ipynb) or its
 [standalone HTML view](notebooks/where_we_are.html).
 An alternative presentation-oriented rendering is available as the

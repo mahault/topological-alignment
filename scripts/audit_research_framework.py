@@ -187,6 +187,48 @@ def v2_robustness_result_errors() -> list[str]:
     return errors
 
 
+def research_guide_errors() -> list[str]:
+    errors: list[str] = []
+    notebook_path = ROOT / "notebooks" / "where_we_are.ipynb"
+    html_path = ROOT / "notebooks" / "where_we_are.html"
+    builder_path = ROOT / "notebooks" / "build_where_we_are.py"
+    for path in (notebook_path, html_path, builder_path):
+        if not path.exists():
+            errors.append(f"research guide: missing {path.relative_to(ROOT)}")
+    if errors:
+        return errors
+    notebook = json.loads(notebook_path.read_text("utf-8"))
+    source = "\n".join(
+        "".join(cell.get("source", [])) for cell in notebook.get("cells", [])
+    )
+    expected_claims = {f"C{index:02d}" for index in range(1, 21)}
+    present_claims = set(re.findall(r"^### (C\d{2}) —", source, flags=re.MULTILINE))
+    if present_claims != expected_claims:
+        errors.append(
+            "research guide: canonical claim set differs from C01–C20 "
+            f"(missing={sorted(expected_claims - present_claims)}, "
+            f"extra={sorted(present_claims - expected_claims)})"
+        )
+    output_errors = [
+        output
+        for cell in notebook.get("cells", [])
+        for output in cell.get("outputs", [])
+        if output.get("output_type") == "error"
+    ]
+    if output_errors:
+        errors.append("research guide: executed notebook contains error outputs")
+    code_cells = [cell for cell in notebook.get("cells", []) if cell.get("cell_type") == "code"]
+    if not code_cells or any(cell.get("execution_count") is None for cell in code_cells):
+        errors.append("research guide: not every code cell has an executed output state")
+    html = html_path.read_text("utf-8")
+    if html.count("function Animation(frames") < 2:
+        errors.append("research guide: fewer than two embedded animations")
+    for heading in ("What counts as a proof here?", "Master claim register", "What the experiments actually look like"):
+        if heading not in html:
+            errors.append(f"research guide: HTML missing section {heading!r}")
+    return errors
+
+
 def run() -> list[str]:
     return [
         *markdown_link_errors(),
@@ -198,6 +240,7 @@ def run() -> list[str]:
         *v1_result_errors(),
         *v2_result_errors(),
         *v2_robustness_result_errors(),
+        *research_guide_errors(),
     ]
 
 
